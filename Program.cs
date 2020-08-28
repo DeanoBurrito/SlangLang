@@ -6,7 +6,7 @@ namespace SlangLang
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            new Repl().Run();
         }
     }
 }

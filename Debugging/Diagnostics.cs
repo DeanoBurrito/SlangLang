@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace SlangLang.Debugging
 {
-    public class Diagnostics
+    public sealed class Diagnostics
     {
         //Dictionary<string, DiagnosticEntry> entries = new Dictionary<string, DiagnosticEntry>();
         Dictionary<string, List<DiagnosticEntry>> infoEntries = new Dictionary<string, List<DiagnosticEntry>>();
@@ -15,11 +15,13 @@ namespace SlangLang.Debugging
         (ConsoleColor fg, ConsoleColor bg) warningColor = (ConsoleColor.Yellow, ConsoleColor.Black);
         (ConsoleColor fg, ConsoleColor bg) failureColor = (ConsoleColor.Red, ConsoleColor.Black);
 
+        DateTime initTime;
+
         
         public bool HasErrors { get; private set; }
         
         public Diagnostics()
-        {}
+        { initTime = DateTime.Now; }
 
         public void AddInfo(string module, string message, DateTime when)
         {
@@ -52,11 +54,12 @@ namespace SlangLang.Debugging
         }
 
         public void WriteToStandardOut()
-        {
+        {   
             const int wrapIndent = 8;
             int terminalWidth = Console.WindowWidth - wrapIndent;
             
             Console.WriteLine("[SlangLang Diagnostics " + DateTime.Now.ToShortDateString() + " @ " + DateTime.Now.ToShortTimeString() + "]");
+            Console.WriteLine("Run initialized at " + initTime.ToString("HH:mm:ss.fffff") + ", " + (DateTime.Now - initTime).TotalSeconds.ToString("###,##0.00000") + " seconds ago.");
 
             Console.ForegroundColor = infoColor.fg;
             Console.BackgroundColor = infoColor.bg;
@@ -116,8 +119,11 @@ namespace SlangLang.Debugging
                     Console.WriteLine((prependIndent ? new string(' ', wrapIndent) : "") + remainingStr);
                 }
             }
-
             Console.ResetColor();
+
+            if (failureEntries.Count == 0)
+                Console.WriteLine("No errors. Process complete.");
+
         }
     }
 

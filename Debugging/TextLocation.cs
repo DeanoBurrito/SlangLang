@@ -2,7 +2,7 @@ using System;
 
 namespace SlangLang.Debugging
 {
-    public class TextLocation
+    public sealed class TextLocation
     {
         public static TextLocation NoLocation = new TextLocation("No Source Location", 0, 0);
 
@@ -22,7 +22,7 @@ namespace SlangLang.Debugging
         {
             if (filename == "No Source Location")
                 return filename;
-            return "[" + filename + ": line " + line + ", col " + column + "]";
+            return "[" + filename + ": line " + line + ", col " + column + (length != 0 ? ", len " + length : "") + "]";
         }
     }
 }

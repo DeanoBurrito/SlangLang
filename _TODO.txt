@@ -1,7 +1,11 @@
 ---- FRONT BURNER ----
 
 ---- BACK BURNER ----
+Update evaluator to support more expression types
 
 ---- PLANNED ----
 
 ---- KNOWN ISSUES ----
+Parser/Lexer does not keep track of lines/columns within the text, and isnt sticking these to the language tokens yet.
+    ^ Needs further investigation
+ParsePrimaryExpression can through an exception if token is not what was expected. Channel into diagnostics, compare with upstream.
