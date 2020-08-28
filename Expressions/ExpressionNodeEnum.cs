@@ -14,6 +14,8 @@ namespace SlangLang.Expressions
         IntegerLiteral,
         FloatLiteral,
         StringLiteral,
+
+        Parenthesized,
     }
 
     public enum LiteralValueSpecifier

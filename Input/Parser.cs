@@ -23,27 +23,72 @@ namespace SlangLang.Input
             tokens = scrubbedTokens.ToArray();
             pos = 0;
         }
-        
-        //
-        //
-        //hacky
+
         public ExpressionNode ParseAll()
         { 
-            ExpressionNode expr = ParseExpression();
+            ExpressionNode expr = ParseTerm();
             //validate EOF and ensure no extra data is sneaking into the pipeline (it'll be ignore, but still)
             //NOTE: Match() will throw an error if it dosnt find the eof token.
             LanguageToken eofToken = Match(LanguageTokenType.EndOfFile);
             return expr;
         }
 
+        //helper metho
         private ExpressionNode ParseExpression()
         {
+            return ParseTerm();
+        }
+        
+        //
+        //
+        //hacky
+        private ExpressionNode ParseTerm()
+        {
+            ExpressionNode left = ParseFactor();
+            while (Peek().tokenType == LanguageTokenType.Plus ||
+                    Peek().tokenType == LanguageTokenType.Minus)
+            {
+                LanguageToken operatorToken = NextToken();
+                ExpressionNode right = ParseFactor();
+                ExpressionNodeType operatorType = ExpressionNodeType.Nop;
+                switch (operatorToken.tokenType)
+                {
+                    case LanguageTokenType.Plus:
+                        operatorType = ExpressionNodeType.Add; break;
+                    case LanguageTokenType.Minus:
+                        operatorType = ExpressionNodeType.Sub; break;
+                    case LanguageTokenType.Star:
+                        operatorType = ExpressionNodeType.Mult; break;
+                    case LanguageTokenType.ForwardSlash:
+                        operatorType = ExpressionNodeType.Div; break;
+                }
+                left = new BinaryExpression(operatorType, left, right);
+            }
+
+            return left;
+        }
+        
+        private ExpressionNode ParseFactor()
+        {
             ExpressionNode left = ParsePrimaryExpression();
-            while (Peek().tokenType == LanguageTokenType.Plus)
+            while (Peek().tokenType == LanguageTokenType.Star ||
+                    Peek().tokenType == LanguageTokenType.ForwardSlash)
             {
                 LanguageToken operatorToken = NextToken();
                 ExpressionNode right = ParsePrimaryExpression();
-                left = new BinaryExpression(ExpressionNodeType.Add, left, right);
+                ExpressionNodeType operatorType = ExpressionNodeType.Nop;
+                switch (operatorToken.tokenType)
+                {
+                    case LanguageTokenType.Plus:
+                        operatorType = ExpressionNodeType.Add; break;
+                    case LanguageTokenType.Minus:
+                        operatorType = ExpressionNodeType.Sub; break;
+                    case LanguageTokenType.Star:
+                        operatorType = ExpressionNodeType.Mult; break;
+                    case LanguageTokenType.ForwardSlash:
+                        operatorType = ExpressionNodeType.Div; break;
+                }
+                left = new BinaryExpression(operatorType, left, right);
             }
 
             return left;
@@ -60,6 +105,14 @@ namespace SlangLang.Input
 
         private ExpressionNode ParsePrimaryExpression()
         {
+            if (Peek().tokenType == LanguageTokenType.OpenParanthesis)
+            {
+                LanguageToken left = NextToken();
+                ExpressionNode inner = ParseExpression();
+                LanguageToken right = Match(LanguageTokenType.CloseParathesis);
+                return new UnaryExpression(ExpressionNodeType.Parenthesized, inner);
+            }
+            
             LanguageToken token = Match(LanguageTokenType.Integer);
             if (!int.TryParse(token.text, out int val))
                 diagnostics.AddFailure("Parser", "Could not get int from number token.", token.sourceLocation, DateTime.Now);

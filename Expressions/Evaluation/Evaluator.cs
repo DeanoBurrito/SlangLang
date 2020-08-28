@@ -21,6 +21,9 @@ namespace SlangLang.Expressions.Evaluation
 
         private int EvaluateExpression(ExpressionNode node)
         {
+            if (node.nodeType == ExpressionNodeType.Nop)
+                return 0;
+            
             if (node is LiteralExpression lit)
                 return (int)lit.value; //trusting it's just an int for now
             if (node is BinaryExpression bin)
@@ -37,6 +40,11 @@ namespace SlangLang.Expressions.Evaluation
                 if (bin.nodeType == ExpressionNodeType.Div)
                     return leftResult / rightResult;
                 diagnostics.AddFailure("Evaluator", "Unexpected binary operator in eval code. TODO?", TextLocation.NoLocation, DateTime.Now);
+            }
+            if (node is UnaryExpression unary)
+            {
+                if (unary.nodeType == ExpressionNodeType.Parenthesized)
+                    return EvaluateExpression(unary.child);
             }
             throw new Exception("Unexpected node in evaluator.");
         }

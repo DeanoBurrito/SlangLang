@@ -11,7 +11,7 @@ namespace SlangLang
     public sealed class Repl
     {
         Dictionary<string, (MethodInfo method, string help)> metaCommands = new Dictionary<string, (MethodInfo, string)>();
-        bool showParseTree = true;
+        bool showParseTree = false;
 
         public Repl()
         {}
@@ -93,7 +93,7 @@ namespace SlangLang
             {
                 foreach (MethodInfo info in t.GetMethods())
                 {
-                    ReplMetaCmdAttribute attrib = info.GetCustomAttribute<ReplMetaCmdAttribute>();
+                    ReplCommandAttribute attrib = info.GetCustomAttribute<ReplCommandAttribute>();
                     if (attrib == null)
                         continue; 
                     if (metaCommands.ContainsKey(attrib.identifier))
@@ -105,14 +105,14 @@ namespace SlangLang
 
         static class ReplCommands
         {   
-            [ReplMetaCmd("exit", "Exits this CLI.")]
+            [ReplCommand("exit", "Exits this CLI.")]
             public static void Exit(Repl repl, string[] args)
             {
                 Console.WriteLine("Exiting REPL...");
                 Environment.Exit(0);
             }
 
-            [ReplMetaCmd("help", "Prints this dialogue.")]
+            [ReplCommand("help", "Prints this dialogue.")]
             public static void Help(Repl repl, string[] args)
             {
                 Console.WriteLine(repl.metaCommands.Count + " commands currently exist.");
@@ -122,20 +122,20 @@ namespace SlangLang
                 }
             }
 
-            [ReplMetaCmd("version", "Displays the various version numbers of the environment, compiler, repl.")]
+            [ReplCommand("version", "Displays the various version numbers of the environment, compiler, repl.")]
             public static void Version(Repl repl, string[] args)
             {
                 Console.WriteLine("     Enviroment Ver : " + SlangEnvironment.GetEnvironmentVersion().ToString());
                 Console.WriteLine("    Interpreter Ver : " + SlangEnvironment.GetInterpreterVersion().ToString());
             }
 
-            [ReplMetaCmd("banner", "Displays a random startup banner.")]
+            [ReplCommand("banner", "Displays a random startup banner.")]
             public static void Banner(Repl repl, string[] args)
             {
                 BannerGenerator.DrawRandomBanner();
             }
 
-            [ReplMetaCmd("showtree", "Toggles showing the expression tree after parsing/lexing.")]
+            [ReplCommand("showtree", "Toggles showing the expression tree after parsing/lexing.")]
             public static void ToggleShowTree(Repl repl, string[] args)
             {
                 if (args.Length > 0 && bool.TryParse(args[0], out bool showTree))
@@ -145,6 +145,12 @@ namespace SlangLang
                 else
                     repl.showParseTree = !repl.showParseTree;
                 Console.WriteLine("Displaying expression trees: " + repl.showParseTree);
+            }
+
+            [ReplCommand("cls", "Clears the current console output.")]
+            public static void Cls(Repl repl, string[] args)
+            {
+                Console.Clear();
             }
         }
 
