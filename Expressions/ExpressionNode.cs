@@ -5,7 +5,7 @@ namespace SlangLang.Expressions
 {
     public abstract class ExpressionNode
     {
-        public ExpressionNodeType nodeType;
+        public readonly ExpressionNodeType nodeType;
 
         public ExpressionNode(ExpressionNodeType type)
         {

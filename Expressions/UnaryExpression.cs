@@ -5,7 +5,7 @@ namespace SlangLang.Expressions
 {
     public sealed class UnaryExpression : ExpressionNode
     {
-        public ExpressionNode child;
+        public readonly ExpressionNode child;
 
         public UnaryExpression(ExpressionNodeType type, ExpressionNode node) : base(type) => child = node;
 

@@ -1,11 +1,10 @@
 ---- FRONT BURNER ----
 
 ---- BACK BURNER ----
-Move evaluator and parser to switch statements instead of pattern based. (JUmp tables are much faster and cheaper).
 
 ---- PLANNED ----
 
 ---- KNOWN ISSUES ----
-Parser/Lexer does not keep track of lines/columns within the text, and isnt sticking these to the language tokens yet.
+Parserdoes not keep track of lines/columns within the text, and isnt sticking these to the language tokens yet.
     ^ Needs further investigation
 ParsePrimaryExpression can through an exception if token is not what was expected. Channel into diagnostics, compare with upstream.

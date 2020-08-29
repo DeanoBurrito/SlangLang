@@ -5,10 +5,14 @@ namespace SlangLang.Expressions
 {
     public sealed class LiteralExpression : ExpressionNode
     {
-        public object value;
-        public LiteralValueSpecifier valueSpecifier = LiteralValueSpecifier.Default;
+        public readonly object value;
+        public readonly LiteralValueSpecifier valueSpecifier = LiteralValueSpecifier.Default;
 
-        public LiteralExpression(ExpressionNodeType type, object val) : base(type) => value = val;
+        public LiteralExpression(ExpressionNodeType type, object val, LiteralValueSpecifier spec = LiteralValueSpecifier.Default) : base(type)
+        {
+            value = val;
+            valueSpecifier = spec;
+        }
 
         public override List<ExpressionNode> GetChildren()
         {

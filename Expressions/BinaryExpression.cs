@@ -5,8 +5,8 @@ namespace SlangLang.Expressions
 {
     public sealed class BinaryExpression : ExpressionNode
     {
-        public ExpressionNode leftNode;
-        public ExpressionNode rightNode;
+        public readonly ExpressionNode leftNode;
+        public readonly ExpressionNode rightNode;
 
         public BinaryExpression(ExpressionNodeType type, ExpressionNode left, ExpressionNode right) : base(type)
         {
