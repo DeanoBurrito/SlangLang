@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 
-namespace SlangLang.Debugging
+namespace SlangLang.Debug
 {
     public sealed class Diagnostics
     {

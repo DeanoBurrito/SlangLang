@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using SlangLang.Debugging;
+using SlangLang.Debug;
 
-namespace SlangLang.Expressions
+namespace SlangLang.Parsing
 {
     public abstract class ExpressionNode
     {

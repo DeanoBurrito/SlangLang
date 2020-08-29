@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
+using SlangLang.Parsing;
 using SlangLang.Binding;
 
 namespace SlangLang
@@ -49,15 +50,13 @@ namespace SlangLang
                 }
                 else
                 {
-                    SlangLang.Debugging.Diagnostics diags = new SlangLang.Debugging.Diagnostics();
+                    SlangLang.Debug.Diagnostics diags = new SlangLang.Debug.Diagnostics();
 
-                    SlangLang.Input.Lexer lineLexer = new SlangLang.Input.Lexer(diags, line, "Interpreter");
-                    SlangLang.Input.LanguageToken[] tokens = lineLexer.LexAll();
-                    SlangLang.Input.Parser lineParser = new SlangLang.Input.Parser(diags, tokens);
-                    SlangLang.Expressions.ExpressionNode node = lineParser.ParseAll();
-                    SlangLang.Binding.Binder binder = new SlangLang.Binding.Binder(diags, node);
-                    SlangLang.Binding.BoundExpression boundNode = binder.BindAll();
-                    SlangLang.Evaluation.Evaluator eval = new SlangLang.Evaluation.Evaluator(diags, boundNode);
+                    Lexer lex = new Lexer(diags, line, "Interpreter");
+                    Parser parser = new Parser(diags, lex.LexAll());
+                    SlangLang.Binding.Binder binder = new SlangLang.Binding.Binder(diags, parser.ParseAll());
+                    BoundExpression boundNode = binder.BindAll();
+                    SlangLang.Evaluation.Evaluator eval = new Evaluation.Evaluator(diags, boundNode);
                     eval.Evaluate();
                     
                     if (showParseTree)

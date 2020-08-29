@@ -1,7 +1,6 @@
 using System;
-using SlangLang.Expressions;
 
-namespace SlangLang.Input
+namespace SlangLang.Parsing
 {
     internal static class ParserFacts
     {

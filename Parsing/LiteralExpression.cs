@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace SlangLang.Expressions
+namespace SlangLang.Parsing
 {
     public sealed class LiteralExpression : ExpressionNode
     {

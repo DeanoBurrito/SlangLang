@@ -1,6 +1,6 @@
 using System;
 
-namespace SlangLang.Expressions
+namespace SlangLang.Parsing
 {
     public enum ExpressionNodeType : int
     {

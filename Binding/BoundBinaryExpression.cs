@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using SlangLang.Debugging;
+using SlangLang.Debug;
 
 namespace SlangLang.Binding
 {

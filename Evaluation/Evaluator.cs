@@ -1,5 +1,5 @@
 using System;
-using SlangLang.Debugging;
+using SlangLang.Debug;
 using SlangLang.Binding;
 
 namespace SlangLang.Evaluation

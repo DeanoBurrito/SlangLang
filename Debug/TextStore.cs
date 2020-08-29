@@ -1,6 +1,6 @@
 using System;
 
-namespace SlangLang.Debugging
+namespace SlangLang.Debug
 {
     public sealed class TextStore
     {

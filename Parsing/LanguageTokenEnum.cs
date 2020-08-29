@@ -1,6 +1,6 @@
 using System;
 
-namespace SlangLang.Input
+namespace SlangLang.Parsing
 {
     public enum LanguageTokenType : int
     {

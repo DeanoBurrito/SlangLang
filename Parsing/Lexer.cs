@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
-using SlangLang.Expressions;
-using SlangLang.Debugging;
+using SlangLang.Debug;
 
-namespace SlangLang.Input
+namespace SlangLang.Parsing
 {
     public sealed class Lexer
     {
