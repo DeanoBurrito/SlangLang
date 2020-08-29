@@ -7,12 +7,12 @@ namespace SlangLang.Binding
     internal sealed class BoundUnaryExpression : BoundExpression
     {
         public readonly BoundExpression operand;
-        public readonly BoundUnaryOperatorType operatorType;
+        public readonly BoundUnaryOperator op;
 
-        public BoundUnaryExpression(BoundUnaryOperatorType operatorType, BoundExpression inner, TextLocation where) : base(inner.boundType, BoundNodeType.UnaryExpression, where)
+        public BoundUnaryExpression(BoundUnaryOperator op, BoundExpression inner, TextLocation where) : base(inner.boundType, BoundNodeType.UnaryExpression, where)
         {
             operand = inner;
-            this.operatorType = operatorType;
+            this.op = op;
         }
 
         public override List<BoundExpression> GetChildren()
@@ -22,7 +22,7 @@ namespace SlangLang.Binding
 
         public override string ToString()
         {
-            return "[UnaryExpression] " + operatorType;
+            return "[UnaryExpression] " + op;
         }
     }
 }

@@ -33,7 +33,7 @@ namespace SlangLang.Evaluation
                 if (operandType == typeof(int))
                 {
                     int resultInt = (int)operandResult;
-                    switch (unary.operatorType)
+                    switch (unary.op.unaryOperator)
                     {
                         case BoundUnaryOperatorType.Negate:
                             return -resultInt;
@@ -42,7 +42,7 @@ namespace SlangLang.Evaluation
                 else if (operandType == typeof(bool))
                 {
                     bool resultBool = (bool)operandResult;
-                    switch (unary.operatorType)
+                    switch (unary.op.unaryOperator)
                     {
                         case BoundUnaryOperatorType.Not:
                             return !resultBool;
@@ -61,7 +61,7 @@ namespace SlangLang.Evaluation
                 {
                     int leftInt = (int)leftResult;
                     int rightInt = (int)rightResult;
-                    switch (bin.operatorType)
+                    switch (bin.op.binaryOperator)
                     {
                         case BoundBinaryOperatorType.Addition:
                             return leftInt + rightInt;
@@ -77,7 +77,7 @@ namespace SlangLang.Evaluation
                 {
                     bool leftBool = (bool)leftResult;
                     bool rightBool = (bool)rightResult;
-                    switch (bin.operatorType)
+                    switch (bin.op.binaryOperator)
                     {
                         case BoundBinaryOperatorType.ConditionalOr:
                             return leftBool || rightBool;

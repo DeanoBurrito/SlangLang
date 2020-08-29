@@ -8,12 +8,12 @@ namespace SlangLang.Binding
     {
         public readonly BoundExpression left;
         public readonly BoundExpression right;
-        public readonly BoundBinaryOperatorType operatorType;
+        public readonly BoundBinaryOperator op;
 
-        public BoundBinaryExpression(BoundBinaryOperatorType operatorType, BoundExpression left, BoundExpression right, TextLocation where) 
+        public BoundBinaryExpression(BoundBinaryOperator op, BoundExpression left, BoundExpression right, TextLocation where) 
             : base(left.boundType, BoundNodeType.BinaryExpression, where)
         {
-            this.operatorType = operatorType;
+            this.op = op;
             this.left = left;
             this.right = right;
         }
@@ -25,7 +25,7 @@ namespace SlangLang.Binding
 
         public override string ToString()
         {
-            return "[BinaryExpression] " + operatorType;
+            return "[BinaryExpression] " + op;
         }
     }
 }
