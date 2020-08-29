@@ -46,7 +46,7 @@ namespace SlangLang.Binding
             BoundUnaryOperatorType? boundOperator = BindUnaryOperator(expression.nodeType, boundOperand.boundType,expression.textLocation);
             if (boundOperator == null)
             {
-                diagnostics.AddWarning("Binder", $"Unary operator {expression.nodeType} is not defined for type {boundOperand.boundType}.", expression.textLocation, DateTime.Now);
+                diagnostics.AddFailure("Binder", $"Unary operator {expression.nodeType} is not defined for type {boundOperand.boundType}.", expression.textLocation, DateTime.Now);
                 return boundOperand;
             }
             return new BoundUnaryExpression(boundOperator.Value, boundOperand, expression.textLocation);
@@ -59,7 +59,7 @@ namespace SlangLang.Binding
             BoundBinaryOperatorType? boundOperator = BindBinaryOperator(expression.nodeType, boundLeft.boundType, boundRight.boundType, expression.textLocation);
             if (boundOperator == null)
             {
-                diagnostics.AddWarning("Binder", $"Unary operator {expression.nodeType} is not defined for types {boundLeft.boundType}, {boundRight.boundType}.", expression.textLocation, DateTime.Now);
+                diagnostics.AddFailure("Binder", $"Unary operator {expression.nodeType} is not defined for types {boundLeft.boundType}, {boundRight.boundType}.", expression.textLocation, DateTime.Now);
                 return boundLeft;
             }
             return new BoundBinaryExpression(boundOperator.Value, boundLeft, boundRight, expression.textLocation);
