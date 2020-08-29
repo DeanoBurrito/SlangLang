@@ -11,6 +11,7 @@ namespace SlangLang
     {
         Dictionary<string, (MethodInfo method, string help)> metaCommands = new Dictionary<string, (MethodInfo, string)>();
         bool showParseTree = false;
+        bool showPostBind = true;
         bool autoEval = true;
 
         public Repl()
@@ -55,7 +56,8 @@ namespace SlangLang
 
                     Lexer lex = new Lexer(diags, line, "Interpreter");
                     Parser parser = new Parser(diags, lex.LexAll());
-                    SlangLang.Binding.Binder binder = new SlangLang.Binding.Binder(diags, parser.ParseAll());
+                    ExpressionNode parseTree = parser.ParseAll();
+                    SlangLang.Binding.Binder binder = new SlangLang.Binding.Binder(diags, parseTree);
                     BoundExpression boundNode = binder.BindAll();
                     if (autoEval)
                     {
@@ -66,7 +68,10 @@ namespace SlangLang
                     if (showParseTree)
                     {
                         Console.ForegroundColor = ConsoleColor.DarkGray;
-                        PrettyPrintExpTree(boundNode);
+                        if (showPostBind)
+                            PrettyPrintBoundTree(boundNode);
+                        else
+                            PrettyPrintUnboundTree(parseTree);
                         Console.ResetColor();
                     }
                     diags.WriteToStandardOut();
@@ -74,7 +79,22 @@ namespace SlangLang
             }
         }
 
-        private static void PrettyPrintExpTree(BoundExpression node, string indent = "", bool isLast = true)
+        private static void PrettyPrintUnboundTree(ExpressionNode node, string indent = "", bool isLast = true)
+        {
+            string marker = isLast ? "└──" : "├──";
+            Console.Write(indent);
+            Console.Write(marker);
+            Console.WriteLine(node.ToString());
+
+            indent += isLast ? "   " : "│  ";
+            ExpressionNode lastChild = node.GetChildren().LastOrDefault();
+            foreach (ExpressionNode child in node.GetChildren())
+            {
+                PrettyPrintUnboundTree(child, indent, child == lastChild);
+            }
+        }
+
+        private static void PrettyPrintBoundTree(BoundExpression node, string indent = "", bool isLast = true)
         {
             string marker = isLast ? "└──" : "├──";
             Console.Write(indent);
@@ -85,7 +105,7 @@ namespace SlangLang
             BoundExpression lastChild = node.GetChildren().LastOrDefault();
             foreach (BoundExpression child in node.GetChildren())
             {
-                PrettyPrintExpTree(child, indent, child == lastChild);
+                PrettyPrintBoundTree(child, indent, child == lastChild);
             }
         }
 
@@ -166,6 +186,18 @@ namespace SlangLang
                 else
                     repl.autoEval = !repl.autoEval;
                 Console.WriteLine("Automatically evaluating parsed trees: " + repl.autoEval);
+            }
+
+            [ReplCommand("boundtree", "Sets whether to show the parsed tree pre or post binding.")]
+            public static void BoundTree(Repl repl, string[] args)
+            {
+                if (args.Length > 0 && bool.TryParse(args[0], out bool postBind))
+                {
+                    repl.showPostBind = postBind;
+                }
+                else
+                    repl.showPostBind = !repl.showPostBind;
+                Console.WriteLine("Showing parse tree post-bind: " + repl.showPostBind);
             }
         }
 
