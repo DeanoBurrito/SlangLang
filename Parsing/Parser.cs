@@ -39,7 +39,7 @@ namespace SlangLang.Parsing
             {
                 LanguageToken operatorToken = NextToken();
                 ExpressionNode operand = ParseExpression(unaryOperatorPrecedence);
-                left = new UnaryExpression(operatorToken.GetUnaryOperatorType(), operand);
+                left = new UnaryExpression(operatorToken, operand);
             }
             else
             {
@@ -54,7 +54,7 @@ namespace SlangLang.Parsing
                 
                 LanguageToken operatorToken = NextToken();
                 ExpressionNode right = ParseExpression(precedence);
-                left = new BinaryExpression(operatorToken.GetBinaryOperatorType(), left, right);
+                left = new BinaryExpression(operatorToken, left, right);
             }
 
             return left;
@@ -76,7 +76,7 @@ namespace SlangLang.Parsing
                 case LanguageTokenType.KeywordFalse:
                 {
                     bool value = NextToken().tokenType == LanguageTokenType.KeywordTrue;
-                    return new LiteralExpression(ExpressionNodeType.Literal, value);
+                    return new LiteralExpression(value);
                 }
 
                 default:
@@ -86,7 +86,7 @@ namespace SlangLang.Parsing
                     if (!int.TryParse(token.text, out int val)) 
                         diagnostics.AddFailure("Parser", "Could not get int from number token.", token.sourceLocation, DateTime.Now);
 
-                    return new LiteralExpression(ExpressionNodeType.Literal, val);
+                    return new LiteralExpression(val);
                 }
             }
         }

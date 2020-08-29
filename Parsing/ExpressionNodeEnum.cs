@@ -4,21 +4,8 @@ namespace SlangLang.Parsing
 {
     public enum ExpressionNodeType : int
     {
-        Nop,
-
-        //Unary Operators
-        Negate,
-        Not,
-
-        //Binary Operators
-        Addition,
-        Subtraction,
-        Multiplication,
-        Division,
-        ConditionalOr,
-        ConditionalAnd,
-
-        //Literals
+        Unary,
+        Binary,
         Literal,
     }
 

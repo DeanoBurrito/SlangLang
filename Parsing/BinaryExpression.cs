@@ -7,11 +7,13 @@ namespace SlangLang.Parsing
     {
         public readonly ExpressionNode leftNode;
         public readonly ExpressionNode rightNode;
+        public readonly LanguageToken opToken;
 
-        public BinaryExpression(ExpressionNodeType type, ExpressionNode left, ExpressionNode right) : base(type)
+        public BinaryExpression(LanguageToken opToken, ExpressionNode left, ExpressionNode right) : base(ExpressionNodeType.Binary)
         {
             leftNode = left;
             rightNode = right;
+            this.opToken = opToken;
         }
 
         public override List<ExpressionNode> GetChildren()

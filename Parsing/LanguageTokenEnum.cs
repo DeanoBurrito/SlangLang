@@ -21,6 +21,8 @@ namespace SlangLang.Parsing
         Pipe,
         PipePipe,
         Exclamation,
+        ExclamationEquals,
+        EqualsEquals,
         
         //maths operations
         Plus,
@@ -31,7 +33,6 @@ namespace SlangLang.Parsing
         //assignment and control
         Semicolon,
         Equals,
-        EqualsEquals,
         Identifier,
 
         //keywords

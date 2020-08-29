@@ -8,7 +8,7 @@ namespace SlangLang.Parsing
         public readonly object value;
         public readonly LiteralValueSpecifier valueSpecifier = LiteralValueSpecifier.Default;
 
-        public LiteralExpression(ExpressionNodeType type, object val, LiteralValueSpecifier spec = LiteralValueSpecifier.Default) : base(type)
+        public LiteralExpression(object val, LiteralValueSpecifier spec = LiteralValueSpecifier.Default) : base(ExpressionNodeType.Literal)
         {
             value = val;
             valueSpecifier = spec;

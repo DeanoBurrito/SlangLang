@@ -23,23 +23,9 @@ namespace SlangLang.Parsing
             {
                 case LanguageTokenType.Minus:
                 case LanguageTokenType.Exclamation:
-                    return 5;
+                    return 6;
                 default:
                     return 0;
-            }
-        }
-
-
-        public static ExpressionNodeType GetUnaryOperatorType(this LanguageToken token)
-        {
-            switch (token.tokenType)
-            {
-                case LanguageTokenType.Minus:
-                    return ExpressionNodeType.Negate;
-                case LanguageTokenType.Exclamation:
-                    return ExpressionNodeType.Not;
-                default:
-                    return ExpressionNodeType.Nop;
             }
         }
         
@@ -55,36 +41,18 @@ namespace SlangLang.Parsing
                 case LanguageTokenType.AndAnd:
                     return 2;
                 
+                case LanguageTokenType.EqualsEquals:
+                case LanguageTokenType.ExclamationEquals:
+                    return 3;
+                
                 case LanguageTokenType.Plus:
                 case LanguageTokenType.Minus:
-                    return 3;
+                    return 4;
                 case LanguageTokenType.Star:
                 case LanguageTokenType.ForwardSlash:
-                    return 4;
+                    return 5;
                 default:
                     return 0;
-            }
-        }
-
-        public static ExpressionNodeType GetBinaryOperatorType(this LanguageToken token)
-        {
-            switch (token.tokenType)
-            {
-                case LanguageTokenType.Plus:
-                    return ExpressionNodeType.Addition;
-                case LanguageTokenType.Minus:
-                    return ExpressionNodeType.Subtraction;
-                case LanguageTokenType.Star:
-                    return ExpressionNodeType.Multiplication;
-                case LanguageTokenType.ForwardSlash:
-                    return ExpressionNodeType.Division;
-                    
-                case LanguageTokenType.PipePipe:
-                    return ExpressionNodeType.ConditionalOr;
-                case LanguageTokenType.AndAnd:
-                    return ExpressionNodeType.ConditionalAnd;
-                default:
-                    return ExpressionNodeType.Nop;
             }
         }
     }

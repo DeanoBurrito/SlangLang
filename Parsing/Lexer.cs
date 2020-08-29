@@ -111,9 +111,6 @@ namespace SlangLang.Parsing
                 case '/':
                     MoveNext();
                     return new LanguageToken(LanguageTokenType.ForwardSlash, "/", location);
-                case '!':
-                    MoveNext();
-                    return new LanguageToken(LanguageTokenType.Exclamation, "!", location);
                 case ';':
                     MoveNext();
                     return new LanguageToken(LanguageTokenType.Semicolon, ";", location);
@@ -123,6 +120,18 @@ namespace SlangLang.Parsing
                 case ')':
                     MoveNext();
                     return new LanguageToken(LanguageTokenType.CloseParathesis, "(", location);
+                case '!':
+                    if (PeekNext(1) == '=')
+                    {
+                        MoveNext(); MoveNext();
+                        location.length = 2;
+                        return new LanguageToken(LanguageTokenType.ExclamationEquals, "!=", location);
+                    }
+                    else
+                    {
+                        MoveNext();
+                        return new LanguageToken(LanguageTokenType.Exclamation, "!", location);
+                    }
                 case '=':
                     if (PeekNext(1) == '=')
                     {

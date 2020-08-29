@@ -43,10 +43,10 @@ namespace SlangLang.Binding
         private BoundExpression BindUnaryExpression(UnaryExpression expression)
         {
             BoundExpression boundOperand = BindExpression(expression.operand);
-            BoundUnaryOperator boundOperator = BoundUnaryOperator.Bind(expression.nodeType, boundOperand.boundType);
+            BoundUnaryOperator boundOperator = BoundUnaryOperator.Bind(expression.opToken.tokenType, boundOperand.boundType);
             if (boundOperator == null)
             {
-                diagnostics.AddFailure("Binder", $"Unary operator {expression.nodeType} is not defined for type {boundOperand.boundType}.", expression.textLocation, DateTime.Now);
+                diagnostics.AddFailure("Binder", $"Unary operator {expression.opToken} is not defined for type {boundOperand.boundType}.", expression.textLocation, DateTime.Now);
                 return boundOperand;
             }
             return new BoundUnaryExpression(boundOperator, boundOperand, expression.textLocation);
@@ -56,10 +56,10 @@ namespace SlangLang.Binding
         {
             BoundExpression boundLeft = BindExpression(expression.leftNode);
             BoundExpression boundRight = BindExpression(expression.rightNode);
-            BoundBinaryOperator boundOperator = BoundBinaryOperator.Bind(expression.nodeType, boundLeft.boundType, boundRight.boundType);
+            BoundBinaryOperator boundOperator = BoundBinaryOperator.Bind(expression.opToken.tokenType, boundLeft.boundType, boundRight.boundType);
             if (boundOperator == null)
             {
-                diagnostics.AddFailure("Binder", $"Unary operator {expression.nodeType} is not defined for types {boundLeft.boundType}, {boundRight.boundType}.", expression.textLocation, DateTime.Now);
+                diagnostics.AddFailure("Binder", $"Unary operator {expression.opToken} is not defined for types {boundLeft.boundType}, {boundRight.boundType}.", expression.textLocation, DateTime.Now);
                 return boundLeft;
             }
             return new BoundBinaryExpression(boundOperator, boundLeft, boundRight, expression.textLocation);
