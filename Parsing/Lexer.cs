@@ -38,39 +38,39 @@ namespace SlangLang.Parsing
             if (currChar >= sourceStore.GetLength())
                 return new LanguageToken(LanguageTokenType.EndOfFile, "", new TextLocation(filename, 0, 0));
             
-            char next = sourceStore.GetCharAt(currChar);
+            char current = sourceStore.GetCharAt(currChar);
             int start = currChar;
             TextLocation location = sourceStore.GetLocation(start);
             location.filename = filename;
             location.length = 1;
-            if (char.IsWhiteSpace(next))
+            if (char.IsWhiteSpace(current))
             {
-                while (char.IsWhiteSpace(next))
+                while (char.IsWhiteSpace(current))
                 {
-                    next = MoveNext();
+                    current = MoveNext();
                 }
                 location.length = currChar - start;
                 return new LanguageToken(LanguageTokenType.Whitespace, sourceStore.GetSubstring(start, currChar - start), location);
             }
-            if (char.IsDigit(next))
+            if (char.IsDigit(current))
             {
                 //some kind of number
-                while (char.IsDigit(next))
+                while (char.IsDigit(current))
                 {
-                    next = MoveNext();
+                    current = MoveNext();
                 }
                 location.length = currChar - start;
                 return new LanguageToken(LanguageTokenType.IntegerNumber, sourceStore.GetSubstring(start, currChar - start), location);
             }
 
-            if (next == '"')
+            if (current == '"')
             {
                 //start of a string
-                next = MoveNext();
-                while (next != '"')
+                current = MoveNext();
+                while (current != '"')
                 {
-                    next = MoveNext();
-                    if (next == '\0')
+                    current = MoveNext();
+                    if (current == '\0')
                     {
                         diagnostics.AddFailure("Lexer", "Expected \" to end string literal, found end of file.", location, DateTime.Now);
                         return new LanguageToken(LanguageTokenType.EndOfFile, "", location);
@@ -81,7 +81,7 @@ namespace SlangLang.Parsing
                 return new LanguageToken(LanguageTokenType.String, sourceStore.GetSubstring(start, currChar - start), location);
             }
 
-            switch (next)
+            switch (current)
             {
                 case '+':
                     currChar++;
@@ -112,7 +112,7 @@ namespace SlangLang.Parsing
                     return new LanguageToken(LanguageTokenType.CloseParathesis, "(", location);
             }
 
-            diagnostics.AddFailure("Lexer", "Invalid character in input file '" + next + "'", location, DateTime.Now);
+            diagnostics.AddFailure("Lexer", "Invalid character in input file '" + current + "'", location, DateTime.Now);
             currChar++;
             return new LanguageToken(LanguageTokenType.BadToken, "", location);
         }
