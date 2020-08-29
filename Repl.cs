@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Linq;
 using SlangLang.Debugging;
 using SlangLang.Expressions;
-//using SlangLang.Input;
+using SlangLang.Input;
 
 namespace SlangLang
 {
@@ -53,9 +53,9 @@ namespace SlangLang
                 {
                     Diagnostics diags = new Diagnostics();
 
-                    SlangLang.Input.Lexer lineLexer = new SlangLang.Input.Lexer(diags, line, "Interpreter");
-                    SlangLang.Input.LanguageToken[] tokens = lineLexer.LexAll();
-                    SlangLang.Input.Parser lineParser = new SlangLang.Input.Parser(diags, tokens);
+                    Lexer lineLexer = new Lexer(diags, line, "Interpreter");
+                    LanguageToken[] tokens = lineLexer.LexAll();
+                    Parser lineParser = new Parser(diags, tokens);
                     ExpressionNode node = lineParser.ParseAll();
                     SlangLang.Expressions.Evaluation.Evaluator eval = new Expressions.Evaluation.Evaluator(diags, node);
                     eval.Evaluate();
