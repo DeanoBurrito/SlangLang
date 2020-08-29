@@ -85,6 +85,10 @@ namespace SlangLang.Evaluation
                             return leftBool && rightBool;
                     }
                 }
+                if (bin.op.binaryOperator == BoundBinaryOperatorType.Equals)
+                    return Equals(leftResult, rightResult);
+                else if (bin.op.binaryOperator == BoundBinaryOperatorType.NotEquals)
+                    return !Equals(leftResult, rightResult);
                 
                 diagnostics.AddFailure("Evaluator", "Unexpected binary operator in syntax tree: " + bin.nodeType, TextLocation.NoLocation, DateTime.Now);
             }

@@ -22,7 +22,7 @@ namespace SlangLang.Parsing
         public override string ToString()
         {
             string specifierStr = valueSpecifier != LiteralValueSpecifier.Default ? " (" + valueSpecifier.ToString() + ")" : " (*)";
-            return "[Literal] " + nodeType.ToString().Replace("Literal", "") + "=" + value.ToString() + specifierStr;
+            return "[Literal] " + value.ToString() + specifierStr;
         }
     }
 }

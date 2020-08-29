@@ -11,7 +11,7 @@ namespace SlangLang.Binding
         public readonly BoundBinaryOperator op;
 
         public BoundBinaryExpression(BoundBinaryOperator op, BoundExpression left, BoundExpression right, TextLocation where) 
-            : base(left.boundType, BoundNodeType.BinaryExpression, where)
+            : base(op.resultType, BoundNodeType.BinaryExpression, where)
         {
             this.op = op;
             this.left = left;

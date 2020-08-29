@@ -9,7 +9,7 @@ namespace SlangLang.Binding
         public readonly BoundExpression operand;
         public readonly BoundUnaryOperator op;
 
-        public BoundUnaryExpression(BoundUnaryOperator op, BoundExpression inner, TextLocation where) : base(inner.boundType, BoundNodeType.UnaryExpression, where)
+        public BoundUnaryExpression(BoundUnaryOperator op, BoundExpression inner, TextLocation where) : base(op.resultType, BoundNodeType.UnaryExpression, where)
         {
             operand = inner;
             this.op = op;

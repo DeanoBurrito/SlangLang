@@ -20,6 +20,9 @@ namespace SlangLang.Binding
             this.resultType = resultType;
         }
 
+        private BoundBinaryOperator(LanguageTokenType tokenType, BoundBinaryOperatorType binaryOp, Type type, Type resultType) : this(tokenType, binaryOp, type, type, resultType)
+        {}
+
         private BoundBinaryOperator(LanguageTokenType token, BoundBinaryOperatorType binaryOp, Type type) : this(token, binaryOp, type, type, type)
         {}
 
@@ -34,9 +37,13 @@ namespace SlangLang.Binding
             new BoundBinaryOperator(LanguageTokenType.Minus, BoundBinaryOperatorType.Subtract, typeof(int)),
             new BoundBinaryOperator(LanguageTokenType.Star, BoundBinaryOperatorType.Multiplication, typeof(int)),
             new BoundBinaryOperator(LanguageTokenType.ForwardSlash, BoundBinaryOperatorType.Division, typeof(int)),
+            new BoundBinaryOperator(LanguageTokenType.EqualsEquals, BoundBinaryOperatorType.Equals, typeof(int), typeof(bool)),
+            new BoundBinaryOperator(LanguageTokenType.ExclamationEquals, BoundBinaryOperatorType.NotEquals, typeof(int), typeof(bool)),
 
             new BoundBinaryOperator(LanguageTokenType.PipePipe, BoundBinaryOperatorType.ConditionalOr, typeof(bool)),
             new BoundBinaryOperator(LanguageTokenType.AndAnd, BoundBinaryOperatorType.ConditionalAnd, typeof(bool)),
+            new BoundBinaryOperator(LanguageTokenType.EqualsEquals, BoundBinaryOperatorType.Equals, typeof(bool)),
+            new BoundBinaryOperator(LanguageTokenType.ExclamationEquals, BoundBinaryOperatorType.NotEquals, typeof(bool)),
         };
 
         public static BoundBinaryOperator Bind(LanguageTokenType langTokenType, Type leftType, Type rightType)

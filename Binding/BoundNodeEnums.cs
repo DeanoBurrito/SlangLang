@@ -21,7 +21,10 @@ namespace SlangLang.Binding
         Subtract,
         Multiplication,
         Division,
+
         ConditionalOr,
         ConditionalAnd,
+        Equals,
+        NotEquals
     }
 }

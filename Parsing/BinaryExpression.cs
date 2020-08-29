@@ -23,7 +23,7 @@ namespace SlangLang.Parsing
 
         public override string ToString()
         {
-            return "[BinaryExpression] " + nodeType.ToString();
+            return "[BinaryExpression] " + opToken.tokenType + " (" + opToken.text + ")";
         }
     }
 }
