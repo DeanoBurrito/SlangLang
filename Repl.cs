@@ -11,6 +11,7 @@ namespace SlangLang
     {
         Dictionary<string, (MethodInfo method, string help)> metaCommands = new Dictionary<string, (MethodInfo, string)>();
         bool showParseTree = false;
+        bool autoEval = true;
 
         public Repl()
         {}
@@ -56,8 +57,11 @@ namespace SlangLang
                     Parser parser = new Parser(diags, lex.LexAll());
                     SlangLang.Binding.Binder binder = new SlangLang.Binding.Binder(diags, parser.ParseAll());
                     BoundExpression boundNode = binder.BindAll();
-                    SlangLang.Evaluation.Evaluator eval = new Evaluation.Evaluator(diags, boundNode);
-                    eval.Evaluate();
+                    if (autoEval)
+                    {
+                        SlangLang.Evaluation.Evaluator eval = new Evaluation.Evaluator(diags, boundNode);
+                        eval.Evaluate();
+                    }
                     
                     if (showParseTree)
                     {
@@ -150,6 +154,18 @@ namespace SlangLang
             public static void Cls(Repl repl, string[] args)
             {
                 Console.Clear();
+            }
+
+            [ReplCommand("autoeval", "Sets whether or not to automatically evaluate the tree.")]
+            public static void AutoEval(Repl repl, string[] args)
+            {
+                if (args.Length > 0 && bool.TryParse(args[0], out bool autoEval))
+                {
+                    repl.autoEval = autoEval;
+                }
+                else
+                    repl.autoEval = !repl.autoEval;
+                Console.WriteLine("Automatically evaluating parsed trees: " + repl.autoEval);
             }
         }
 

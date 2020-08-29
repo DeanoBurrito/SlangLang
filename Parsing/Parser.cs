@@ -62,20 +62,33 @@ namespace SlangLang.Parsing
 
         private ExpressionNode ParsePrimaryExpression()
         {
-            if (Peek().tokenType == LanguageTokenType.OpenParanthesis)
+            LanguageToken current = Peek();
+            switch (current.tokenType)
             {
-                LanguageToken left = NextToken();
-                ExpressionNode inner = ParseExpression();
-                LanguageToken right = MatchToken(LanguageTokenType.CloseParathesis);
-                return inner;
-            }
-            
-            //TODO: make this modular, not dependant on being int32. (move to switch)
-            LanguageToken token = MatchToken(LanguageTokenType.IntegerNumber);
-            if (!int.TryParse(token.text, out int val)) 
-                diagnostics.AddFailure("Parser", "Could not get int from number token.", token.sourceLocation, DateTime.Now);
+                case LanguageTokenType.OpenParanthesis:
+                {
+                    LanguageToken left = NextToken();
+                    ExpressionNode inner = ParseExpression();
+                    LanguageToken right = MatchToken(LanguageTokenType.CloseParathesis);
+                    return inner;
+                }
+                case LanguageTokenType.KeywordTrue:
+                case LanguageTokenType.KeywordFalse:
+                {
+                    bool value = NextToken().tokenType == LanguageTokenType.KeywordTrue;
+                    return new LiteralExpression(ExpressionNodeType.Literal, value);
+                }
 
-            return new LiteralExpression(ExpressionNodeType.IntegerLiteral, val);
+                default:
+                {
+                    //TODO: make this modular, not dependant on being int32. (move to switch)
+                    LanguageToken token = MatchToken(LanguageTokenType.IntegerNumber);
+                    if (!int.TryParse(token.text, out int val)) 
+                        diagnostics.AddFailure("Parser", "Could not get int from number token.", token.sourceLocation, DateTime.Now);
+
+                    return new LiteralExpression(ExpressionNodeType.Literal, val);
+                }
+            }
         }
 
         private LanguageToken MatchToken(LanguageTokenType tokenType)

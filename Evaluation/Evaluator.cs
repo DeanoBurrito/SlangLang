@@ -20,37 +20,51 @@ namespace SlangLang.Evaluation
             Console.WriteLine("Evaluator says: " + EvaluateExpression(root));
         }
 
-        private int EvaluateExpression(BoundExpression node)
+        private object EvaluateExpression(BoundExpression node)
         {   
             if (node is BoundLiteralExpression lit)
-                return (int)lit.value; //trusting it's just an int for now
+            {
+                return lit.value;
+            }
             if (node is BoundUnaryExpression unary)
             {
-                int operandResult = EvaluateExpression(unary.operand);
-                switch (unary.operatorType)
+                object operandResult = EvaluateExpression(unary.operand);
+                if (operandResult.GetType() == typeof(int))
                 {
-                    case BoundUnaryOperatorType.Negate:
-                        return -operandResult;
+                    int result = (int)operandResult;
+                    switch (unary.operatorType)
+                    {
+                        case BoundUnaryOperatorType.Negate:
+                            return -result;
+                    }
                 }
+
                 diagnostics.AddFailure("Evaluator", "Unexpected unary operator: " + unary.nodeType, TextLocation.NoLocation, DateTime.Now);
             }
             if (node is BoundBinaryExpression bin)
             {
-                int leftResult = EvaluateExpression(bin.left);
-                int rightResult = EvaluateExpression(bin.right);
-                switch (bin.operatorType)
+                object leftResult = EvaluateExpression(bin.left);
+                object rightResult = EvaluateExpression(bin.right);
+                if (leftResult.GetType() == typeof(int) && rightResult.GetType() == typeof(int))
                 {
-                    case BoundBinaryOperatorType.Addition:
-                        return leftResult + rightResult;
-                    case BoundBinaryOperatorType.Subtract:
-                        return leftResult - rightResult;
-                    case BoundBinaryOperatorType.Multiplication:
-                        return leftResult * rightResult;
-                    case BoundBinaryOperatorType.Division:
-                        return leftResult / rightResult;
+                    int leftInt = (int)leftResult;
+                    int rightInt = (int)rightResult;
+                    switch (bin.operatorType)
+                    {
+                        case BoundBinaryOperatorType.Addition:
+                            return leftInt + rightInt;
+                        case BoundBinaryOperatorType.Subtract:
+                            return leftInt - rightInt;
+                        case BoundBinaryOperatorType.Multiplication:
+                            return leftInt * rightInt;
+                        case BoundBinaryOperatorType.Division:
+                            return leftInt * rightInt;
+                    }
                 }
+                
                 diagnostics.AddFailure("Evaluator", "Unexpected binary operator in syntax tree: " + bin.nodeType, TextLocation.NoLocation, DateTime.Now);
             }
+
             throw new Exception("Unexpected node in evaluator.");
         }
     }
