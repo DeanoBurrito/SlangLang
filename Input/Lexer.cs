@@ -61,7 +61,7 @@ namespace SlangLang.Input
                     next = MoveNext();
                 }
                 location.length = currChar - start;
-                return new LanguageToken(LanguageTokenType.Integer, sourceStore.GetSubstring(start, currChar - start), location);
+                return new LanguageToken(LanguageTokenType.IntegerNumber, sourceStore.GetSubstring(start, currChar - start), location);
             }
 
             if (next == '"')

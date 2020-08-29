@@ -4,7 +4,7 @@ using SlangLang.Expressions;
 using SlangLang.Debugging;
 
 namespace SlangLang.Input
-{
+{   
     public sealed class Parser
     {
         readonly LanguageToken[] tokens;
@@ -31,51 +31,31 @@ namespace SlangLang.Input
             LanguageToken eofToken = MatchToken(LanguageTokenType.EndOfFile);
             return expr;
         }
-
-        private ExpressionNode ParseExpression()
-        {
-            return ParseTerm();
-        }
-
-        private ExpressionNode ParseTerm()
-        {
-            ExpressionNode left = ParseFactor();
-            while (Peek().tokenType == LanguageTokenType.Plus ||
-                    Peek().tokenType == LanguageTokenType.Minus)
-            {
-                LanguageToken operatorToken = NextToken();
-                ExpressionNode right = ParseFactor();
-                ExpressionNodeType operatorType = ExpressionNodeType.Nop;
-                switch (operatorToken.tokenType)
-                {
-                    case LanguageTokenType.Plus:
-                        operatorType = ExpressionNodeType.Add; break;
-                    case LanguageTokenType.Minus:
-                        operatorType = ExpressionNodeType.Sub; break;
-                }
-                left = new BinaryExpression(operatorType, left, right);
-            }
-
-            return left;
-        }
         
-        private ExpressionNode ParseFactor()
+        private ExpressionNode ParseExpression(int parentPrecedence = 0)
         {
-            ExpressionNode left = ParsePrimaryExpression();
-            while (Peek().tokenType == LanguageTokenType.Star ||
-                    Peek().tokenType == LanguageTokenType.ForwardSlash)
+            ExpressionNode left;
+            int unaryOperatorPrecedence = Peek().GetUnaryOperatorPrecedence();
+            if (unaryOperatorPrecedence != 0 && unaryOperatorPrecedence >= parentPrecedence)
             {
                 LanguageToken operatorToken = NextToken();
-                ExpressionNode right = ParsePrimaryExpression();
-                ExpressionNodeType operatorType = ExpressionNodeType.Nop;
-                switch (operatorToken.tokenType)
-                {
-                    case LanguageTokenType.Star:
-                        operatorType = ExpressionNodeType.Mult; break;
-                    case LanguageTokenType.ForwardSlash:
-                        operatorType = ExpressionNodeType.Div; break;
-                }
-                left = new BinaryExpression(operatorType, left, right);
+                ExpressionNode operand = ParseExpression(unaryOperatorPrecedence);
+                left = new UnaryExpression(operatorToken.GetUnaryOperatorType(), operand);
+            }
+            else
+            {
+                left = ParsePrimaryExpression();
+            }
+            
+            while (true)
+            {
+                int precedence = Peek().GetBinaryOperatorPrecedence();
+                if (precedence == 0 || precedence <= parentPrecedence)
+                    break; //parse later to maintain precedence order
+                
+                LanguageToken operatorToken = NextToken();
+                ExpressionNode right = ParseExpression(precedence);
+                left = new BinaryExpression(operatorToken.GetBinaryOperatorType(), left, right);
             }
 
             return left;
@@ -91,9 +71,11 @@ namespace SlangLang.Input
                 return new UnaryExpression(ExpressionNodeType.Parenthesized, inner);
             }
             
-            LanguageToken token = MatchToken(LanguageTokenType.Integer);
-            if (!int.TryParse(token.text, out int val))
+            //TODO: make this modular, not dependant on being int32. (move to switch)
+            LanguageToken token = MatchToken(LanguageTokenType.IntegerNumber);
+            if (!int.TryParse(token.text, out int val)) 
                 diagnostics.AddFailure("Parser", "Could not get int from number token.", token.sourceLocation, DateTime.Now);
+
             return new LiteralExpression(ExpressionNodeType.IntegerLiteral, val);
         }
 

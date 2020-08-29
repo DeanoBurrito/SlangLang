@@ -6,17 +6,22 @@ namespace SlangLang.Expressions
     {
         Nop,
 
+        //Unary Operators
+        Parenthesized,
+        NumberNegate,
+
+        //Binary Operators
         Add,
         Sub,
         Mult,
         Div,
 
+        //Literals
         BooleanLiteral,
         IntegerLiteral,
         FloatLiteral,
         StringLiteral,
 
-        Parenthesized,
     }
 
     public enum LiteralValueSpecifier

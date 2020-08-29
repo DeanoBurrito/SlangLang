@@ -8,7 +8,8 @@ namespace SlangLang.Input
         EndOfFile,
         BadToken,
 
-        Integer,
+        IntegerNumber,
+        FloatingNumber,
         String,
         
         Plus,
