@@ -2,8 +2,21 @@ using System;
 
 namespace SlangLang.Parsing
 {
-    internal static class ParserFacts
+    internal static class LanguageFacts
     {
+        public static LanguageTokenType GetKeyword(string text)
+        {
+            switch (text)
+            {
+                case "true":
+                    return LanguageTokenType.KeywordTrue;
+                case "false":
+                    return LanguageTokenType.KeywordFalse;
+                default:
+                    return LanguageTokenType.Identifier;
+            }
+        }
+        
         public static int GetUnaryOperatorPrecedence(this LanguageToken token)
         {
             switch (token.tokenType)

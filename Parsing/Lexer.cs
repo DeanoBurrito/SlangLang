@@ -45,6 +45,7 @@ namespace SlangLang.Parsing
             location.length = 1;
             if (char.IsWhiteSpace(current))
             {
+                //whitespace
                 while (char.IsWhiteSpace(current))
                 {
                     current = MoveNext();
@@ -65,7 +66,7 @@ namespace SlangLang.Parsing
 
             if (current == '"')
             {
-                //start of a string
+                //start of a string literal
                 current = MoveNext();
                 while (current != '"')
                 {
@@ -81,6 +82,21 @@ namespace SlangLang.Parsing
                 return new LanguageToken(LanguageTokenType.String, sourceStore.GetSubstring(start, currChar - start), location);
             }
 
+            if (char.IsLetter(current))
+            {
+                //text
+                while (char.IsLetter(current))
+                {
+                    current = MoveNext();
+                }
+
+                location.length = currChar - start;
+                string text = sourceStore.GetSubstring(start, currChar - start);
+                LanguageTokenType keyword = LanguageFacts.GetKeyword(text);
+                return new LanguageToken(keyword, text, location);
+            }
+
+            //check against single character tokens
             switch (current)
             {
                 case '+':

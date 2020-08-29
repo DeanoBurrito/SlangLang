@@ -25,5 +25,10 @@ namespace SlangLang.Parsing
         Exclamation,
         Semicolon,
         Equals,
+        Identifier,
+
+        //keywords
+        KeywordFalse,
+        KeywordTrue,
     }
 }

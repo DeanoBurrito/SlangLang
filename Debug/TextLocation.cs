@@ -16,6 +16,7 @@ namespace SlangLang.Debug
             filename = fname;
             this.line = line;
             this.column = column;
+            length = 1;
         }
 
         public override string ToString()

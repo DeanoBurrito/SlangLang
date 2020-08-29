@@ -16,11 +16,7 @@ namespace SlangLang.Parsing
         Div,
 
         //Literals
-        BooleanLiteral,
-        IntegerLiteral,
-        FloatLiteral,
-        StringLiteral,
-
+        Literal,
     }
 
     public enum LiteralValueSpecifier
