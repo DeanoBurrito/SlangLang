@@ -68,7 +68,7 @@ namespace SlangLang.Input
                 LanguageToken left = NextToken();
                 ExpressionNode inner = ParseExpression();
                 LanguageToken right = MatchToken(LanguageTokenType.CloseParathesis);
-                return new UnaryExpression(ExpressionNodeType.Parenthesized, inner);
+                return inner;
             }
             
             //TODO: make this modular, not dependant on being int32. (move to switch)

@@ -5,13 +5,13 @@ namespace SlangLang.Expressions
 {
     public sealed class UnaryExpression : ExpressionNode
     {
-        public readonly ExpressionNode child;
+        public readonly ExpressionNode operand;
 
-        public UnaryExpression(ExpressionNodeType type, ExpressionNode node) : base(type) => child = node;
+        public UnaryExpression(ExpressionNodeType type, ExpressionNode node) : base(type) => operand = node;
 
         public override List<ExpressionNode> GetChildren()
         {
-            return new List<ExpressionNode>() { child };
+            return new List<ExpressionNode>() { operand };
         }
         
         public override string ToString()

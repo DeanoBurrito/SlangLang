@@ -22,7 +22,7 @@ namespace SlangLang.Input
             switch (token.tokenType)
             {
                 case LanguageTokenType.Minus:
-                    return ExpressionNodeType.NumberNegate;
+                    return ExpressionNodeType.Negate;
                 default:
                     return ExpressionNodeType.Nop;
             }

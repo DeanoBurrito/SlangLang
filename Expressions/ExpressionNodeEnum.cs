@@ -7,8 +7,7 @@ namespace SlangLang.Expressions
         Nop,
 
         //Unary Operators
-        Parenthesized,
-        NumberNegate,
+        Negate,
 
         //Binary Operators
         Add,

@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using SlangLang.Debugging;
 
 namespace SlangLang.Expressions
 {
     public abstract class ExpressionNode
     {
         public readonly ExpressionNodeType nodeType;
+        public readonly TextLocation textLocation = TextLocation.NoLocation;
 
         public ExpressionNode(ExpressionNodeType type)
         {

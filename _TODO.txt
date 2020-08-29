@@ -1,4 +1,5 @@
 ---- FRONT BURNER ----
+Get rid of ExpressionNodeType.Nop no reason to exit. Return null and handle upstream in parser.
 
 ---- BACK BURNER ----
 
