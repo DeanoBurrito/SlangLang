@@ -8,12 +8,15 @@ namespace SlangLang.Parsing
 
         //Unary Operators
         Negate,
+        Not,
 
         //Binary Operators
-        Add,
-        Sub,
-        Mult,
-        Div,
+        Addition,
+        Subtraction,
+        Multiplication,
+        Division,
+        ConditionalOr,
+        ConditionalAnd,
 
         //Literals
         Literal,

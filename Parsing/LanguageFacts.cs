@@ -22,7 +22,8 @@ namespace SlangLang.Parsing
             switch (token.tokenType)
             {
                 case LanguageTokenType.Minus:
-                    return 3;
+                case LanguageTokenType.Exclamation:
+                    return 5;
                 default:
                     return 0;
             }
@@ -35,6 +36,8 @@ namespace SlangLang.Parsing
             {
                 case LanguageTokenType.Minus:
                     return ExpressionNodeType.Negate;
+                case LanguageTokenType.Exclamation:
+                    return ExpressionNodeType.Not;
                 default:
                     return ExpressionNodeType.Nop;
             }
@@ -45,12 +48,19 @@ namespace SlangLang.Parsing
             //high precedence means operators are 'more sticky'. They will be applied and processed before lower precedence ones.
             switch (token.tokenType)
             {
+                case LanguageTokenType.Pipe:
+                case LanguageTokenType.PipePipe:
+                    return 1;
+                case LanguageTokenType.And:
+                case LanguageTokenType.AndAnd:
+                    return 2;
+                
                 case LanguageTokenType.Plus:
                 case LanguageTokenType.Minus:
-                    return 1;
+                    return 3;
                 case LanguageTokenType.Star:
                 case LanguageTokenType.ForwardSlash:
-                    return 2;
+                    return 4;
                 default:
                     return 0;
             }
@@ -61,13 +71,18 @@ namespace SlangLang.Parsing
             switch (token.tokenType)
             {
                 case LanguageTokenType.Plus:
-                    return ExpressionNodeType.Add;
+                    return ExpressionNodeType.Addition;
                 case LanguageTokenType.Minus:
-                    return ExpressionNodeType.Sub;
+                    return ExpressionNodeType.Subtraction;
                 case LanguageTokenType.Star:
-                    return ExpressionNodeType.Mult;
+                    return ExpressionNodeType.Multiplication;
                 case LanguageTokenType.ForwardSlash:
-                    return ExpressionNodeType.Div;
+                    return ExpressionNodeType.Division;
+                    
+                case LanguageTokenType.PipePipe:
+                    return ExpressionNodeType.ConditionalOr;
+                case LanguageTokenType.AndAnd:
+                    return ExpressionNodeType.ConditionalAnd;
                 default:
                     return ExpressionNodeType.Nop;
             }

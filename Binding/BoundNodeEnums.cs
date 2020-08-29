@@ -12,6 +12,7 @@ namespace SlangLang.Binding
     internal enum BoundUnaryOperatorType
     {
         Negate,
+        Not,
     }
 
     internal enum BoundBinaryOperatorType
@@ -20,5 +21,7 @@ namespace SlangLang.Binding
         Subtract,
         Multiplication,
         Division,
+        ConditionalOr,
+        ConditionalAnd,
     }
 }

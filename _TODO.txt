@@ -9,3 +9,11 @@ Get rid of ExpressionNodeType.Nop no reason to exit. Return null and handle upst
 Parserdoes not keep track of lines/columns within the text, and isnt sticking these to the language tokens yet.
     ^ Needs further investigation
 ParsePrimaryExpression can through an exception if token is not what was expected. Channel into diagnostics, compare with upstream.
+
+--- NOTES ---
+Currently the pipeline is staged in 3 input parts, and 1 eval part.
+    (1) Text (source code) is fed into the lexer, turned into language tokens.
+    (2) LanguageTokens are taken by the parser to form expressions.
+    (3) ExpressionNodes are taken by the binder to have types applied throughout the tree.
+
+The evaluator then takes the bound tree and evaluates that.

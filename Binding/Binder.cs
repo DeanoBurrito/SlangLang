@@ -75,6 +75,14 @@ namespace SlangLang.Binding
                         return BoundUnaryOperatorType.Negate;
                 }
             }
+            if (operandType == typeof(bool))
+            {
+                switch (op)
+                {
+                    case ExpressionNodeType.Not:
+                        return BoundUnaryOperatorType.Not;
+                }
+            }
             return null;
         }
 
@@ -84,14 +92,24 @@ namespace SlangLang.Binding
             {
                 switch (op)
                 {
-                    case ExpressionNodeType.Add:
+                    case ExpressionNodeType.Addition:
                         return BoundBinaryOperatorType.Addition;
-                    case ExpressionNodeType.Sub:
+                    case ExpressionNodeType.Subtraction:
                         return BoundBinaryOperatorType.Subtract;
-                    case ExpressionNodeType.Mult:
+                    case ExpressionNodeType.Multiplication:
                         return BoundBinaryOperatorType.Multiplication;
-                    case ExpressionNodeType.Div:
+                    case ExpressionNodeType.Division:
                         return BoundBinaryOperatorType.Division;
+                }
+            }
+            if (leftType == typeof(bool) && rightType == typeof(bool))
+            {
+                switch (op)
+                {
+                    case ExpressionNodeType.ConditionalOr:
+                        return BoundBinaryOperatorType.ConditionalOr;
+                    case ExpressionNodeType.ConditionalAnd:
+                        return BoundBinaryOperatorType.ConditionalAnd;
                 }
             }
             return null;

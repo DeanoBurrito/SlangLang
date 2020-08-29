@@ -29,13 +29,23 @@ namespace SlangLang.Evaluation
             if (node is BoundUnaryExpression unary)
             {
                 object operandResult = EvaluateExpression(unary.operand);
-                if (operandResult.GetType() == typeof(int))
+                Type operandType = operandResult.GetType();
+                if (operandType == typeof(int))
                 {
-                    int result = (int)operandResult;
+                    int resultInt = (int)operandResult;
                     switch (unary.operatorType)
                     {
                         case BoundUnaryOperatorType.Negate:
-                            return -result;
+                            return -resultInt;
+                    }
+                }
+                else if (operandType == typeof(bool))
+                {
+                    bool resultBool = (bool)operandResult;
+                    switch (unary.operatorType)
+                    {
+                        case BoundUnaryOperatorType.Not:
+                            return !resultBool;
                     }
                 }
 
@@ -45,7 +55,9 @@ namespace SlangLang.Evaluation
             {
                 object leftResult = EvaluateExpression(bin.left);
                 object rightResult = EvaluateExpression(bin.right);
-                if (leftResult.GetType() == typeof(int) && rightResult.GetType() == typeof(int))
+                Type leftType = leftResult.GetType();
+                Type rightType = rightResult.GetType();
+                if (leftType == typeof(int) && rightType == typeof(int))
                 {
                     int leftInt = (int)leftResult;
                     int rightInt = (int)rightResult;
@@ -59,6 +71,18 @@ namespace SlangLang.Evaluation
                             return leftInt * rightInt;
                         case BoundBinaryOperatorType.Division:
                             return leftInt * rightInt;
+                    }
+                }
+                else if (leftType == typeof(bool) && rightType == typeof(bool))
+                {
+                    bool leftBool = (bool)leftResult;
+                    bool rightBool = (bool)rightResult;
+                    switch (bin.operatorType)
+                    {
+                        case BoundBinaryOperatorType.ConditionalOr:
+                            return leftBool || rightBool;
+                        case BoundBinaryOperatorType.ConditionalAnd:
+                            return leftBool && rightBool;
                     }
                 }
                 

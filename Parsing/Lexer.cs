@@ -43,6 +43,7 @@ namespace SlangLang.Parsing
             TextLocation location = sourceStore.GetLocation(start);
             location.filename = filename;
             location.length = 1;
+
             if (char.IsWhiteSpace(current))
             {
                 //whitespace
@@ -96,41 +97,80 @@ namespace SlangLang.Parsing
                 return new LanguageToken(keyword, text, location);
             }
 
-            //check against single character tokens
             switch (current)
             {
                 case '+':
-                    currChar++;
+                    MoveNext();
                     return new LanguageToken(LanguageTokenType.Plus, "+", location);
                 case '-':
-                    currChar++;
+                    MoveNext();
                     return new LanguageToken(LanguageTokenType.Minus, "-", location);
                 case '*':
-                    currChar++;
+                    MoveNext();
                     return new LanguageToken(LanguageTokenType.Star, "*", location);
                 case '/':
-                    currChar++;
+                    MoveNext();
                     return new LanguageToken(LanguageTokenType.ForwardSlash, "/", location);
                 case '!':
-                    currChar++;
+                    MoveNext();
                     return new LanguageToken(LanguageTokenType.Exclamation, "!", location);
                 case ';':
-                    currChar++;
+                    MoveNext();
                     return new LanguageToken(LanguageTokenType.Semicolon, ";", location);
-                case '=':
-                    currChar++;
-                    return new LanguageToken(LanguageTokenType.Equals, "=", location);
                 case '(':
-                    currChar++;
+                    MoveNext();
                     return new LanguageToken(LanguageTokenType.OpenParanthesis, "(", location);
                 case ')':
-                    currChar++;
+                    MoveNext();
                     return new LanguageToken(LanguageTokenType.CloseParathesis, "(", location);
+                case '=':
+                    if (PeekNext(1) == '=')
+                    {
+                        MoveNext(); MoveNext();
+                        location.length = 2;
+                        return new LanguageToken(LanguageTokenType.EqualsEquals, "==", location);
+                    }
+                    else
+                    {
+                        MoveNext();
+                        return new LanguageToken(LanguageTokenType.Equals, "=", location);
+                    }
+                case '&':
+                    if (PeekNext(1) == '&')
+                    {
+                        MoveNext(); MoveNext();
+                        location.length = 2;
+                        return new LanguageToken(LanguageTokenType.AndAnd, "&&", location);
+                    }
+                    else
+                    {
+                        MoveNext();
+                        return new LanguageToken(LanguageTokenType.And, "&", location);
+                    }
+                case '|':
+                    if (PeekNext(1) == '|')
+                    {
+                        MoveNext(); MoveNext();
+                        location.length = 2;
+                        return new LanguageToken(LanguageTokenType.PipePipe, "||", location);
+                    }
+                    else
+                    {
+                        MoveNext();
+                        return new LanguageToken(LanguageTokenType.Pipe, "|", location);
+                    }
             }
 
             diagnostics.AddFailure("Lexer", "Invalid character in input file '" + current + "'", location, DateTime.Now);
             currChar++;
             return new LanguageToken(LanguageTokenType.BadToken, "", location);
+        }
+
+        private char PeekNext(int offset)
+        {
+            if (currChar + offset >= sourceStore.GetLength())
+                return '\0';
+            return sourceStore.GetCharAt(currChar + offset);
         }
 
         private char MoveNext()

@@ -2,7 +2,7 @@ using System;
 
 namespace SlangLang.Parsing
 {
-    public enum LanguageTokenType : int
+    public enum LanguageTokenType
     {
         //whitespace and control characters
         Whitespace,
@@ -14,6 +14,13 @@ namespace SlangLang.Parsing
         //literals
         IntegerNumber,
         String,
+
+        //logic operators
+        And,
+        AndAnd,
+        Pipe,
+        PipePipe,
+        Exclamation,
         
         //maths operations
         Plus,
@@ -22,9 +29,9 @@ namespace SlangLang.Parsing
         ForwardSlash,
 
         //assignment and control
-        Exclamation,
         Semicolon,
         Equals,
+        EqualsEquals,
         Identifier,
 
         //keywords
