@@ -11,6 +11,7 @@ namespace SlangLang.Expressions
         Mult,
         Div,
 
+        BooleanLiteral,
         IntegerLiteral,
         FloatLiteral,
         StringLiteral,

@@ -34,11 +34,6 @@ namespace SlangLang.Input
             return tokens.ToArray();
         }
 
-        public LanguageToken LexOne()
-        {
-            return LexNext();
-        }
-
         private LanguageToken LexNext()
         {
             if (currChar >= sourceStore.GetLength())
@@ -87,51 +82,35 @@ namespace SlangLang.Input
                 return new LanguageToken(LanguageTokenType.String, sourceStore.GetSubstring(start, currChar - start), location);
             }
 
-            if (next == '+')
+            switch (next)
             {
-                currChar++;
-                return new LanguageToken(LanguageTokenType.Plus, "+", location);
-            }
-            if (next == '-')
-            {
-                currChar++;
-                return new LanguageToken(LanguageTokenType.Minus, "-", location);
-            }
-            if (next == '*')
-            {
-                currChar++;
-                return new LanguageToken(LanguageTokenType.Star, "*", location);
-            }
-            if (next == '/')
-            {
-                currChar++;
-                return new LanguageToken(LanguageTokenType.ForwardSlash, "/", location);
-            }
-
-            if (next == '!')
-            {
-                currChar++;
-                return new LanguageToken(LanguageTokenType.Exclamation, "!", location);
-            }
-            if (next == ';')
-            {
-                currChar++;
-                return new LanguageToken(LanguageTokenType.Semicolon, ";", location);
-            }
-            if (next == '=')
-            {
-                currChar++;
-                return new LanguageToken(LanguageTokenType.Equals, "=", location);
-            }
-            if (next == '(')
-            {
-                currChar++;
-                return new LanguageToken(LanguageTokenType.OpenParanthesis, "(", location);
-            }
-            if (next == ')')
-            {
-                currChar++;
-                return new LanguageToken(LanguageTokenType.CloseParathesis, "(", location);
+                case '+':
+                    currChar++;
+                    return new LanguageToken(LanguageTokenType.Plus, "+", location);
+                case '-':
+                    currChar++;
+                    return new LanguageToken(LanguageTokenType.Minus, "-", location);
+                case '*':
+                    currChar++;
+                    return new LanguageToken(LanguageTokenType.Star, "*", location);
+                case '/':
+                    currChar++;
+                    return new LanguageToken(LanguageTokenType.ForwardSlash, "/", location);
+                case '!':
+                    currChar++;
+                    return new LanguageToken(LanguageTokenType.Exclamation, "!", location);
+                case ';':
+                    currChar++;
+                    return new LanguageToken(LanguageTokenType.Semicolon, ";", location);
+                case '=':
+                    currChar++;
+                    return new LanguageToken(LanguageTokenType.Equals, "=", location);
+                case '(':
+                    currChar++;
+                    return new LanguageToken(LanguageTokenType.OpenParanthesis, "(", location);
+                case ')':
+                    currChar++;
+                    return new LanguageToken(LanguageTokenType.CloseParathesis, "(", location);
             }
 
             diagnostics.AddFailure("Lexer", "Invalid character in input file '" + next + "'", location, DateTime.Now);
