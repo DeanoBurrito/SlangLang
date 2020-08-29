@@ -2,9 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
-using SlangLang.Debugging;
-using SlangLang.Expressions;
-using SlangLang.Input;
+using SlangLang.Binding;
 
 namespace SlangLang
 {
@@ -51,19 +49,21 @@ namespace SlangLang
                 }
                 else
                 {
-                    Diagnostics diags = new Diagnostics();
+                    SlangLang.Debugging.Diagnostics diags = new SlangLang.Debugging.Diagnostics();
 
-                    Lexer lineLexer = new Lexer(diags, line, "Interpreter");
-                    LanguageToken[] tokens = lineLexer.LexAll();
-                    Parser lineParser = new Parser(diags, tokens);
-                    ExpressionNode node = lineParser.ParseAll();
-                    SlangLang.Expressions.Evaluation.Evaluator eval = new Expressions.Evaluation.Evaluator(diags, node);
+                    SlangLang.Input.Lexer lineLexer = new SlangLang.Input.Lexer(diags, line, "Interpreter");
+                    SlangLang.Input.LanguageToken[] tokens = lineLexer.LexAll();
+                    SlangLang.Input.Parser lineParser = new SlangLang.Input.Parser(diags, tokens);
+                    SlangLang.Expressions.ExpressionNode node = lineParser.ParseAll();
+                    SlangLang.Binding.Binder binder = new SlangLang.Binding.Binder(diags, node);
+                    SlangLang.Binding.BoundExpression boundNode = binder.BindAll();
+                    SlangLang.Evaluation.Evaluator eval = new SlangLang.Evaluation.Evaluator(diags, boundNode);
                     eval.Evaluate();
                     
                     if (showParseTree)
                     {
                         Console.ForegroundColor = ConsoleColor.DarkGray;
-                        PrettyPrintExpTree(node);
+                        PrettyPrintExpTree(boundNode);
                         Console.ResetColor();
                     }
                     diags.WriteToStandardOut();
@@ -71,16 +71,16 @@ namespace SlangLang
             }
         }
 
-        private static void PrettyPrintExpTree(ExpressionNode node, string indent = "", bool isLast = true)
+        private static void PrettyPrintExpTree(BoundExpression node, string indent = "", bool isLast = true)
         {
-            string marker = isLast ? "└── " : "├── ";
+            string marker = isLast ? "└──" : "├──";
             Console.Write(indent);
             Console.Write(marker);
             Console.WriteLine(node.ToString());
 
-            indent += isLast ? "    " : "│   ";
-            ExpressionNode lastChild = node.GetChildren().LastOrDefault();
-            foreach (ExpressionNode child in node.GetChildren())
+            indent += isLast ? "   " : "│  ";
+            BoundExpression lastChild = node.GetChildren().LastOrDefault();
+            foreach (BoundExpression child in node.GetChildren())
             {
                 PrettyPrintExpTree(child, indent, child == lastChild);
             }
