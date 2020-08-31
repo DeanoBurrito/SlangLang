@@ -15,9 +15,9 @@ namespace SlangLang.Evaluation
             diagnostics = diag;
         }
 
-        public void Evaluate()
+        public object Evaluate()
         {
-            Console.WriteLine("Evaluator says: " + EvaluateExpression(root));
+            return EvaluateExpression(root);
         }
 
         private object EvaluateExpression(BoundExpression node)

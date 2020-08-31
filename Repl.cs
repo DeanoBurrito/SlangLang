@@ -2,16 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
-using SlangLang.Parsing;
 using SlangLang.Binding;
+using SlangLang.Drivers;
 
 namespace SlangLang
 {
     public sealed class Repl
     {
         Dictionary<string, (MethodInfo method, string help)> metaCommands = new Dictionary<string, (MethodInfo, string)>();
-        bool showParseTree = false;
-        bool showPostBind = true;
+        bool showTree = false;
+        int treeStage = 2; //default of 2 (bound tree)
         bool autoEval = true;
 
         public Repl()
@@ -52,60 +52,34 @@ namespace SlangLang
                 }
                 else
                 {
-                    SlangLang.Debug.Diagnostics diags = new SlangLang.Debug.Diagnostics();
-
-                    Lexer lex = new Lexer(diags, line, "Interpreter");
-                    Parser parser = new Parser(diags, lex.LexAll());
-                    ExpressionNode parseTree = parser.ParseAll();
-                    SlangLang.Binding.Binder binder = new SlangLang.Binding.Binder(diags, parseTree);
-                    BoundExpression boundNode = binder.BindAll();
-                    if (autoEval)
+                    CompilationOptions options = new CompilationOptions();
+                    switch (treeStage)
                     {
-                        SlangLang.Evaluation.Evaluator eval = new Evaluation.Evaluator(diags, boundNode);
-                        eval.Evaluate();
+                        case 0:
+                            options.printLexerOutput = showTree;
+                            break;
+                        case 1:
+                            options.printParserOutput = showTree;
+                            break;
+                        case 2:
+                            options.printBinderOutput = showTree;
+                            break;
                     }
                     
-                    if (showParseTree)
+                    Compilation compilation = new Compilation(line, options);
+                    if (autoEval)
                     {
-                        Console.ForegroundColor = ConsoleColor.DarkGray;
-                        if (showPostBind)
-                            PrettyPrintBoundTree(boundNode);
+                        Evaluation.EvaluationResult result = compilation.Evaluate();
+                        if (result.diagnostics.HasErrors)
+                        {
+                            result.diagnostics.WriteToStandardOut();
+                        }
                         else
-                            PrettyPrintUnboundTree(parseTree);
-                        Console.ResetColor();
+                        {
+                            Console.WriteLine("Evaluation result: " + result.value.ToString());
+                        }
                     }
-                    diags.WriteToStandardOut();
                 }
-            }
-        }
-
-        private static void PrettyPrintUnboundTree(ExpressionNode node, string indent = "", bool isLast = true)
-        {
-            string marker = isLast ? "└──" : "├──";
-            Console.Write(indent);
-            Console.Write(marker);
-            Console.WriteLine(node.ToString());
-
-            indent += isLast ? "   " : "│  ";
-            ExpressionNode lastChild = node.GetChildren().LastOrDefault();
-            foreach (ExpressionNode child in node.GetChildren())
-            {
-                PrettyPrintUnboundTree(child, indent, child == lastChild);
-            }
-        }
-
-        private static void PrettyPrintBoundTree(BoundExpression node, string indent = "", bool isLast = true)
-        {
-            string marker = isLast ? "└──" : "├──";
-            Console.Write(indent);
-            Console.Write(marker);
-            Console.WriteLine(node.ToString());
-
-            indent += isLast ? "   " : "│  ";
-            BoundExpression lastChild = node.GetChildren().LastOrDefault();
-            foreach (BoundExpression child in node.GetChildren())
-            {
-                PrettyPrintBoundTree(child, indent, child == lastChild);
             }
         }
 
@@ -161,13 +135,17 @@ namespace SlangLang
             [ReplCommand("showtree", "Toggles showing the expression tree after parsing/lexing.")]
             public static void ToggleShowTree(Repl repl, string[] args)
             {
-                if (args.Length > 0 && bool.TryParse(args[0], out bool showTree))
+                if (args.Length > 0 && int.TryParse(args[0], out int stage))
                 {
-                    repl.showParseTree = showTree;
+                    repl.showTree = true;
+                    if (stage < 0 || stage > 2)
+                        repl.treeStage = 0;
+                    else
+                        repl.treeStage = stage;
                 }
                 else
-                    repl.showParseTree = !repl.showParseTree;
-                Console.WriteLine("Displaying expression trees: " + repl.showParseTree);
+                    repl.showTree = !repl.showTree;
+                Console.WriteLine("Displaying expression trees: " + repl.showTree);
             }
 
             [ReplCommand("cls", "Clears the current console output.")]
@@ -186,18 +164,6 @@ namespace SlangLang
                 else
                     repl.autoEval = !repl.autoEval;
                 Console.WriteLine("Automatically evaluating parsed trees: " + repl.autoEval);
-            }
-
-            [ReplCommand("boundtree", "Sets whether to show the parsed tree pre or post binding.")]
-            public static void BoundTree(Repl repl, string[] args)
-            {
-                if (args.Length > 0 && bool.TryParse(args[0], out bool postBind))
-                {
-                    repl.showPostBind = postBind;
-                }
-                else
-                    repl.showPostBind = !repl.showPostBind;
-                Console.WriteLine("Showing parse tree post-bind: " + repl.showPostBind);
             }
 
             [ReplCommand("showops", "Shows currently defined opertors.")]
