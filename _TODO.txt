@@ -1,9 +1,16 @@
 ---- FRONT BURNER ----
-Get rid of ExpressionNodeType.Nop no reason to exit. Return null and handle upstream in parser.
+Variables => averagely typed (delaring as 'int' or 'float') and strongly typed ('uint8/uint16...' and 'float32/float64...'), 
+    variable storage + storage + visibility enforcement. Variable assignment as well, support for casting operators.
 
 ---- BACK BURNER ----
 
 ---- PLANNED ----
+Functions => todo
+Classes => support instancing/static instances, operator overloading. Coalesced classes, and class functions.
+
+Replacement backends for Evaluator. Still maintain the ability to execute code in an interpreted fashion, but also having the ability to compile to multiple targets.
+    ^ Currently thinking MSIL (via Mono.Cecil/System.Reflection.Emit), and LLVM. Unsure of LLVM bindings to use, need further investigation.
+    ^ Compiler driver implementation would need the ability to pass through args to both cecil and llvm backends.
 
 ---- KNOWN ISSUES ----
 Parserdoes not keep track of lines/columns within the text, and isnt sticking these to the language tokens yet.

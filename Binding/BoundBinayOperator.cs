@@ -31,7 +31,7 @@ namespace SlangLang.Binding
             return binaryOperator + " (" + leftOperandType + ", " + rightOperandType + ") => " + resultType;
         }
 
-        private static BoundBinaryOperator[] ops = 
+        internal static readonly BoundBinaryOperator[] ops = 
         {
             new BoundBinaryOperator(LanguageTokenType.Plus, BoundBinaryOperatorType.Addition, typeof(int)),
             new BoundBinaryOperator(LanguageTokenType.Minus, BoundBinaryOperatorType.Subtract, typeof(int)),

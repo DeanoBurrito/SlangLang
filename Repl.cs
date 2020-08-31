@@ -199,6 +199,22 @@ namespace SlangLang
                     repl.showPostBind = !repl.showPostBind;
                 Console.WriteLine("Showing parse tree post-bind: " + repl.showPostBind);
             }
+
+            [ReplCommand("showops", "Shows currently defined opertors.")]
+            public static void ShowOperators(Repl repl, string[] args)
+            {
+                Console.WriteLine("[Unary Operators]");
+                foreach (BoundUnaryOperator unaryOp in BoundUnaryOperator.ops)
+                {
+                    Console.WriteLine("    " + unaryOp.ToString());
+                }
+
+                Console.WriteLine("[Binary Operators]");
+                foreach (BoundBinaryOperator binaryOp in BoundBinaryOperator.ops)
+                {
+                    Console.WriteLine("    " + binaryOp.ToString());
+                }
+            }
         }
 
         //I'm sorry, I couldnt help myself.

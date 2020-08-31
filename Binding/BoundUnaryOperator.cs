@@ -26,7 +26,7 @@ namespace SlangLang.Binding
             return unaryOperator + " (" + operandType + ") => " + resultType;
         }
 
-        private static BoundUnaryOperator[] ops = 
+        internal static readonly BoundUnaryOperator[] ops = 
         {
             new BoundUnaryOperator(LanguageTokenType.Minus, BoundUnaryOperatorType.Negate, typeof(int)),
             
