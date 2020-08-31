@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Collections.Generic;
 using SlangLang.Debug;
 using SlangLang.Parsing;
 using SlangLang.Binding;
@@ -12,7 +13,7 @@ namespace SlangLang.Drivers
         readonly Diagnostics diags;
         readonly CompilationOptions options;
 
-        BoundExpression boundTree;
+        ExpressionNode parseTree;
         
         public Compilation(string sourceCode, CompilationOptions compOptions)
         {
@@ -29,27 +30,27 @@ namespace SlangLang.Drivers
             }
 
             Parser parser = new Parser(diags, lexerOutput);
-            ExpressionNode parserOutput = parser.ParseAll();
+            parseTree = parser.ParseAll();
             if (options.printParserOutput)
             {
                 Console.ForegroundColor = ConsoleColor.Gray;
-                PrettyPrintParsedTree(parserOutput);
+                PrettyPrintParsedTree(parseTree);
                 Console.ResetColor();
             }
+        }
 
-            Binder binder = new Binder(diags, parserOutput);
-            boundTree = binder.BindAll();
+        public EvaluationResult Evaluate(Dictionary<string, object> variables)
+        {
+            Binder binder = new Binder(diags, parseTree, variables);
+            BoundExpression boundTree = binder.BindAll();
             if (options.printBinderOutput)
             {
                 Console.ForegroundColor = ConsoleColor.Gray;
                 PrettyPrintBoundTree(boundTree);
                 Console.ResetColor();
             }
-        }
-
-        public EvaluationResult Evaluate()
-        {
-            Evaluator eval = new Evaluator(diags, boundTree);
+            
+            Evaluator eval = new Evaluator(diags, boundTree, variables);
             if (diags.HasErrors)
                 return new EvaluationResult(null, diags); //just return the error, not the value
             return new EvaluationResult(eval.Evaluate(), diags);

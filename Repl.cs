@@ -14,8 +14,10 @@ namespace SlangLang
         int treeStage = 2; //default of 2 (bound tree)
         bool autoEval = true;
 
+        Dictionary<string, object> variables = new Dictionary<string, object>();
+
         public Repl()
-        {}
+        { }
 
         public void Run()
         {
@@ -27,7 +29,8 @@ namespace SlangLang
             Console.WriteLine("Welcome to the  S l a n g L a n g  interpreter environment.");
             Console.WriteLine("All input is interpreted and run as code, unless prefixed with '#'.");
             Console.WriteLine("Use '#help' for a list of other repl commands.");
-            
+
+
             while (true)
             {
                 Console.Write(">>> ");
@@ -65,11 +68,11 @@ namespace SlangLang
                             options.printBinderOutput = showTree;
                             break;
                     }
-                    
+
                     Compilation compilation = new Compilation(line, options);
                     if (autoEval)
                     {
-                        Evaluation.EvaluationResult result = compilation.Evaluate();
+                        Evaluation.EvaluationResult result = compilation.Evaluate(variables);
                         if (result.diagnostics.HasErrors)
                         {
                             result.diagnostics.WriteToStandardOut();
@@ -92,7 +95,7 @@ namespace SlangLang
                 {
                     ReplCommandAttribute attrib = info.GetCustomAttribute<ReplCommandAttribute>();
                     if (attrib == null)
-                        continue; 
+                        continue;
                     if (metaCommands.ContainsKey(attrib.identifier))
                         continue;
                     metaCommands.Add(attrib.identifier, (info, attrib.helptext));
@@ -101,7 +104,7 @@ namespace SlangLang
         }
 
         static class ReplCommands
-        {   
+        {
             [ReplCommand("exit", "Exits this CLI.")]
             public static void Exit(Repl repl, string[] args)
             {
@@ -166,19 +169,12 @@ namespace SlangLang
                 Console.WriteLine("Automatically evaluating parsed trees: " + repl.autoEval);
             }
 
-            [ReplCommand("showops", "Shows currently defined opertors.")]
-            public static void ShowOperators(Repl repl, string[] args)
+            [ReplCommand("lsvars", "Lists all current variables.")]
+            public static void ListVars(Repl repl, string[] args)
             {
-                Console.WriteLine("[Unary Operators]");
-                foreach (BoundUnaryOperator unaryOp in BoundUnaryOperator.ops)
+                foreach (KeyValuePair<string, object> varPair in repl.variables)
                 {
-                    Console.WriteLine("    " + unaryOp.ToString());
-                }
-
-                Console.WriteLine("[Binary Operators]");
-                foreach (BoundBinaryOperator binaryOp in BoundBinaryOperator.ops)
-                {
-                    Console.WriteLine("    " + binaryOp.ToString());
+                    Console.WriteLine(varPair.Value.GetType() + " " + varPair.Key + " = " + varPair.Value);
                 }
             }
         }
@@ -192,7 +188,8 @@ namespace SlangLang
                 string s = "Hmm, no banner today ;-;";
                 switch (idx)
                 {
-                    case 0: s =
+                    case 0:
+                        s =
 @"(`-').->          (`-')  _ <-. (`-')_                         (`-')  _ <-. (`-')_            
  ( OO)_     <-.    (OO ).-/    \( OO) )    .->          <-.    (OO ).-/    \( OO) )    .->    
 (_)--\_)  ,--. )   / ,---.  ,--./ ,--/  ,---(`-')     ,--. )   / ,---.  ,--./ ,--/  ,---(`-') 
@@ -202,7 +199,8 @@ namespace SlangLang
 \       / |     |' |  | |  ||  | \   | |  '-'  |      |     |' |  | |  ||  | \   | |  '-'  |  
  `-----'  `-----'  `--' `--'`--'  `--'  `-----'       `-----'  `--' `--'`--'  `--'  `-----'   ";
                         break;
-                    case 1: s =
+                    case 1:
+                        s =
 @"                                                                ,---.'|                                       
   .--.--.     ,--,                                              |   | :                                       
  /  /    '. ,--.'|                                              :   : |                                       
@@ -219,7 +217,8 @@ namespace SlangLang
                      `--`---'                  \   \  /                   `--`---'                  \   \  /  
                                                 `--`-'                                               `--`-'   ";
                         break;
-                    case 2: s =
+                    case 2:
+                        s =
 @".------..------..------..------..------.     .------..------..------..------.
 |S.--. ||L.--. ||A.--. ||N.--. ||G.--. |.-.  |L.--. ||A.--. ||N.--. ||G.--. |
 | :/\: || :/\: || (\/) || :(): || :/\: ((5)) | :/\: || (\/) || :(): || :/\: |
@@ -227,7 +226,8 @@ namespace SlangLang
 | '--'S|| '--'L|| '--'A|| '--'N|| '--'G| ((1)) '--'L|| '--'A|| '--'N|| '--'G|
 `------'`------'`------'`------'`------'  '-'`------'`------'`------'`------'";
                         break;
-                    case 3: s =
+                    case 3:
+                        s =
 @"         .---.                                         .---.                                
            |   |             _..._                       |   |             _..._              
            |   |           .'     '.   .--./)            |   |           .'     '.   .--./)   
@@ -241,7 +241,8 @@ namespace SlangLang
 .'   \_.'       \ \._,\ '/|  |   |  | \'. __//                \ \._,\ '/|  |   |  | \'. __//  
                  `--'  `' '--'   '--'  `'---'                  `--'  `' '--'   '--'  `'---'  ";
                         break;
-                    case 4: s =
+                    case 4:
+                        s =
 @" (                             (                         
  )\ )  (                       )\ )                      
 (()/(  )\    )         (  (   (()/(     )         (  (   
@@ -252,7 +253,8 @@ namespace SlangLang
 |___/ |_|\__,_||_||_| \__, |  |____|\__,_||_||_| \__, |  
                       |___/                      |___/   ";
                         break;
-                    case 5: s = 
+                    case 5:
+                        s =
 @"   .-'''-.   .---.        ____    ,---.   .--.  .-_'''-.             .---.        ____    ,---.   .--.  .-_'''-.    
   / _     \  | ,_|      .'  __ `. |    \  |  | '_( )_   \            | ,_|      .'  __ `. |    \  |  | '_( )_   \   
  (`' )/`--',-./  )     /   '  \  \|  ,  \ |  ||(_ o _)|  '         ,-./  )     /   '  \  \|  ,  \ |  ||(_ o _)|  '  
@@ -263,7 +265,8 @@ namespace SlangLang
  \       /   |        \\ (_ o _) /|  |    |  |  \        /           |        \\ (_ o _) /|  |    |  |  \        /  
   `-...-'    `--------` '.(_,_).' '--'    '--'   `'-...-'            `--------` '.(_,_).' '--'    '--'   `'-...-'   ";
                         break;
-                    case 6: s =
+                    case 6:
+                        s =
 @"   _____ __                     __                     
   / ___// /___ _____  ____ _   / /   ____ _____  ____ _
   \__ \/ / __ `/ __ \/ __ `/  / /   / __ `/ __ \/ __ `/
@@ -271,7 +274,8 @@ namespace SlangLang
 /____/_/\__,_/_/ /_/\__, /  /_____/\__,_/_/ /_/\__, /  
                    /____/                     /____/   ";
                         break;
-                    case 7: s =
+                    case 7:
+                        s =
 @"    ___       ___       ___       ___       ___            ___       ___       ___       ___   
    /\  \     /\__\     /\  \     /\__\     /\  \          /\__\     /\  \     /\__\     /\  \  
   /::\  \   /:/  /    /::\  \   /:| _|_   /::\  \        /:/  /    /::\  \   /:| _|_   /::\  \ 
@@ -280,7 +284,8 @@ namespace SlangLang
   \::/  /   \:\__\     /:/  /    |:/  /   \::/  /        \:\__\     /:/  /    |:/  /   \::/  / 
    \/__/     \/__/     \/__/     \/__/     \/__/          \/__/     \/__/     \/__/     \/__/  ";
                         break;
-                    case 8: s =
+                    case 8:
+                        s =
 @"███████╗██╗      █████╗ ███╗   ██╗ ██████╗     ██╗      █████╗ ███╗   ██╗ ██████╗ 
 ██╔════╝██║     ██╔══██╗████╗  ██║██╔════╝     ██║     ██╔══██╗████╗  ██║██╔════╝ 
 ███████╗██║     ███████║██╔██╗ ██║██║  ███╗    ██║     ███████║██╔██╗ ██║██║  ███╗
@@ -289,7 +294,8 @@ namespace SlangLang
 ╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝     ╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝ ";
 
                         break;
-                    case 9: s =
+                    case 9:
+                        s =
 @"  ██████  ██▓    ▄▄▄       ███▄    █   ▄████     ██▓    ▄▄▄       ███▄    █   ▄████ 
 ▒██    ▒ ▓██▒   ▒████▄     ██ ▀█   █  ██▒ ▀█▒   ▓██▒   ▒████▄     ██ ▀█   █  ██▒ ▀█▒
 ░ ▓██▄   ▒██░   ▒██  ▀█▄  ▓██  ▀█ ██▒▒██░▄▄▄░   ▒██░   ▒██  ▀█▄  ▓██  ▀█ ██▒▒██░▄▄▄░
@@ -300,7 +306,8 @@ namespace SlangLang
 ░  ░  ░    ░ ░    ░   ▒      ░   ░ ░ ░ ░   ░      ░ ░    ░   ▒      ░   ░ ░ ░ ░   ░ 
       ░      ░  ░     ░  ░         ░       ░        ░  ░     ░  ░         ░       ░ ";
                         break;
-                    case 10: s =
+                    case 10:
+                        s =
 @"_       __     ________  _____     ___    ___       ______     ________  _____     ___    ___       ___
  )  ____) \   |       /  \    |    \  |  |   )  ____)     \   |       /  \    |    \  |  |   )  ____)  
 (  (___    |  |      /    \   |  |\ \ |  |  /  /  __       |  |      /    \   |  |\ \ |  |  /  /  __   
@@ -308,7 +315,8 @@ namespace SlangLang
  ____)  )  |  |__  |   __   | |  |  \    |  \  \__)  )     |  |__  |   __   | |  |  \    |  \  \__)  ) 
 (      (__/      )_|  (__)  |_|  |___\   |___)      (_____/      )_|  (__)  |_|  |___\   |___)      (__";
                         break;
-                    case 11: s =
+                    case 11:
+                        s =
 @"     ___    |¯¯¯|__'   )¯¯,¯\ ° |\¯¯¯\)¯¯\    /¯¯¯/\__\‘           |¯¯¯|__'   )¯¯,¯\ ° |\¯¯¯\)¯¯\    /¯¯¯/\__\‘  
   _(   __\  |_____'|  /__/'\__\ |/__/\____\°|\___\)¯¯¯)°         |_____'|  /__/'\__\ |/__/\____\°|\___\)¯¯¯)°
 /____)__| |_____'| |__ |/\|__|'|__|/\|____|  \|     |¯¯¯|           |_____'| |__ |/\|__|'|__|/\|____|  \|     |¯¯¯|  

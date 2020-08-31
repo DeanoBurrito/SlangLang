@@ -30,15 +30,32 @@ namespace SlangLang.Parsing
             LanguageToken eofToken = MatchToken(LanguageTokenType.EndOfFile);
             return expr;
         }
+
+        private ExpressionNode ParseExpression()
+        {
+            return ParseAssignmentExpression();
+        }
+
+        private ExpressionNode ParseAssignmentExpression()
+        {
+            if (Peek().tokenType == LanguageTokenType.Identifier && Peek(1).tokenType == LanguageTokenType.Equals)
+            {
+                LanguageToken identifierToken = NextToken();
+                LanguageToken operatorToken = NextToken();
+                ExpressionNode expr = ParseAssignmentExpression();
+                return new AssignmentExpression(identifierToken, expr, new TextLocation(identifierToken.sourceLocation, expr.textLocation));
+            }
+            return ParseBinaryExpression();
+        }
         
-        private ExpressionNode ParseExpression(int parentPrecedence = 0)
+        private ExpressionNode ParseBinaryExpression(int parentPrecedence = 0)
         {
             ExpressionNode left;
             int unaryOperatorPrecedence = Peek().GetUnaryOperatorPrecedence();
             if (unaryOperatorPrecedence != 0 && unaryOperatorPrecedence >= parentPrecedence)
             {
                 LanguageToken operatorToken = NextToken();
-                ExpressionNode operand = ParseExpression(unaryOperatorPrecedence);
+                ExpressionNode operand = ParseBinaryExpression(unaryOperatorPrecedence);
                 left = new UnaryExpression(operatorToken, operand, new TextLocation(operatorToken.sourceLocation, operand.textLocation));
             }
             else
@@ -53,7 +70,7 @@ namespace SlangLang.Parsing
                     break; //parse later to maintain precedence order
                 
                 LanguageToken operatorToken = NextToken();
-                ExpressionNode right = ParseExpression(precedence);
+                ExpressionNode right = ParseBinaryExpression(precedence);
                 left = new BinaryExpression(operatorToken, left, right, new TextLocation(left.textLocation, right.textLocation));
             }
 
@@ -79,6 +96,11 @@ namespace SlangLang.Parsing
                 {
                     bool value = NextToken().tokenType == LanguageTokenType.KeywordTrue;
                     return new LiteralExpression(value, currentLocation);
+                }
+                case LanguageTokenType.Identifier:
+                {
+                    LanguageToken identifier = NextToken();
+                    return new NameExpression(identifier, currentLocation);
                 }
 
                 default:
