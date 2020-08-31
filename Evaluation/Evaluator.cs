@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using SlangLang.Parsing;
 using SlangLang.Debug;
 using SlangLang.Binding;
 
@@ -9,9 +10,9 @@ namespace SlangLang.Evaluation
     {
         BoundExpression root;
         Diagnostics diagnostics;
-        Dictionary<string, object> variables;
+        Dictionary<VariableSymbol, object> variables;
 
-        public Evaluator(Diagnostics diag, BoundExpression rootNode, Dictionary<string, object> variables)
+        public Evaluator(Diagnostics diag, BoundExpression rootNode, Dictionary<VariableSymbol, object> variables)
         {
             root = rootNode;
             diagnostics = diag;
@@ -31,12 +32,12 @@ namespace SlangLang.Evaluation
             }
             if (node is BoundVariableExpression var)
             {
-                return variables[var.name];
+                return variables[var.variable];
             }
             if (node is BoundAssignmentExpression assign) //'ass' haha almost.
             {
                 object value = EvaluateExpression(assign.expression);
-                variables[assign.name] = value;
+                variables[assign.variable] = value;
                 return value;
             }
             if (node is BoundUnaryExpression unary)

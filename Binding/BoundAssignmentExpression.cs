@@ -1,17 +1,18 @@
 using System;
 using System.Collections.Generic;
 using SlangLang.Debug;
+using SlangLang.Parsing;
 
 namespace SlangLang.Binding
 {
     internal sealed class BoundAssignmentExpression : BoundExpression
     {
-        public readonly string name;
+        public readonly VariableSymbol variable;
         public readonly BoundExpression expression;
 
-        public BoundAssignmentExpression(string variableName, BoundExpression expr, TextLocation where) : base(expr.boundType, BoundNodeType.AssignmentExpression, where)
+        public BoundAssignmentExpression(VariableSymbol var, BoundExpression expr, TextLocation where) : base(expr.boundType, BoundNodeType.AssignmentExpression, where)
         {
-            name = variableName;
+            variable = var;
             expression = expr;
         }
 
@@ -22,7 +23,7 @@ namespace SlangLang.Binding
 
         public override string ToString()
         {
-            return "[AssignmentExpression] " + name;
+            return "[AssignmentExpression] " + variable.name + " (" + variable.type + ")";
         }
     }
 }

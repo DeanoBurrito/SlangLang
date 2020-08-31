@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Linq;
-using SlangLang.Binding;
+using SlangLang.Parsing;
 using SlangLang.Drivers;
 
 namespace SlangLang
@@ -14,7 +13,7 @@ namespace SlangLang
         int treeStage = 2; //default of 2 (bound tree)
         bool autoEval = true;
 
-        Dictionary<string, object> variables = new Dictionary<string, object>();
+        Dictionary<VariableSymbol, object> variables = new Dictionary<VariableSymbol, object>();
 
         public Repl()
         { }
@@ -172,9 +171,9 @@ namespace SlangLang
             [ReplCommand("lsvars", "Lists all current variables.")]
             public static void ListVars(Repl repl, string[] args)
             {
-                foreach (KeyValuePair<string, object> varPair in repl.variables)
+                foreach (KeyValuePair<VariableSymbol, object> varPair in repl.variables)
                 {
-                    Console.WriteLine(varPair.Value.GetType() + " " + varPair.Key + " = " + varPair.Value);
+                    Console.WriteLine(varPair.Key.type + " " + varPair.Key.name + " = " + varPair.Value);
                 }
             }
         }

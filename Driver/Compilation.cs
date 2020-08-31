@@ -39,7 +39,7 @@ namespace SlangLang.Drivers
             }
         }
 
-        public EvaluationResult Evaluate(Dictionary<string, object> variables)
+        public EvaluationResult Evaluate(Dictionary<VariableSymbol, object> variables)
         {
             Binder binder = new Binder(diags, parseTree, variables);
             BoundExpression boundTree = binder.BindAll();

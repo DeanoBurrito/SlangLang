@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using SlangLang.Debug;
 using SlangLang.Parsing;
@@ -10,9 +11,9 @@ namespace SlangLang.Binding
         readonly Diagnostics diagnostics;
         readonly ExpressionNode rootNode;
 
-        readonly Dictionary<string, object> variables;
+        readonly Dictionary<VariableSymbol, object> variables;
 
-        public Binder(Diagnostics diag, ExpressionNode root, Dictionary<string, object> availableVars)
+        public Binder(Diagnostics diag, ExpressionNode root, Dictionary<VariableSymbol, object> availableVars)
         {
             diagnostics = diag;
             rootNode = root;
@@ -79,32 +80,29 @@ namespace SlangLang.Binding
         private BoundExpression BindNameExpression(NameExpression expression)
         {
             string name = expression.identifierToken.text;
-            if (!variables.TryGetValue(expression.identifierToken.text, out object nameRef))
+            VariableSymbol variable = variables.Keys.FirstOrDefault(v => v.name == name);
+            
+            if (variable == null)
             {
                 diagnostics.AddFailure("Binder", "Unable to bind variable " + name + ", it does not exist.", expression.textLocation, DateTime.Now);
                 return new BoundLiteralExpression(0, TextLocation.NoLocation); //just return int(0) so the tree dosnt crash
             }
 
-            Type nameType = nameRef.GetType();
-            return new BoundVariableExpression(name, nameType, expression.textLocation);
+            return new BoundVariableExpression(variable, expression.textLocation);
         }
 
         private BoundExpression BindAssignmentExpression(AssignmentExpression expression)
         {
             BoundExpression boundExpr = BindExpression(expression.expression);
 
-            object defaultValue = boundExpr.boundType == typeof(int)
-                ? 0
-                : boundExpr.boundType == typeof(bool)
-                    ? (object)false 
-                    : null;
-                if (defaultValue == null)
-                {
-                    throw new Exception("Unhandled variable type. Type requested: " + boundExpr.boundType);
-                }
-            variables[expression.identiferToken.text] = defaultValue;
+            VariableSymbol existingVariable = variables.Keys.FirstOrDefault(v => v.name == expression.identiferToken.text);
+            if (existingVariable != null)
+                variables.Remove(existingVariable);
+            
+            VariableSymbol variable = new VariableSymbol(expression.identiferToken.text, boundExpr.boundType); 
+            variables[variable] = null;
 
-            return new BoundAssignmentExpression(expression.identiferToken.text, boundExpr, expression.textLocation);
+            return new BoundAssignmentExpression(variable, boundExpr, expression.textLocation);
         }
     }
 }

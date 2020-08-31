@@ -1,16 +1,17 @@
 using System;
 using System.Collections.Generic;
 using SlangLang.Debug;
+using SlangLang.Parsing;
 
 namespace SlangLang.Binding
 {
     internal sealed class BoundVariableExpression : BoundExpression
     {
-        public readonly string name;
+        public readonly VariableSymbol variable;
 
-        public BoundVariableExpression(string variableName, Type variableType, TextLocation where) : base(variableType, BoundNodeType.VariableExpression, where)
+        public BoundVariableExpression(VariableSymbol variableSymbol, TextLocation where) : base(variableSymbol.type, BoundNodeType.VariableExpression, where)
         {
-            name = variableName;
+            variable = variableSymbol;
         }
 
         public override List<BoundExpression> GetChildren()
@@ -20,7 +21,7 @@ namespace SlangLang.Binding
 
         public override string ToString()
         {
-            return "[VariableExpression] " + name + " (" + base.boundType.ToString() + ")";
+            return "[VariableExpression] " + variable.name + " (" + variable.type.ToString() + ")";
         }
     }
 }
