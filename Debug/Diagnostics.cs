@@ -7,7 +7,6 @@ namespace SlangLang.Debug
 {
     public sealed class Diagnostics
     {
-        //Dictionary<string, DiagnosticEntry> entries = new Dictionary<string, DiagnosticEntry>();
         Dictionary<string, List<DiagnosticEntry>> infoEntries = new Dictionary<string, List<DiagnosticEntry>>();
         Dictionary<string, List<DiagnosticEntry>> warningEntries = new Dictionary<string, List<DiagnosticEntry>>();
         Dictionary<string, List<DiagnosticEntry>> failureEntries = new Dictionary<string, List<DiagnosticEntry>>();
@@ -20,8 +19,10 @@ namespace SlangLang.Debug
         
         public bool HasErrors { get; private set; }
         
-        public Diagnostics()
-        { initTime = DateTime.Now; }
+        public Diagnostics(DateTime startTime)
+        { 
+            initTime = startTime;
+        }
 
         public void AddInfo(string module, string message, DateTime when)
         {

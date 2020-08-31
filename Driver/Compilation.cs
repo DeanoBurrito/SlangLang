@@ -17,7 +17,7 @@ namespace SlangLang.Drivers
         public Compilation(string sourceCode, CompilationOptions compOptions)
         {
             options = compOptions;
-            diags = new Diagnostics();
+            diags = new Diagnostics(DateTime.Now);
 
             Lexer lexer = new Lexer(diags, sourceCode, "Intepreter");
             LanguageToken[] lexerOutput = lexer.LexAll();
