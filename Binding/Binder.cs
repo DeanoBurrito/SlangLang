@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using SlangLang.Debug;
 using SlangLang.Parsing;
 
@@ -9,10 +10,13 @@ namespace SlangLang.Binding
         readonly Diagnostics diagnostics;
         readonly ExpressionNode rootNode;
 
-        public Binder(Diagnostics diag, ExpressionNode root)
+        readonly Dictionary<string, object> variables;
+
+        public Binder(Diagnostics diag, ExpressionNode root, Dictionary<string, object> availableVars)
         {
             diagnostics = diag;
             rootNode = root;
+            variables = availableVars;
         }
 
         public BoundExpression BindAll()
@@ -20,15 +24,22 @@ namespace SlangLang.Binding
             BoundExpression expr = BindExpression(rootNode);
             return expr;
         }
-        
+
         private BoundExpression BindExpression(ExpressionNode node)
         {
-            if (node is LiteralExpression l)
-                return BindLiteralExpression(l);
-            else if (node is UnaryExpression u)
-                return BindUnaryExpression(u);
-            else if (node is BinaryExpression b)
-                return BindBinaryExpression(b);
+            switch (node.nodeType)
+            {
+                case ExpressionNodeType.Literal:
+                    return BindLiteralExpression((LiteralExpression)node);
+                case ExpressionNodeType.Unary:
+                    return BindUnaryExpression((UnaryExpression)node);
+                case ExpressionNodeType.Binary:
+                    return BindBinaryExpression((BinaryExpression)node);
+                case ExpressionNodeType.Name:
+                    return BindNameExpression((NameExpression)node);
+                case ExpressionNodeType.Assignment:
+                    return BindAssignmentExpression((AssignmentExpression)node);
+            }
 
             diagnostics.AddFailure("Binder", "Unexpected expression type to bind: " + node.nodeType, node.textLocation, DateTime.Now);
             throw new Exception("Unable to bind on unexpected expresson node: " + node.nodeType + " @" + node.textLocation.ToString());
@@ -63,6 +74,37 @@ namespace SlangLang.Binding
                 return boundLeft;
             }
             return new BoundBinaryExpression(boundOperator, boundLeft, boundRight, expression.textLocation);
+        }
+
+        private BoundExpression BindNameExpression(NameExpression expression)
+        {
+            string name = expression.identifierToken.text;
+            if (!variables.TryGetValue(expression.identifierToken.text, out object nameRef))
+            {
+                diagnostics.AddFailure("Binder", "Unable to bind variable " + name + ", it does not exist.", expression.textLocation, DateTime.Now);
+                return new BoundLiteralExpression(0, TextLocation.NoLocation); //just return int(0) so the tree dosnt crash
+            }
+
+            Type nameType = nameRef.GetType();
+            return new BoundVariableExpression(name, nameType, expression.textLocation);
+        }
+
+        private BoundExpression BindAssignmentExpression(AssignmentExpression expression)
+        {
+            BoundExpression boundExpr = BindExpression(expression.expression);
+
+            object defaultValue = boundExpr.boundType == typeof(int)
+                ? 0
+                : boundExpr.boundType == typeof(bool)
+                    ? (object)false 
+                    : null;
+                if (defaultValue == null)
+                {
+                    throw new Exception("Unhandled variable type. Type requested: " + boundExpr.boundType);
+                }
+            variables[expression.identiferToken.text] = defaultValue;
+
+            return new BoundAssignmentExpression(expression.identiferToken.text, boundExpr, expression.textLocation);
         }
     }
 }

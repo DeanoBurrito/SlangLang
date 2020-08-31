@@ -7,6 +7,8 @@ namespace SlangLang.Binding
         LiteralExpression,
         UnaryExpression,
         BinaryExpression,
+        VariableExpression,
+        AssignmentExpression,
     }
 
     internal enum BoundUnaryOperatorType
