@@ -1,6 +1,4 @@
 using System;
-using System.IO;
-using System.Linq;
 using System.Collections.Generic;
 
 namespace SlangLang.Debug
@@ -22,6 +20,28 @@ namespace SlangLang.Debug
         public Diagnostics(DateTime startTime)
         { 
             initTime = startTime;
+        }
+
+        public void Aggregate(Diagnostics diagnostics)
+        {
+            foreach (KeyValuePair<string, List<DiagnosticEntry>> pair in diagnostics.infoEntries)
+            {
+                if (!infoEntries.ContainsKey(pair.Key))
+                    infoEntries.Add(pair.Key, new List<DiagnosticEntry>());
+                infoEntries[pair.Key].AddRange(pair.Value);
+            }
+            foreach (KeyValuePair<string, List<DiagnosticEntry>> pair in diagnostics.warningEntries)
+            {
+                if (!warningEntries.ContainsKey(pair.Key))
+                    warningEntries.Add(pair.Key, new List<DiagnosticEntry>());
+                warningEntries[pair.Key].AddRange(pair.Value);
+            }
+            foreach (KeyValuePair<string, List<DiagnosticEntry>> pair in diagnostics.failureEntries)
+            {
+                if (!failureEntries.ContainsKey(pair.Key))
+                    failureEntries.Add(pair.Key, new List<DiagnosticEntry>());
+                failureEntries[pair.Key].AddRange(pair.Value);
+            }
         }
 
         public void AddInfo(string module, string message, DateTime when)
@@ -125,22 +145,6 @@ namespace SlangLang.Debug
             if (failureEntries.Count == 0)
                 Console.WriteLine("No errors. Process complete.");
 
-        }
-    }
-
-    public class DiagnosticEntry
-    {
-        public readonly string module;
-        public readonly string message;
-        public readonly TextLocation where;
-        public DateTime when;
-
-        public DiagnosticEntry(string sender, string msg, TextLocation location, DateTime dt)
-        {
-            module = sender;
-            message = msg;
-            where = location;
-            when = dt;
         }
     }
 }
