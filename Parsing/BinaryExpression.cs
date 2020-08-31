@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using SlangLang.Debug;
 
 namespace SlangLang.Parsing
 {
@@ -9,7 +10,7 @@ namespace SlangLang.Parsing
         public readonly ExpressionNode rightNode;
         public readonly LanguageToken opToken;
 
-        public BinaryExpression(LanguageToken opToken, ExpressionNode left, ExpressionNode right) : base(ExpressionNodeType.Binary)
+        public BinaryExpression(LanguageToken opToken, ExpressionNode left, ExpressionNode right, TextLocation where) : base(ExpressionNodeType.Binary, where)
         {
             leftNode = left;
             rightNode = right;

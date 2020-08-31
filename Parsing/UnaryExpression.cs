@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using SlangLang.Debug;
 
 namespace SlangLang.Parsing
 {
@@ -8,7 +9,7 @@ namespace SlangLang.Parsing
         public readonly ExpressionNode operand;
         public readonly LanguageToken opToken;
 
-        public UnaryExpression(LanguageToken opToken, ExpressionNode node) : base(ExpressionNodeType.Unary)
+        public UnaryExpression(LanguageToken opToken, ExpressionNode node, TextLocation where) : base(ExpressionNodeType.Unary, where)
         {
             operand = node;
             this.opToken = opToken;

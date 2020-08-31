@@ -19,6 +19,14 @@ namespace SlangLang.Debug
             length = 1;
         }
 
+        public TextLocation(TextLocation start, TextLocation end)
+        {
+            filename = start.filename;
+            line = start.line;
+            column = start.column;
+            length = start.length + end.length;
+        }
+
         public override string ToString()
         {
             if (filename == "No Source Location")

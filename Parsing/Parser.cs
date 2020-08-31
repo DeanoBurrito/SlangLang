@@ -39,7 +39,7 @@ namespace SlangLang.Parsing
             {
                 LanguageToken operatorToken = NextToken();
                 ExpressionNode operand = ParseExpression(unaryOperatorPrecedence);
-                left = new UnaryExpression(operatorToken, operand);
+                left = new UnaryExpression(operatorToken, operand, new TextLocation(operatorToken.sourceLocation, operand.textLocation));
             }
             else
             {
@@ -54,7 +54,7 @@ namespace SlangLang.Parsing
                 
                 LanguageToken operatorToken = NextToken();
                 ExpressionNode right = ParseExpression(precedence);
-                left = new BinaryExpression(operatorToken, left, right);
+                left = new BinaryExpression(operatorToken, left, right, new TextLocation(left.textLocation, right.textLocation));
             }
 
             return left;
@@ -63,6 +63,8 @@ namespace SlangLang.Parsing
         private ExpressionNode ParsePrimaryExpression()
         {
             LanguageToken current = Peek();
+            TextLocation currentLocation = current.sourceLocation;
+
             switch (current.tokenType)
             {
                 case LanguageTokenType.OpenParanthesis:
@@ -76,7 +78,7 @@ namespace SlangLang.Parsing
                 case LanguageTokenType.KeywordFalse:
                 {
                     bool value = NextToken().tokenType == LanguageTokenType.KeywordTrue;
-                    return new LiteralExpression(value);
+                    return new LiteralExpression(value, currentLocation);
                 }
 
                 default:
@@ -86,7 +88,7 @@ namespace SlangLang.Parsing
                     if (!int.TryParse(token.text, out int val)) 
                         diagnostics.AddFailure("Parser", "Could not get int from number token.", token.sourceLocation, DateTime.Now);
 
-                    return new LiteralExpression(val);
+                    return new LiteralExpression(val, currentLocation);
                 }
             }
         }
@@ -96,7 +98,7 @@ namespace SlangLang.Parsing
             if (Peek().tokenType == tokenType)
                 return NextToken();
             
-            diagnostics.AddFailure("Parser", "Token match failed, expecting " + tokenType + ", found " + Peek().tokenType + " instead.", TextLocation.NoLocation, DateTime.Now);
+            diagnostics.AddFailure("Parser", "Token match failed, expecting " + tokenType + ", found " + Peek().tokenType + " instead.", Peek().sourceLocation, DateTime.Now);
             return new LanguageToken(tokenType, "", TextLocation.NoLocation);
         }
 

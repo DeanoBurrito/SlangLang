@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using SlangLang.Debug;
 
 namespace SlangLang.Parsing
 {
@@ -8,7 +9,7 @@ namespace SlangLang.Parsing
         public readonly object value;
         public readonly LiteralValueSpecifier valueSpecifier = LiteralValueSpecifier.Default;
 
-        public LiteralExpression(object val, LiteralValueSpecifier spec = LiteralValueSpecifier.Default) : base(ExpressionNodeType.Literal)
+        public LiteralExpression(object val, TextLocation where,LiteralValueSpecifier spec = LiteralValueSpecifier.Default) : base(ExpressionNodeType.Literal, where)
         {
             value = val;
             valueSpecifier = spec;
