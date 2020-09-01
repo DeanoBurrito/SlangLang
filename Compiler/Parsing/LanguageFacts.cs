@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace SlangLang.Parsing
 {
@@ -53,6 +54,26 @@ namespace SlangLang.Parsing
                     return 5;
                 default:
                     return 0;
+            }
+        }
+
+        public static IEnumerable<LanguageTokenType> GetUnaryOperators()
+        {
+            LanguageTokenType[] allTypes = (LanguageTokenType[])Enum.GetValues(typeof(LanguageTokenType));
+            foreach (LanguageTokenType type in allTypes)
+            {
+                if (GetUnaryOperatorPrecedence(new LanguageToken(type, "", null)) > 0)
+                    yield return type;
+            }
+        }
+
+        public static IEnumerable<LanguageTokenType> GetBinaryOperators()
+        {
+            LanguageTokenType[] allTypes = (LanguageTokenType[])Enum.GetValues(typeof(LanguageTokenType));
+            foreach (LanguageTokenType type in allTypes)
+            {
+                if (GetBinaryOperatorPrecedence(new LanguageToken(type, "", null)) > 0)
+                    yield return type;
             }
         }
 
