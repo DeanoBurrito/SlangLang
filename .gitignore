@@ -1,5 +1,3 @@
-/bin/
-/obj/
-/_TestingFiles/
-/_Documentation/
+bin/
+obj/
 _TODO.txt
