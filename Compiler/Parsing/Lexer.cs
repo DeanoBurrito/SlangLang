@@ -66,7 +66,7 @@ namespace SlangLang.Parsing
                     return new LanguageToken(LanguageTokenType.OpenParanthesis, "(", location);
                 case ')':
                     currChar++;
-                    return new LanguageToken(LanguageTokenType.CloseParathesis, "(", location);
+                    return new LanguageToken(LanguageTokenType.CloseParathesis, ")", location);
                 case '!':
                     if (PeekNext(1) == '=')
                     {
