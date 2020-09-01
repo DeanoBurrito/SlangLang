@@ -7,12 +7,10 @@ namespace SlangLang.Parsing
     public sealed class UnaryExpression : ExpressionNode
     {
         public readonly ExpressionNode operand;
-        public readonly LanguageToken opToken;
 
-        public UnaryExpression(LanguageToken opToken, ExpressionNode node, TextLocation where) : base(ExpressionNodeType.Unary, where)
+        public UnaryExpression(LanguageToken opToken, ExpressionNode node, TextLocation where) : base(opToken, ExpressionNodeType.Unary, where)
         {
             operand = node;
-            this.opToken = opToken;
         }
 
         public override List<ExpressionNode> GetChildren()
@@ -22,7 +20,7 @@ namespace SlangLang.Parsing
         
         public override string ToString()
         {
-            return "[UnaryExpression] " + opToken.tokenType + " (" + opToken.text + ")";
+            return "[UnaryExpression] " + base.token.tokenType + " (" + base.token.text + ")";
         }
     }
 }

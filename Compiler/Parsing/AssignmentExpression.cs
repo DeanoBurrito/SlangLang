@@ -6,12 +6,10 @@ namespace SlangLang.Parsing
 {
     public sealed class AssignmentExpression : ExpressionNode
     {   
-        public readonly LanguageToken identiferToken;
         public readonly ExpressionNode expression;
         
-        public AssignmentExpression(LanguageToken identifier, ExpressionNode expression, TextLocation where) : base(ExpressionNodeType.Assignment, where)
+        public AssignmentExpression(LanguageToken identifier, ExpressionNode expression, TextLocation where) : base(identifier, ExpressionNodeType.Assignment, where)
         {
-            identiferToken = identifier;
             this.expression = expression;
         }
 
@@ -22,7 +20,7 @@ namespace SlangLang.Parsing
 
         public override string ToString() 
         {
-            return "[Assignment] => " + identiferToken.text;
+            return "[Assignment] => " + base.token.text;
         }
     }
 }

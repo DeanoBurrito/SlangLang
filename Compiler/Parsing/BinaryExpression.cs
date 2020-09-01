@@ -8,13 +8,11 @@ namespace SlangLang.Parsing
     {
         public readonly ExpressionNode leftNode;
         public readonly ExpressionNode rightNode;
-        public readonly LanguageToken opToken;
 
-        public BinaryExpression(LanguageToken opToken, ExpressionNode left, ExpressionNode right, TextLocation where) : base(ExpressionNodeType.Binary, where)
+        public BinaryExpression(LanguageToken opToken, ExpressionNode left, ExpressionNode right, TextLocation where) : base(opToken, ExpressionNodeType.Binary, where)
         {
             leftNode = left;
             rightNode = right;
-            this.opToken = opToken;
         }
 
         public override List<ExpressionNode> GetChildren()
@@ -24,7 +22,7 @@ namespace SlangLang.Parsing
 
         public override string ToString()
         {
-            return "[BinaryExpression] " + opToken.tokenType + " (" + opToken.text + ")";
+            return "[BinaryExpression] " + base.token.tokenType + " (" + base.token.text + ")";
         }
     }
 }

@@ -94,8 +94,9 @@ namespace SlangLang.Parsing
                 case LanguageTokenType.KeywordTrue:
                 case LanguageTokenType.KeywordFalse:
                 {
-                    bool value = NextToken().tokenType == LanguageTokenType.KeywordTrue;
-                    return new LiteralExpression(value, currentLocation);
+                    LanguageToken boolToken = NextToken();
+                    bool value = boolToken.tokenType == LanguageTokenType.KeywordTrue;
+                    return new LiteralExpression(value, boolToken, currentLocation);
                 }
                 case LanguageTokenType.Identifier:
                 {
@@ -110,7 +111,7 @@ namespace SlangLang.Parsing
                     if (!int.TryParse(token.text, out int val)) 
                         diagnostics.AddFailure("Parser", "Could not get int from number token.", token.sourceLocation, DateTime.Now);
 
-                    return new LiteralExpression(val, currentLocation);
+                    return new LiteralExpression(val, token, currentLocation);
                 }
             }
         }

@@ -55,10 +55,10 @@ namespace SlangLang.Binding
         private BoundExpression BindUnaryExpression(UnaryExpression expression)
         {
             BoundExpression boundOperand = BindExpression(expression.operand);
-            BoundUnaryOperator boundOperator = BoundUnaryOperator.Bind(expression.opToken.tokenType, boundOperand.boundType);
+            BoundUnaryOperator boundOperator = BoundUnaryOperator.Bind(expression.token.tokenType, boundOperand.boundType);
             if (boundOperator == null)
             {
-                diagnostics.AddFailure("Binder", $"Unary operator {expression.opToken} is not defined for type {boundOperand.boundType}.", expression.textLocation, DateTime.Now);
+                diagnostics.AddFailure("Binder", $"Unary operator {expression.token} is not defined for type {boundOperand.boundType}.", expression.textLocation, DateTime.Now);
                 return boundOperand;
             }
             return new BoundUnaryExpression(boundOperator, boundOperand, expression.textLocation);
@@ -68,10 +68,10 @@ namespace SlangLang.Binding
         {
             BoundExpression boundLeft = BindExpression(expression.leftNode);
             BoundExpression boundRight = BindExpression(expression.rightNode);
-            BoundBinaryOperator boundOperator = BoundBinaryOperator.Bind(expression.opToken.tokenType, boundLeft.boundType, boundRight.boundType);
+            BoundBinaryOperator boundOperator = BoundBinaryOperator.Bind(expression.token.tokenType, boundLeft.boundType, boundRight.boundType);
             if (boundOperator == null)
             {
-                diagnostics.AddFailure("Binder", $"Unary operator {expression.opToken} is not defined for types {boundLeft.boundType}, {boundRight.boundType}.", expression.textLocation, DateTime.Now);
+                diagnostics.AddFailure("Binder", $"Unary operator {expression.token} is not defined for types {boundLeft.boundType}, {boundRight.boundType}.", expression.textLocation, DateTime.Now);
                 return boundLeft;
             }
             return new BoundBinaryExpression(boundOperator, boundLeft, boundRight, expression.textLocation);
@@ -79,7 +79,7 @@ namespace SlangLang.Binding
 
         private BoundExpression BindNameExpression(NameExpression expression)
         {
-            string name = expression.identifierToken.text;
+            string name = expression.token.text;
             VariableSymbol variable = variables.Keys.FirstOrDefault(v => v.name == name);
             
             if (variable == null)
@@ -95,11 +95,11 @@ namespace SlangLang.Binding
         {
             BoundExpression boundExpr = BindExpression(expression.expression);
 
-            VariableSymbol existingVariable = variables.Keys.FirstOrDefault(v => v.name == expression.identiferToken.text);
+            VariableSymbol existingVariable = variables.Keys.FirstOrDefault(v => v.name == expression.token.text);
             if (existingVariable != null)
                 variables.Remove(existingVariable);
             
-            VariableSymbol variable = new VariableSymbol(expression.identiferToken.text, boundExpr.boundType); 
+            VariableSymbol variable = new VariableSymbol(expression.token.text, boundExpr.boundType); 
             variables[variable] = null;
 
             return new BoundAssignmentExpression(variable, boundExpr, expression.textLocation);

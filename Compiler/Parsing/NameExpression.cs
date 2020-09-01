@@ -5,12 +5,10 @@ using SlangLang.Debug;
 namespace SlangLang.Parsing
 {
     public sealed class NameExpression : ExpressionNode
-    {
-        public readonly LanguageToken identifierToken;
-        
-        public NameExpression(LanguageToken identifier, TextLocation where) : base(ExpressionNodeType.Name, where)
+    {   
+        public NameExpression(LanguageToken identifier, TextLocation where) : base(identifier, ExpressionNodeType.Name, where)
         {
-            identifierToken = identifier;
+            
         }
 
         public override List<ExpressionNode> GetChildren()
@@ -20,7 +18,7 @@ namespace SlangLang.Parsing
 
         public override string ToString() 
         {
-            return "[Name] " + identifierToken.text;
+            return "[Name] " + base.token.text;
         }
     }
 }
