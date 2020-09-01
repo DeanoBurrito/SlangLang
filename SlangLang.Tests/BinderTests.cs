@@ -8,7 +8,7 @@ namespace SlangLang.Tests
         [Fact]
         public void Test1()
         {
-
+            
         }
     }
 }
