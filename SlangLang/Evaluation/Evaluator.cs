@@ -84,7 +84,7 @@ namespace SlangLang.Evaluation
                         case BoundBinaryOperatorType.Multiplication:
                             return leftInt * rightInt;
                         case BoundBinaryOperatorType.Division:
-                            return leftInt * rightInt;
+                            return leftInt / rightInt;
                     }
                 }
                 else if (leftType == typeof(bool) && rightType == typeof(bool))

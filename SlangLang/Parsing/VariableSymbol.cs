@@ -1,5 +1,7 @@
 using System;
+using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("SlangLang.Tests")]
 namespace SlangLang.Parsing
 {
     public sealed class VariableSymbol
