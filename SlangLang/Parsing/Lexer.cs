@@ -133,6 +133,12 @@ namespace SlangLang.Parsing
                         type = LanguageTokenType.Pipe;
                     }
                     break;
+                case ' ':
+                case '\r':
+                case '\n':
+                case '\t':
+                    ReadWhitespaceToken();
+                    break;
                 default:
                 {
                     if (char.IsLetter(current))

@@ -9,7 +9,19 @@ namespace SlangLang.Tests
 {
     public class LexerTests
     {
+        [Fact]
+        public void VerifyAllTokensTested()
+        {
+            List<LanguageTokenType> allTokens = Enum.GetValues(typeof(LanguageTokenType)).Cast<LanguageTokenType>().ToList();
+            List<LanguageTokenType> testedTokens = GetTokens().Concat(GetSeparators()).Select(t => t.Item1).ToList();
+            SortedSet<LanguageTokenType> untested = new SortedSet<LanguageTokenType>(allTokens);
+            untested.Remove(LanguageTokenType.BadToken);
+            untested.Remove(LanguageTokenType.EndOfFile);
+            untested.ExceptWith(testedTokens);
 
+            Assert.Empty(untested);
+        }
+        
         [Theory]
         [MemberData(nameof(GetTokensData))]
         public void LexTokenSingle(LanguageTokenType tokenType, string text)
@@ -92,35 +104,22 @@ namespace SlangLang.Tests
 
         private static IEnumerable<(LanguageTokenType tokenType, string text)> GetTokens()
         {
-            yield return (LanguageTokenType.And, "&");
-            yield return (LanguageTokenType.AndAnd, "&&");
-            yield return (LanguageTokenType.Pipe, "|");
-            yield return (LanguageTokenType.PipePipe, "||");
-            yield return (LanguageTokenType.Exclamation, "!");
-            yield return (LanguageTokenType.Equals, "=");
-            yield return (LanguageTokenType.EqualsEquals, "==");
-            yield return (LanguageTokenType.ExclamationEquals, "!=");
-            yield return (LanguageTokenType.Semicolon, ";");
-        
-            yield return (LanguageTokenType.OpenParanthesis, "(");
-            yield return (LanguageTokenType.CloseParathesis, ")");
-
-            yield return (LanguageTokenType.Plus, "+");
-            yield return (LanguageTokenType.Minus, "-");
-            yield return (LanguageTokenType.Star, "*");
-            yield return (LanguageTokenType.ForwardSlash, "/");
-
-            yield return (LanguageTokenType.KeywordFalse, "false");
-            yield return (LanguageTokenType.KeywordTrue, "true");
-
-            yield return (LanguageTokenType.IntegerNumber, "1");
-            yield return (LanguageTokenType.IntegerNumber, "10");
-            yield return (LanguageTokenType.IntegerNumber, "010");
-            yield return (LanguageTokenType.String, "\"This is a string literal.\"");
-
-            yield return (LanguageTokenType.Identifier, "a");
-            yield return (LanguageTokenType.Identifier, "abc");
-            yield return (LanguageTokenType.Identifier, "A");
+            IEnumerable<(LanguageTokenType, string)> fixedTokens = Enum.GetValues(typeof(LanguageTokenType))
+                .Cast<LanguageTokenType>()
+                .Select(t => (type: t, text: LanguageFacts.GetText(t)))
+                .Where(t => t.text != null);
+            
+            (LanguageTokenType, string)[] dynamicTokens = 
+            {
+                (LanguageTokenType.IntegerNumber, "1"),
+                (LanguageTokenType.IntegerNumber, "10"),
+                (LanguageTokenType.IntegerNumber, "010"),
+                (LanguageTokenType.String, "\"This is a string literal.\""),
+                (LanguageTokenType.Identifier, "a"),
+                (LanguageTokenType.Identifier, "abc"),
+                (LanguageTokenType.Identifier, "A"),
+            };
+            return fixedTokens.Concat(dynamicTokens);
         }
 
         private static IEnumerable<(LanguageTokenType type, string text)> GetSeparators()
