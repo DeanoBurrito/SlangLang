@@ -14,7 +14,7 @@ namespace SlangLang.Tests
         [MemberData(nameof(GetTokensData))]
         public void LexTokenSingle(LanguageTokenType tokenType, string text)
         {
-            Lexer lexer = new Lexer(new Diagnostics(DateTime.Now), text, "Tests");
+            Lexer lexer = new Lexer(Diagnostics.DummyInstance, text, "Tests");
             LanguageToken[] tokens = lexer.LexAll();
             
             Assert.Equal(tokens.Last().tokenType, LanguageTokenType.EndOfFile);
@@ -29,7 +29,9 @@ namespace SlangLang.Tests
         [MemberData(nameof(GetTokenPairsData))]
         public void LexTokenPairs(LanguageTokenType type1, string text1, LanguageTokenType type2, string text2)
         {
-            Lexer lexer = new Lexer(new Diagnostics(DateTime.Now), text1 + text2, "Tests");
+            string fullText = text1 + text2;
+            TextStore textStore = new TextStore("Tests", new string[] { fullText });
+            Lexer lexer = new Lexer(Diagnostics.DummyInstance, text1 + text2, "Tests");
             LanguageToken[] tokens = lexer.LexAll();
 
             Assert.Equal(tokens.Last().tokenType, LanguageTokenType.EndOfFile);
@@ -40,13 +42,16 @@ namespace SlangLang.Tests
             Assert.Equal(tokens[0].text, text1);
             Assert.Equal(tokens[1].tokenType, type2);
             Assert.Equal(tokens[1].text, text2);
+
+            Assert.Equal(text1, textStore.GetSubstring(tokens[0].textLocation));
+            Assert.Equal(text2, textStore.GetSubstring(tokens[1].textLocation));
         }
 
         [Theory]
         [MemberData(nameof(GetTokenPairsWithSeparatorsData))]
         public void LexTokenPairsWithSeparators(LanguageTokenType l1, string t1, LanguageTokenType ls, string ts, LanguageTokenType l2, string t2)
         {
-            Lexer lexer = new Lexer(new Diagnostics(DateTime.Now), t1 + ts + t2, "Tests");
+            Lexer lexer = new Lexer(Diagnostics.DummyInstance, t1 + ts + t2, "Tests");
             LanguageToken[] tokens = lexer.LexAll();
 
             Assert.Equal(tokens.Last().tokenType, LanguageTokenType.EndOfFile);
@@ -107,12 +112,6 @@ namespace SlangLang.Tests
 
             yield return (LanguageTokenType.KeywordFalse, "false");
             yield return (LanguageTokenType.KeywordTrue, "true");
-
-            yield return (LanguageTokenType.Whitespace, " ");
-            yield return (LanguageTokenType.Whitespace, "  ");
-            yield return (LanguageTokenType.Whitespace, "\r");
-            yield return (LanguageTokenType.Whitespace, "\n");
-            yield return (LanguageTokenType.Whitespace, "\r\n");
 
             yield return (LanguageTokenType.IntegerNumber, "1");
             yield return (LanguageTokenType.IntegerNumber, "10");

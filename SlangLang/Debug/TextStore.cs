@@ -53,6 +53,13 @@ namespace SlangLang.Debug
             return substr;
         }
 
+        public string GetSubstring(TextSpan span)
+        {
+            if (span.start.absoluteFilePosition >= 0 && span.length > 0)
+                return GetSubstring(span.start.absoluteFilePosition, span.length);
+            return "";
+        }
+
         public TextLocation GetLocation(int index)
         {
             int lineNum = FindLine(index, out int col);
