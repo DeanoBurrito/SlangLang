@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using SlangLang.Debug;
 
 namespace SlangLang.Parsing
 {   
     public sealed class Parser
     {
-        readonly LanguageToken[] tokens;
+        readonly ImmutableArray<LanguageToken> tokens;
         readonly Diagnostics diagnostics;
         int pos;
         
@@ -19,7 +20,7 @@ namespace SlangLang.Parsing
                 if (t.tokenType != LanguageTokenType.BadToken && t.tokenType != LanguageTokenType.Whitespace)
                     scrubbedTokens.Add(t);
             }
-            tokens = scrubbedTokens.ToArray();
+            tokens = scrubbedTokens.ToImmutableArray();
             pos = 0;
         }
 
