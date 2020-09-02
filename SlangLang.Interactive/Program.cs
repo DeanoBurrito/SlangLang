@@ -1,6 +1,7 @@
 ﻿using System;
+using SlangLang;
 
-namespace SlangLang
+namespace SlangLang.Interactive
 {
     class Program
     {

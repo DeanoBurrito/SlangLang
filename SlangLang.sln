@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlangLang.Tests", "SlangLan
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlangLang", "SlangLang\SlangLang.csproj", "{D1AED4C7-A64A-40F6-95D2-B5E9A6B57526}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlangLang.Interactive", "SlangLang.Interactive\SlangLang.Interactive.csproj", "{111ED349-2AA3-4AFE-A715-DCABE51E8C73}"
+EndProject
 Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -44,5 +46,17 @@ Global
 		{D1AED4C7-A64A-40F6-95D2-B5E9A6B57526}.Release|x64.Build.0 = Release|Any CPU
 		{D1AED4C7-A64A-40F6-95D2-B5E9A6B57526}.Release|x86.ActiveCfg = Release|Any CPU
 		{D1AED4C7-A64A-40F6-95D2-B5E9A6B57526}.Release|x86.Build.0 = Release|Any CPU
+		{111ED349-2AA3-4AFE-A715-DCABE51E8C73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{111ED349-2AA3-4AFE-A715-DCABE51E8C73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{111ED349-2AA3-4AFE-A715-DCABE51E8C73}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{111ED349-2AA3-4AFE-A715-DCABE51E8C73}.Debug|x64.Build.0 = Debug|Any CPU
+		{111ED349-2AA3-4AFE-A715-DCABE51E8C73}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{111ED349-2AA3-4AFE-A715-DCABE51E8C73}.Debug|x86.Build.0 = Debug|Any CPU
+		{111ED349-2AA3-4AFE-A715-DCABE51E8C73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{111ED349-2AA3-4AFE-A715-DCABE51E8C73}.Release|Any CPU.Build.0 = Release|Any CPU
+		{111ED349-2AA3-4AFE-A715-DCABE51E8C73}.Release|x64.ActiveCfg = Release|Any CPU
+		{111ED349-2AA3-4AFE-A715-DCABE51E8C73}.Release|x64.Build.0 = Release|Any CPU
+		{111ED349-2AA3-4AFE-A715-DCABE51E8C73}.Release|x86.ActiveCfg = Release|Any CPU
+		{111ED349-2AA3-4AFE-A715-DCABE51E8C73}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

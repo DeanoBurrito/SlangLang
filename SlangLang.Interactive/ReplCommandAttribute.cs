@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace SlangLang
+namespace SlangLang.Interactive
 {
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
     public sealed class ReplCommandAttribute : Attribute

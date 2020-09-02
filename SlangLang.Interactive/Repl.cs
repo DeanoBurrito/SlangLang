@@ -4,7 +4,7 @@ using System.Reflection;
 using SlangLang.Parsing;
 using SlangLang.Drivers;
 
-namespace SlangLang
+namespace SlangLang.Interactive
 {
     public sealed class Repl
     {
