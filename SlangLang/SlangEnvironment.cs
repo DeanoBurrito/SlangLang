@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using System.Reflection;
 
 namespace SlangLang
 {
@@ -6,12 +8,16 @@ namespace SlangLang
     {
         public static Version GetEnvironmentVersion()
         {
-            return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+            return Assembly.GetExecutingAssembly().GetName().Version;
         }
 
         public static Version GetInterpreterVersion()
         {
-            return new Version(0, 0, 3);
+            Assembly[] allAsms = AppDomain.CurrentDomain.GetAssemblies();
+            Assembly interpreterAssembly = allAsms.FirstOrDefault(asm => asm.GetName().Name == "SlangLang.Interactive");
+            if (interpreterAssembly == null)
+                return new Version(0, 0, 0, 0);
+            return interpreterAssembly.GetName().Version;
         }
     }
 }
