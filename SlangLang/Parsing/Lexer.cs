@@ -12,9 +12,9 @@ namespace SlangLang.Parsing
         readonly string filename;
         readonly Diagnostics diagnostics;
 
-        public Lexer(Diagnostics diag, string sourceLine, string sourceName)
+        public Lexer(Diagnostics diag, string[] source, string sourceName)
         {
-            sourceStore = new TextStore(sourceName, new string[] {sourceLine} );
+            sourceStore = new TextStore(sourceName, source);
             diagnostics = diag;
             filename = sourceName;
             currChar = 0;

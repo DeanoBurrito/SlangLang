@@ -29,12 +29,36 @@ namespace SlangLang.Interactive
             Console.WriteLine("All input is interpreted and run as code, unless prefixed with '#'.");
             Console.WriteLine("Use '#help' for a list of other repl commands.");
 
-
+            bool inMultilineMode = false;
+            List<string> multilineTexts = new List<string>();
             while (true)
             {
-                Console.Write(">>> ");
+                if (inMultilineMode)
+                {
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.Write("> ");
+                    Console.ResetColor();
+                }
+                else
+                {
+                    Console.Write(">>> ");
+                }
+                
                 string line = Console.ReadLine();
-                if (line.StartsWith("#"))
+                if (inMultilineMode)
+                {
+                    if (line == "#exit")
+                    {
+                        DoCompilation(multilineTexts.ToArray());
+                        inMultilineMode = false;
+                        multilineTexts.Clear();
+                    }
+                    else
+                    {
+                        multilineTexts.Add(line);
+                    }
+                }
+                else if (line.StartsWith("#"))
                 {
                     if (line.Length == 1)
                         continue;
@@ -52,35 +76,46 @@ namespace SlangLang.Interactive
                         Console.WriteLine("Command '" + args[0] + "' not recognised.");
                     }
                 }
+                else if (line.Length == 0)
+                {
+                    inMultilineMode = true;
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine("* [Multiline edit mode: to exit type '#exit']");
+                    Console.ResetColor();
+                }
                 else
                 {
-                    CompilationOptions options = new CompilationOptions();
-                    switch (treeStage)
-                    {
-                        case 0:
-                            options.printLexerOutput = showTree;
-                            break;
-                        case 1:
-                            options.printParserOutput = showTree;
-                            break;
-                        case 2:
-                            options.printBinderOutput = showTree;
-                            break;
-                    }
+                    DoCompilation(new string[] { line });
+                }
+            }
+        }
 
-                    Compilation compilation = new Compilation(line, options);
-                    if (autoEval)
-                    {
-                        Evaluation.EvaluationResult result = compilation.Evaluate(variables);
-                        if (result.diagnostics.HasErrors)
-                        {
-                            result.diagnostics.WriteToStandardOut();
-                        }
-                        else
-                        {
-                            Console.WriteLine("Evaluation result: " + result.value.ToString());
-                        }
-                    }
+        private void DoCompilation(string[] lines)
+        {
+            CompilationOptions options = new CompilationOptions();
+            switch (treeStage)
+            {
+                case 0:
+                    options.printLexerOutput = showTree;
+                    break;
+                case 1:
+                    options.printParserOutput = showTree;
+                    break;
+                case 2:
+                    options.printBinderOutput = showTree;
+                    break;
+            }
+            Compilation compilation = new Compilation(lines, options);
+            if (autoEval)
+            {
+                Evaluation.EvaluationResult result = compilation.Evaluate(variables);
+                if (result.diagnostics.HasErrors)
+                {
+                    result.diagnostics.WriteToStandardOut();
+                }
+                else
+                {
+                    Console.WriteLine("Evaluation result: " + result.value.ToString());
                 }
             }
         }

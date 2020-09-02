@@ -31,7 +31,7 @@ namespace SlangLang.Tests
         [InlineData("c = 33", 33)]
         public void Tests(string text, object expectedValue)
         {
-            Compilation comp = new Compilation(text, CompilationOptions.DefaultOptions);
+            Compilation comp = new Compilation(new string[] { text }, CompilationOptions.DefaultOptions);
             Dictionary<VariableSymbol, object> variables = new Dictionary<VariableSymbol, object>() 
             {
                 { new VariableSymbol("a", typeof(int)), 10 },

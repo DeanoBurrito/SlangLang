@@ -70,19 +70,18 @@ namespace SlangLang.Debug
 
         private int FindLine(int index, out int idxRemainder)
         {
-            int idx = index;
-            idxRemainder = idx;
+            idxRemainder = index;
             int curLineLen = lineLengths[0];
             int curLine = 0;
-            while (idx > curLineLen)
+            while (index >= curLineLen)
             {
                 curLine++;
                 if (curLine >= lineLengths.Length)
                     return -1; //means it dosnt exist, return usable error in upstream code
-                idx -= curLineLen;
+                index -= curLineLen;
                 curLineLen = lineLengths[curLine];
             }
-            idxRemainder = idx;
+            idxRemainder = index;
             return curLine;
         }
     }

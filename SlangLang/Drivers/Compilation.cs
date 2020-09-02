@@ -15,7 +15,7 @@ namespace SlangLang.Drivers
 
         ExpressionNode parseTree;
         
-        public Compilation(string sourceCode, CompilationOptions compOptions)
+        public Compilation(string[] sourceCode, CompilationOptions compOptions)
         {
             options = compOptions;
             diags = new Diagnostics(DateTime.Now);
