@@ -1,25 +1,27 @@
 using System;
+using System.Collections.Immutable;
 
 namespace SlangLang.Debug
 {
     public sealed class TextStore
     {
-        readonly string[] lines;
-        readonly int[] lineLengths;
+        readonly ImmutableArray<string> lines;
+        readonly ImmutableArray<int> lineLengths;
         readonly int length;
         readonly string filename;
         
         public TextStore(string fname, string[] fileLines)
         {
             filename = fname;
-            lines = fileLines;
-            lineLengths = new int[lines.Length];
+            lines = fileLines.ToImmutableArray();
+            ImmutableArray<int>.Builder lineLengthsBuilder = ImmutableArray.CreateBuilder<int>(lines.Length);
             length = 0;
             for (int i = 0; i < lines.Length; i++)
             {
-                lineLengths[i] = lines[i].Length;
+                lineLengthsBuilder.Add(lines[i].Length);
                 length += lines[i].Length;
             }
+            lineLengths = lineLengthsBuilder.ToImmutableArray();
         }
 
         public int GetLength()
