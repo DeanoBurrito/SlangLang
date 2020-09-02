@@ -5,25 +5,40 @@ namespace SlangLang.Debug
 {
     public sealed class Diagnostics
     {
-        Dictionary<string, List<DiagnosticEntry>> infoEntries = new Dictionary<string, List<DiagnosticEntry>>();
-        Dictionary<string, List<DiagnosticEntry>> warningEntries = new Dictionary<string, List<DiagnosticEntry>>();
-        Dictionary<string, List<DiagnosticEntry>> failureEntries = new Dictionary<string, List<DiagnosticEntry>>();
+        public static Diagnostics DummyInstance = new Diagnostics();
+        
+        Dictionary<string, List<DiagnosticEntry>> infoEntries;
+        Dictionary<string, List<DiagnosticEntry>> warningEntries;
+        Dictionary<string, List<DiagnosticEntry>> failureEntries;
         (ConsoleColor fg, ConsoleColor bg) infoColor = (ConsoleColor.White, ConsoleColor.Black);
         (ConsoleColor fg, ConsoleColor bg) warningColor = (ConsoleColor.Yellow, ConsoleColor.Black);
         (ConsoleColor fg, ConsoleColor bg) failureColor = (ConsoleColor.Red, ConsoleColor.Black);
 
         DateTime initTime;
-
+        bool dummyInstance;
         
         public bool HasErrors { get; private set; }
+
+        internal Diagnostics()
+        {
+            dummyInstance = true;
+        }
         
         public Diagnostics(DateTime startTime)
         { 
             initTime = startTime;
+            dummyInstance = false;
+
+            infoEntries = new Dictionary<string, List<DiagnosticEntry>>();
+            warningEntries = new Dictionary<string, List<DiagnosticEntry>>();
+            failureEntries = new Dictionary<string, List<DiagnosticEntry>>();
         }
 
         public void Aggregate(Diagnostics diagnostics)
         {
+            if (diagnostics.dummyInstance || dummyInstance)
+                return;
+            
             foreach (KeyValuePair<string, List<DiagnosticEntry>> pair in diagnostics.infoEntries)
             {
                 if (!infoEntries.ContainsKey(pair.Key))
@@ -46,6 +61,9 @@ namespace SlangLang.Debug
 
         public void AddInfo(string module, string message, DateTime when)
         {
+            if (dummyInstance)
+                return;
+
             if (!infoEntries.ContainsKey(module))
                 infoEntries.Add(module, new List<DiagnosticEntry>());
             infoEntries[module].Add(new DiagnosticEntry(module, message, null, when));
@@ -53,6 +71,9 @@ namespace SlangLang.Debug
 
         public void AddWarning(string module, string message, TextLocation where, DateTime when)
         {
+            if (dummyInstance)
+                return;
+
             if (!warningEntries.ContainsKey(module))
                 warningEntries.Add(module, new List<DiagnosticEntry>());
             warningEntries[module].Add(new DiagnosticEntry(module, message, where, when));
@@ -60,6 +81,9 @@ namespace SlangLang.Debug
 
         public void AddFailure(string module, string message, TextLocation where, DateTime when)
         {
+            if (dummyInstance)
+                return;
+
             HasErrors = true;
             if (!failureEntries.ContainsKey(module))
                 failureEntries.Add(module, new List<DiagnosticEntry>());
@@ -68,6 +92,9 @@ namespace SlangLang.Debug
 
         public void Clear()
         {
+            if (dummyInstance)
+                return;
+
             HasErrors = false;
             infoEntries.Clear();
             warningEntries.Clear();
@@ -76,6 +103,9 @@ namespace SlangLang.Debug
 
         public void WriteToStandardOut()
         {   
+            if (dummyInstance)
+                return;
+
             const int wrapIndent = 8;
             int terminalWidth = Console.WindowWidth - wrapIndent;
             
