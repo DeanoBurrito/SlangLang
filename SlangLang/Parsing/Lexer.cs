@@ -9,6 +9,14 @@ namespace SlangLang.Parsing
         readonly TextStore sourceStore;
         int currChar;
 
+        char current;
+        int start;
+        TextLocation startLocation;
+        TextLocation endLocation;
+        string text;
+        int textLength;
+        LanguageTokenType type;
+
         readonly string filename;
         readonly Diagnostics diagnostics;
 
@@ -35,155 +43,199 @@ namespace SlangLang.Parsing
 
         private LanguageToken LexNext()
         {   
-            char current = PeekNext(0);
-            int start = currChar;
-            TextLocation startLocation = sourceStore.GetLocation(start);
-            TextLocation endLocation = sourceStore.GetLocation(start + 1); //default ending is only 1 char
+            current = PeekNext(0);
+            start = currChar;
+            startLocation = sourceStore.GetLocation(start);
+            endLocation = sourceStore.GetLocation(start + 1); //default ending is only 1 char
+            text = null;
+            textLength = 1;
+            type = LanguageTokenType.BadToken;
 
             switch (current)
             {
                 case '\0':
                     currChar++;
-                    return new LanguageToken(LanguageTokenType.EndOfFile, "", new TextSpan(startLocation, endLocation, 1));
+                    type = LanguageTokenType.EndOfFile;
+                    break;
                 case '+':
                     currChar++;
-                    return new LanguageToken(LanguageTokenType.Plus, "+", new TextSpan(startLocation, endLocation, 1));
+                    type = LanguageTokenType.Plus;
+                    break;
                 case '-':
                     currChar++;
-                    return new LanguageToken(LanguageTokenType.Minus, "-", new TextSpan(startLocation, endLocation, 1));
+                    type = LanguageTokenType.Minus;
+                    break;
                 case '*':
                     currChar++;
-                    return new LanguageToken(LanguageTokenType.Star, "*", new TextSpan(startLocation, endLocation, 1));
+                    type = LanguageTokenType.Star;
+                    break;
                 case '/':
                     currChar++;
-                    return new LanguageToken(LanguageTokenType.ForwardSlash, "/", new TextSpan(startLocation, endLocation, 1));
+                    type = LanguageTokenType.ForwardSlash;
+                    break;
                 case ';':
                     currChar++;
-                    return new LanguageToken(LanguageTokenType.Semicolon, ";", new TextSpan(startLocation, endLocation, 1));
+                    type = LanguageTokenType.Semicolon;
+                    break;
                 case '(':
                     currChar++;
-                    return new LanguageToken(LanguageTokenType.OpenParanthesis, "(", new TextSpan(startLocation, endLocation, 1));
+                    type = LanguageTokenType.OpenParanthesis;
+                    break;
                 case ')':
                     currChar++;
-                    return new LanguageToken(LanguageTokenType.CloseParathesis, ")", new TextSpan(startLocation, endLocation, 1));
+                    type = LanguageTokenType.CloseParathesis;
+                    break;
                 case '!':
-                    if (PeekNext(1) == '=')
+                    currChar++;
+                    if (PeekNext(0) == '=')
                     {
-                        currChar += 2;
-                        endLocation = sourceStore.GetLocation(currChar);
-                        return new LanguageToken(LanguageTokenType.ExclamationEquals, "!=", new TextSpan(startLocation, endLocation, 2));
+                        ExtendTokenEnd();
+                        type = LanguageTokenType.ExclamationEquals;
                     }
                     else
                     {
-                        currChar++;
-                        return new LanguageToken(LanguageTokenType.Exclamation, "!", new TextSpan(startLocation, endLocation, 1));
+                        type = LanguageTokenType.Exclamation;
                     }
+                    break;
                 case '=':
-                    if (PeekNext(1) == '=')
+                    currChar++;
+                    if (PeekNext(0) == '=')
                     {
-                        currChar += 2;
-                        endLocation = sourceStore.GetLocation(currChar);
-                        return new LanguageToken(LanguageTokenType.EqualsEquals, "==", new TextSpan(startLocation, endLocation, 2));
+                        ExtendTokenEnd();
+                        type = LanguageTokenType.EqualsEquals;
                     }
                     else
                     {
-                        currChar++;
-                        return new LanguageToken(LanguageTokenType.Equals, "=", new TextSpan(startLocation, endLocation, 1));
+                        type =LanguageTokenType.Equals;
                     }
+                    break;
                 case '&':
-                    if (PeekNext(1) == '&')
+                    currChar++;
+                    if (PeekNext(0) == '&')
                     {
-                        currChar += 2;
-                        endLocation = sourceStore.GetLocation(currChar);
-                        return new LanguageToken(LanguageTokenType.AndAnd, "&&", new TextSpan(startLocation, endLocation, 2));
+                        ExtendTokenEnd();
+                        type = LanguageTokenType.AndAnd;
                     }
                     else
                     {
-                        currChar++;
-                        return new LanguageToken(LanguageTokenType.And, "&", new TextSpan(startLocation, endLocation, 1));
+                        type = LanguageTokenType.And;
                     }
+                    break;
                 case '|':
-                    if (PeekNext(1) == '|')
+                    currChar++;
+                    if (PeekNext(0) == '|')
                     {
-                        currChar += 2;
-                        endLocation = sourceStore.GetLocation(currChar);
-                        return new LanguageToken(LanguageTokenType.PipePipe, "||", new TextSpan(startLocation, endLocation, 2));
+                        ExtendTokenEnd();
+                        type = LanguageTokenType.PipePipe;
                     }
                     else
                     {
-                        currChar++;
-                        return new LanguageToken(LanguageTokenType.Pipe, "|", new TextSpan(startLocation, endLocation, 1));
+                        type = LanguageTokenType.Pipe;
                     }
+                    break;
                 default:
                 {
-                    int textLen;
-                    string text;
                     if (char.IsLetter(current))
                     {
-                        //text
-                        while (char.IsLetter(current))
-                        {
-                            current = MoveNext();
-                        }
-
-                        endLocation = sourceStore.GetLocation(currChar);
-                        textLen = currChar - start;
-                        text = sourceStore.GetSubstring(start, currChar - start);
-                        LanguageTokenType keyword = LanguageFacts.GetKeyword(text);
-                        return new LanguageToken(keyword, text, new TextSpan(startLocation, endLocation, textLen));
+                        ReadKeywordIdentifier();
                     }
                     else if (char.IsWhiteSpace(current))
                     {
-                        //whitespace
-                        while (char.IsWhiteSpace(current))
-                        {
-                            current = MoveNext();
-                        }
-
-                        endLocation = sourceStore.GetLocation(currChar);
-                        textLen = currChar - start;
-                        text = sourceStore.GetSubstring(start, currChar - start);
-                        return new LanguageToken(LanguageTokenType.Whitespace, text, new TextSpan(startLocation, endLocation, textLen));
+                        ReadWhitespaceToken();
                     }
                     else if (char.IsDigit(current))
                     {
-                        //some kind of number
-                        while (char.IsDigit(current))
-                        {
-                            current = MoveNext();
-                        }
-
-                        endLocation = sourceStore.GetLocation(currChar);
-                        textLen = currChar - start;
-                        text = sourceStore.GetSubstring(start, currChar - start);
-                        return new LanguageToken(LanguageTokenType.IntegerNumber, text, new TextSpan(startLocation, endLocation, textLen));
+                        ReadNumberToken();
                     }
                     else if (current == '"')
                     {
-                        //start of a string literal
-                        current = MoveNext();
-                        while (current != '"')
-                        {
-                            current = MoveNext();
-                            if (current == '\0')
-                            {
-                                diagnostics.LexerError_ExpectedEndOfStringLiteral("EOF", startLocation);
-                                return new LanguageToken(LanguageTokenType.EndOfFile, "", new TextSpan(startLocation));
-                            }
-                        }
-                        currChar++;
-                        
-                        endLocation = sourceStore.GetLocation(currChar);
-                        textLen = currChar - start;
-                        text = sourceStore.GetSubstring(start, currChar - start);
-                        return new LanguageToken(LanguageTokenType.String, text, new TextSpan(startLocation, endLocation, textLen));
+                        ReadStringToken();
                     }
-
-                    diagnostics.LexerError_GotBadInput(current.ToString(), startLocation);
-                    currChar++;
-                    return new LanguageToken(LanguageTokenType.BadToken, "", new TextSpan(startLocation));
+                    else
+                    {
+                        currChar++;
+                        diagnostics.LexerError_GotBadInput(current.ToString(), startLocation);
+                    }
+                    break;
                 }
-            } 
+            }
+
+            if (text == null)
+                text = LanguageFacts.GetText(type);
+            if (text == null && type != LanguageTokenType.EndOfFile)
+                throw new Exception("Unexpected null text, text did not trigger bad token, but was not an identifier/number/string or keyword.");
+
+            return new LanguageToken(type, text, new TextSpan(startLocation, endLocation, textLength));
+        }
+
+        private void ExtendTokenEnd()
+        {
+            endLocation = sourceStore.GetLocation(currChar);
+            textLength++;
+            currChar++;
+        }
+
+        private void ReadNumberToken()
+        {
+            while (char.IsDigit(current))
+            {
+                current = MoveNext();
+            }
+
+            endLocation = sourceStore.GetLocation(currChar - 1);
+            textLength = currChar - start;
+            text = sourceStore.GetSubstring(start, currChar - start);
+            type = LanguageTokenType.IntegerNumber;
+        }
+
+        private void ReadWhitespaceToken()
+        {
+            while (char.IsWhiteSpace(current))
+            {
+                current = MoveNext();
+            }
+
+            endLocation = sourceStore.GetLocation(currChar);
+            textLength = currChar - start;
+            text = sourceStore.GetSubstring(start, currChar - start);
+            type = LanguageTokenType.Whitespace;
+        }
+
+        private void ReadKeywordIdentifier()
+        {
+            while (char.IsLetter(current))
+            {
+                current = MoveNext();
+            }
+
+            endLocation = sourceStore.GetLocation(currChar);
+            textLength = currChar - start;
+            text = sourceStore.GetSubstring(start, currChar - start);
+            type = LanguageFacts.GetKeyword(text);
+        }
+
+        private void ReadStringToken()
+        {
+            current = MoveNext();
+            while (current != '"')
+            {
+                current = MoveNext();
+                if (current == '\0')
+                {
+                    diagnostics.LexerError_ExpectedEndOfStringLiteral("EOF", startLocation);
+
+                    endLocation = TextLocation.NoLocation;
+                    textLength = 0;
+                    text = sourceStore.GetSubstring(start, currChar - start);
+                    type = LanguageTokenType.EndOfFile;
+                }
+            }
+            currChar++;
+            
+            endLocation = sourceStore.GetLocation(currChar);
+            textLength = currChar - start;
+            text = sourceStore.GetSubstring(start, currChar - start);
+            type = LanguageTokenType.String;
         }
 
         private char PeekNext(int offset)
