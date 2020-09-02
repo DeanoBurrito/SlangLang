@@ -7,8 +7,8 @@ namespace SlangLang.Parsing
     public sealed class Parser
     {
         readonly LanguageToken[] tokens;
-        int pos;
         readonly Diagnostics diagnostics;
+        int pos;
         
         public Parser(Diagnostics diag, LanguageToken[] allTokens)
         {
@@ -80,40 +80,51 @@ namespace SlangLang.Parsing
         private ExpressionNode ParsePrimaryExpression()
         {
             LanguageToken current = Peek();
-            TextSpan currentSpan = current.textLocation;
-
             switch (current.tokenType)
             {
                 case LanguageTokenType.OpenParanthesis:
-                {
-                    LanguageToken left = NextToken();
-                    ExpressionNode inner = ParseExpression();
-                    LanguageToken right = MatchToken(LanguageTokenType.CloseParathesis);
-                    return inner;
-                }
+                    return ParseParanthesizedExpression();
                 case LanguageTokenType.KeywordTrue:
                 case LanguageTokenType.KeywordFalse:
-                {
-                    LanguageToken boolToken = NextToken();
-                    bool value = boolToken.tokenType == LanguageTokenType.KeywordTrue;
-                    return new LiteralExpression(value, boolToken, currentSpan);
-                }
+                    return ParseBoolLiteral();
+                case LanguageTokenType.IntegerNumber:
+                    return ParseIntegerLiteral();
                 case LanguageTokenType.Identifier:
-                {
-                    LanguageToken identifier = NextToken();
-                    return new NameExpression(identifier, currentSpan);
-                }
-
-                default:
-                {
-                    //TODO: make this modular, not dependant on being int32. (move to switch)
-                    LanguageToken token = MatchToken(LanguageTokenType.IntegerNumber);
-                    if (!int.TryParse(token.text, out int val)) 
-                        diagnostics.ParserError_CouldNotParseInt(currentSpan.start);
-
-                    return new LiteralExpression(val, token, currentSpan);
-                }
+                default: 
+                    return ParseNameExpression();
             }
+        }
+
+        private ExpressionNode ParseNameExpression()
+        {
+            LanguageToken identifier = MatchToken(LanguageTokenType.Identifier);
+            return new NameExpression(identifier, identifier.textLocation);
+        }
+
+        private ExpressionNode ParseParanthesizedExpression()
+        {
+            LanguageToken left = MatchToken(LanguageTokenType.OpenParanthesis);
+            ExpressionNode inner = ParseExpression();
+            LanguageToken right = MatchToken(LanguageTokenType.CloseParathesis);
+            return inner;
+        }
+        
+        private ExpressionNode ParseBoolLiteral()
+        {
+            bool isTrue = Peek().tokenType == LanguageTokenType.KeywordTrue;
+            LanguageToken boolToken = MatchToken(isTrue ? LanguageTokenType.KeywordTrue : LanguageTokenType.KeywordFalse);
+            return new LiteralExpression(isTrue, boolToken, boolToken.textLocation);
+        }
+
+        private ExpressionNode ParseIntegerLiteral()
+        {
+            LanguageToken current = Peek();
+            LanguageToken token = MatchToken(LanguageTokenType.IntegerNumber);
+
+            if (!int.TryParse(token.text, out int val)) 
+                diagnostics.ParserError_CouldNotParseInt(current.textLocation.start);
+
+            return new LiteralExpression(val, token, current.textLocation);
         }
 
         private LanguageToken MatchToken(LanguageTokenType tokenType)
