@@ -176,6 +176,12 @@ namespace SlangLang.Interactive
                     Console.WriteLine(varPair.Key.type + " " + varPair.Key.name + " = " + varPair.Value);
                 }
             }
+
+            [ReplCommand("config", "Shows the current environment config")]
+            public static void ShowConfig(Repl repl, string[] args)
+            {
+                throw new NotImplementedException();
+            }
         }
 
         //I'm sorry, I couldnt help myself.
