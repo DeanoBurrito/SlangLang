@@ -10,7 +10,7 @@ namespace SlangLang.Binding
         public readonly BoundExpression right;
         public readonly BoundBinaryOperator op;
 
-        public BoundBinaryExpression(BoundBinaryOperator op, BoundExpression left, BoundExpression right, TextLocation where) 
+        public BoundBinaryExpression(BoundBinaryOperator op, BoundExpression left, BoundExpression right, TextSpan where) 
             : base(op.resultType, BoundNodeType.BinaryExpression, where)
         {
             this.op = op;

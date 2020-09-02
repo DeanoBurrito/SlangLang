@@ -8,7 +8,7 @@ namespace SlangLang.Parsing
     {   
         public readonly ExpressionNode expression;
         
-        public AssignmentExpression(LanguageToken identifier, ExpressionNode expression, TextLocation where) : base(identifier, ExpressionNodeType.Assignment, where)
+        public AssignmentExpression(LanguageToken identifier, ExpressionNode expression, TextSpan where) : base(identifier, ExpressionNodeType.Assignment, where)
         {
             this.expression = expression;
         }

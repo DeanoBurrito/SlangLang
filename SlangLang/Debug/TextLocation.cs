@@ -6,32 +6,35 @@ namespace SlangLang.Debug
     {
         public static TextLocation NoLocation = new TextLocation("No Source Location", 0, 0);
 
-        public string filename;
-        public int line;
-        public int column;
-        public int length;
+        public readonly string filename;
+        public readonly int line;
+        public readonly int column;
+        internal readonly int absoluteFilePosition = -1;
 
         public TextLocation(string fname, int line, int column)
         {
             filename = fname;
             this.line = line;
             this.column = column;
-            length = 1;
         }
 
-        public TextLocation(TextLocation start, TextLocation end)
+        internal TextLocation(string fname, int line, int column, int absPosition) : this(fname, line, column)
         {
-            filename = start.filename;
-            line = start.line;
-            column = start.column;
-            length = start.length + end.length;
+            absoluteFilePosition = absPosition;
+        }
+
+        public TextLocation(TextLocation copy)
+        {
+            filename = copy.filename;
+            line = copy.line;
+            column = copy.column;
         }
 
         public override string ToString()
         {
             if (filename == "No Source Location")
                 return filename;
-            return "[" + filename + ": line " + line + ", col " + column + (length != 0 ? ", len " + length : "") + "]";
+            return "[" + filename + ": line " + line + ", col " + column + "]";
         }
     }
 }

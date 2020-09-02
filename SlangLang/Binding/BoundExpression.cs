@@ -8,9 +8,9 @@ namespace SlangLang.Binding
     {
         public readonly Type boundType;
         public readonly BoundNodeType nodeType;
-        public readonly TextLocation textLocation;
+        public readonly TextSpan textLocation;
         
-        public BoundExpression(Type bindingType, BoundNodeType nodeType, TextLocation where)
+        public BoundExpression(Type bindingType, BoundNodeType nodeType, TextSpan where)
         {
             boundType = bindingType;
             this.nodeType = nodeType;

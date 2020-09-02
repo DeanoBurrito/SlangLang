@@ -8,7 +8,7 @@ namespace SlangLang.Parsing
     {
         public readonly ExpressionNode operand;
 
-        public UnaryExpression(LanguageToken opToken, ExpressionNode node, TextLocation where) : base(opToken, ExpressionNodeType.Unary, where)
+        public UnaryExpression(LanguageToken opToken, ExpressionNode node, TextSpan where) : base(opToken, ExpressionNodeType.Unary, where)
         {
             operand = node;
         }

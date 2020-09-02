@@ -10,7 +10,7 @@ namespace SlangLang.Binding
         public readonly VariableSymbol variable;
         public readonly BoundExpression expression;
 
-        public BoundAssignmentExpression(VariableSymbol var, BoundExpression expr, TextLocation where) : base(expr.boundType, BoundNodeType.AssignmentExpression, where)
+        public BoundAssignmentExpression(VariableSymbol var, BoundExpression expr, TextSpan where) : base(expr.boundType, BoundNodeType.AssignmentExpression, where)
         {
             variable = var;
             expression = expr;

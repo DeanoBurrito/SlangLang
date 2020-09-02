@@ -5,14 +5,14 @@ namespace SlangLang.Parsing
 {
     public sealed class LanguageToken
     {
-        public TextLocation sourceLocation;
+        public TextSpan textLocation;
         public LanguageTokenType tokenType;
         public string text;
 
-        public LanguageToken(LanguageTokenType type, string txt, TextLocation srcLocation)
+        public LanguageToken(LanguageTokenType type, string txt, TextSpan location)
         {
             tokenType = type;
-            sourceLocation = srcLocation;
+            textLocation = location;
             text = txt;
         }
 

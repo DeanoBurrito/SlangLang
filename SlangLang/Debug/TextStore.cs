@@ -7,9 +7,11 @@ namespace SlangLang.Debug
         readonly string[] lines;
         readonly int[] lineLengths;
         readonly int length;
+        readonly string filename;
         
-        public TextStore(string[] fileLines)
+        public TextStore(string fname, string[] fileLines)
         {
+            filename = fname;
             lines = fileLines;
             lineLengths = new int[lines.Length];
             length = 0;
@@ -56,7 +58,7 @@ namespace SlangLang.Debug
             int lineNum = FindLine(index, out int col);
             if (lineNum == -1)
                 return TextLocation.NoLocation;
-            return new TextLocation("", lineNum, col);
+            return new TextLocation(filename, lineNum, col, index);
         }
 
         private int FindLine(int index, out int idxRemainder)

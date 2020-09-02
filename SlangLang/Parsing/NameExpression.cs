@@ -6,7 +6,7 @@ namespace SlangLang.Parsing
 {
     public sealed class NameExpression : ExpressionNode
     {   
-        public NameExpression(LanguageToken identifier, TextLocation where) : base(identifier, ExpressionNodeType.Name, where)
+        public NameExpression(LanguageToken identifier, TextSpan where) : base(identifier, ExpressionNodeType.Name, where)
         {
             
         }

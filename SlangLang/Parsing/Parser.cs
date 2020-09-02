@@ -43,7 +43,7 @@ namespace SlangLang.Parsing
                 LanguageToken identifierToken = NextToken();
                 LanguageToken operatorToken = NextToken();
                 ExpressionNode expr = ParseAssignmentExpression();
-                return new AssignmentExpression(identifierToken, expr, new TextLocation(identifierToken.sourceLocation, expr.textLocation));
+                return new AssignmentExpression(identifierToken, expr, new TextSpan(identifierToken.textLocation.start, expr.textLocation.end));
             }
             return ParseBinaryExpression();
         }
@@ -56,7 +56,7 @@ namespace SlangLang.Parsing
             {
                 LanguageToken operatorToken = NextToken();
                 ExpressionNode operand = ParseBinaryExpression(unaryOperatorPrecedence);
-                left = new UnaryExpression(operatorToken, operand, new TextLocation(operatorToken.sourceLocation, operand.textLocation));
+                left = new UnaryExpression(operatorToken, operand, new TextSpan(operatorToken.textLocation.start, operand.textLocation.end));
             }
             else
             {
@@ -71,7 +71,7 @@ namespace SlangLang.Parsing
                 
                 LanguageToken operatorToken = NextToken();
                 ExpressionNode right = ParseBinaryExpression(precedence);
-                left = new BinaryExpression(operatorToken, left, right, new TextLocation(left.textLocation, right.textLocation));
+                left = new BinaryExpression(operatorToken, left, right, new TextSpan(left.textLocation.start, right.textLocation.end));
             }
 
             return left;
@@ -80,7 +80,7 @@ namespace SlangLang.Parsing
         private ExpressionNode ParsePrimaryExpression()
         {
             LanguageToken current = Peek();
-            TextLocation currentLocation = current.sourceLocation;
+            TextSpan currentSpan = current.textLocation;
 
             switch (current.tokenType)
             {
@@ -96,12 +96,12 @@ namespace SlangLang.Parsing
                 {
                     LanguageToken boolToken = NextToken();
                     bool value = boolToken.tokenType == LanguageTokenType.KeywordTrue;
-                    return new LiteralExpression(value, boolToken, currentLocation);
+                    return new LiteralExpression(value, boolToken, currentSpan);
                 }
                 case LanguageTokenType.Identifier:
                 {
                     LanguageToken identifier = NextToken();
-                    return new NameExpression(identifier, currentLocation);
+                    return new NameExpression(identifier, currentSpan);
                 }
 
                 default:
@@ -109,9 +109,9 @@ namespace SlangLang.Parsing
                     //TODO: make this modular, not dependant on being int32. (move to switch)
                     LanguageToken token = MatchToken(LanguageTokenType.IntegerNumber);
                     if (!int.TryParse(token.text, out int val)) 
-                        diagnostics.AddFailure("Parser", "Could not get int from number token.", token.sourceLocation, DateTime.Now);
+                        diagnostics.AddFailure("Parser", "Could not get int from number token.", currentSpan.start, DateTime.Now);
 
-                    return new LiteralExpression(val, token, currentLocation);
+                    return new LiteralExpression(val, token, currentSpan);
                 }
             }
         }
@@ -121,8 +121,8 @@ namespace SlangLang.Parsing
             if (Peek().tokenType == tokenType)
                 return NextToken();
             
-            diagnostics.AddFailure("Parser", "Token match failed, expecting " + tokenType + ", found " + Peek().tokenType + " instead.", Peek().sourceLocation, DateTime.Now);
-            return new LanguageToken(tokenType, "", TextLocation.NoLocation);
+            diagnostics.AddFailure("Parser", "Token match failed, expecting " + tokenType + ", found " + Peek().tokenType + " instead.", Peek().textLocation.start, DateTime.Now);
+            return new LanguageToken(tokenType, "", TextSpan.NoText);
         }
 
         private LanguageToken NextToken()

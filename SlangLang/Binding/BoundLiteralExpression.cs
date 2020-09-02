@@ -8,7 +8,7 @@ namespace SlangLang.Binding
     {
         public readonly object value;
 
-        public BoundLiteralExpression(object val, TextLocation where) : base(val.GetType(), BoundNodeType.LiteralExpression, where)
+        public BoundLiteralExpression(object val, TextSpan where) : base(val.GetType(), BoundNodeType.LiteralExpression, where)
         {
             value = val;
         }

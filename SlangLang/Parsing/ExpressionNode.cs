@@ -7,10 +7,10 @@ namespace SlangLang.Parsing
     public abstract class ExpressionNode
     {
         public readonly ExpressionNodeType nodeType;
-        public readonly TextLocation textLocation;
+        public readonly TextSpan textLocation;
         public readonly LanguageToken token;
 
-        public ExpressionNode(LanguageToken token, ExpressionNodeType type, TextLocation where)
+        public ExpressionNode(LanguageToken token, ExpressionNodeType type, TextSpan where)
         {
             nodeType = type;
             textLocation = where;
