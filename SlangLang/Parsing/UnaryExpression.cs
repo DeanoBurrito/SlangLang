@@ -12,11 +12,6 @@ namespace SlangLang.Parsing
         {
             operand = node;
         }
-
-        public override List<ExpressionNode> GetChildren()
-        {
-            return new List<ExpressionNode>() { operand };
-        }
         
         public override string ToString()
         {

@@ -15,11 +15,6 @@ namespace SlangLang.Parsing
             rightNode = right;
         }
 
-        public override List<ExpressionNode> GetChildren()
-        {
-            return new List<ExpressionNode>() { leftNode, rightNode };
-        }
-
         public override string ToString()
         {
             return "[BinaryExpression] " + base.token.tokenType + " (" + base.token.text + ")";

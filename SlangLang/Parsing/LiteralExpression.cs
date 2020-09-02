@@ -15,11 +15,6 @@ namespace SlangLang.Parsing
             valueSpecifier = spec;
         }
 
-        public override List<ExpressionNode> GetChildren()
-        {
-            return new List<ExpressionNode>(0);
-        }
-
         public override string ToString()
         {
             string specifierStr = valueSpecifier != LiteralValueSpecifier.Default ? " (" + valueSpecifier.ToString() + ")" : " (*)";

@@ -16,11 +16,6 @@ namespace SlangLang.Binding
             expression = expr;
         }
 
-        public override List<BoundExpression> GetChildren()
-        {
-            return new List<BoundExpression>() { expression };
-        }
-
         public override string ToString()
         {
             return "[AssignmentExpression] " + variable.name + " (" + variable.type + ")";

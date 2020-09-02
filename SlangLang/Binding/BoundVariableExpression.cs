@@ -14,11 +14,6 @@ namespace SlangLang.Binding
             variable = variableSymbol;
         }
 
-        public override List<BoundExpression> GetChildren()
-        {
-            return new List<BoundExpression>();
-        }
-
         public override string ToString()
         {
             return "[VariableExpression] " + variable.name + " (" + variable.type.ToString() + ")";

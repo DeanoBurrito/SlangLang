@@ -15,11 +15,6 @@ namespace SlangLang.Binding
             this.op = op;
         }
 
-        public override List<BoundExpression> GetChildren()
-        {
-            return new List<BoundExpression>() { operand };
-        }
-
         public override string ToString()
         {
             return "[UnaryExpression] " + op;

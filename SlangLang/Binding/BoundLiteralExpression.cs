@@ -13,11 +13,6 @@ namespace SlangLang.Binding
             value = val;
         }
 
-        public override List<BoundExpression> GetChildren()
-        {
-            return new List<BoundExpression>();
-        }
-
         public override string ToString()
         {
             return "[Literal] " + value + " (" + base.boundType.ToString() + ")";
