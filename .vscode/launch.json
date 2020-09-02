@@ -9,9 +9,9 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/Compiler/bin/Debug/netcoreapp3.1/SlangLang.dll",
+            "program": "${workspaceFolder}/SlangLang/bin/Debug/netcoreapp3.1/SlangLang.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/Compiler",
+            "cwd": "${workspaceFolder}/SlangLang",
             "console": "externalTerminal",
             "stopAtEntry": false
         },
