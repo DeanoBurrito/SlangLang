@@ -109,7 +109,7 @@ namespace SlangLang.Parsing
                     //TODO: make this modular, not dependant on being int32. (move to switch)
                     LanguageToken token = MatchToken(LanguageTokenType.IntegerNumber);
                     if (!int.TryParse(token.text, out int val)) 
-                        diagnostics.AddFailure("Parser", "Could not get int from number token.", currentSpan.start, DateTime.Now);
+                        diagnostics.ParserError_CouldNotParseInt(currentSpan.start);
 
                     return new LiteralExpression(val, token, currentSpan);
                 }
@@ -121,7 +121,7 @@ namespace SlangLang.Parsing
             if (Peek().tokenType == tokenType)
                 return NextToken();
             
-            diagnostics.AddFailure("Parser", "Token match failed, expecting " + tokenType + ", found " + Peek().tokenType + " instead.", Peek().textLocation.start, DateTime.Now);
+            diagnostics.ParserError_TokenMatchFailed(tokenType, Peek().tokenType, Peek().textLocation.start);
             return new LanguageToken(tokenType, "", TextSpan.NoText);
         }
 

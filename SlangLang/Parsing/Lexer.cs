@@ -167,7 +167,7 @@ namespace SlangLang.Parsing
                             current = MoveNext();
                             if (current == '\0')
                             {
-                                diagnostics.AddFailure("Lexer", "Expected \" to end string literal, found end of file.", startLocation, DateTime.Now);
+                                diagnostics.LexerError_ExpectedEndOfStringLiteral("EOF", startLocation);
                                 return new LanguageToken(LanguageTokenType.EndOfFile, "", new TextSpan(startLocation));
                             }
                         }
@@ -179,7 +179,7 @@ namespace SlangLang.Parsing
                         return new LanguageToken(LanguageTokenType.String, text, new TextSpan(startLocation, endLocation, textLen));
                     }
 
-                    diagnostics.AddFailure("Lexer", "Invalid character in input file '" + current + "'", startLocation, DateTime.Now);
+                    diagnostics.LexerError_GotBadInput(current.ToString(), startLocation);
                     currChar++;
                     return new LanguageToken(LanguageTokenType.BadToken, "", new TextSpan(startLocation));
                 }

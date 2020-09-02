@@ -63,7 +63,7 @@ namespace SlangLang.Evaluation
                     }
                 }
 
-                diagnostics.AddFailure("Evaluator", "Unexpected unary operator: " + unary.nodeType, TextLocation.NoLocation, DateTime.Now);
+                diagnostics.EvaluatorError_UnexpectedUnaryOperator(unary.op, unary.textLocation.start);
             }
             if (node is BoundBinaryExpression bin)
             {
@@ -104,7 +104,7 @@ namespace SlangLang.Evaluation
                 else if (bin.op.binaryOperator == BoundBinaryOperatorType.NotEquals)
                     return !Equals(leftResult, rightResult);
                 
-                diagnostics.AddFailure("Evaluator", "Unexpected binary operator in syntax tree: " + bin.nodeType, TextLocation.NoLocation, DateTime.Now);
+                diagnostics.EvaluatorError_UnxpectedBinaryOperator(bin.op, bin.textLocation.start);
             }
 
             throw new Exception("Unexpected node in evaluator.");
