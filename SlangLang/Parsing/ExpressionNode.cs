@@ -5,16 +5,12 @@ using SlangLang.Debug;
 
 namespace SlangLang.Parsing
 {
-    public abstract class ExpressionNode
+    public abstract class ExpressionNode : ParseNode
     {
-        public readonly ExpressionNodeType nodeType;
-        public readonly TextSpan textLocation;
         public readonly LanguageToken token;
 
-        public ExpressionNode(LanguageToken token, ExpressionNodeType type, TextSpan where)
+        public ExpressionNode(LanguageToken token, ParseNodeType type, TextSpan where) : base(type, where)
         {
-            nodeType = type;
-            textLocation = where;
             this.token = token;
         }
 

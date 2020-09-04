@@ -25,22 +25,22 @@ namespace SlangLang.Tests
             {
                 using (AssertingExpressionTree e = new AssertingExpressionTree(expression))
                 {
-                    e.AssertNode(ExpressionNodeType.Binary);
-                        e.AssertNode(ExpressionNodeType.Binary);
-                            e.AssertNodeAndToken(ExpressionNodeType.Name, LanguageTokenType.Identifier, "a");
-                            e.AssertNodeAndToken(ExpressionNodeType.Name, LanguageTokenType.Identifier, "b");
-                        e.AssertNodeAndToken(ExpressionNodeType.Name, LanguageTokenType.Identifier, "c");
+                    e.AssertNode(ParseNodeType.Binary);
+                        e.AssertNode(ParseNodeType.Binary);
+                            e.AssertNodeAndToken(ParseNodeType.Name, LanguageTokenType.Identifier, "a");
+                            e.AssertNodeAndToken(ParseNodeType.Name, LanguageTokenType.Identifier, "b");
+                        e.AssertNodeAndToken(ParseNodeType.Name, LanguageTokenType.Identifier, "c");
                 }
             }
             else
             {
                 using (AssertingExpressionTree e = new AssertingExpressionTree(expression))
                 {
-                    e.AssertNode(ExpressionNodeType.Binary);
-                        e.AssertNodeAndToken(ExpressionNodeType.Name, LanguageTokenType.Identifier, "a");
-                        e.AssertNode(ExpressionNodeType.Binary);
-                            e.AssertNodeAndToken(ExpressionNodeType.Name, LanguageTokenType.Identifier, "b");
-                            e.AssertNodeAndToken(ExpressionNodeType.Name, LanguageTokenType.Identifier, "c");
+                    e.AssertNode(ParseNodeType.Binary);
+                        e.AssertNodeAndToken(ParseNodeType.Name, LanguageTokenType.Identifier, "a");
+                        e.AssertNode(ParseNodeType.Binary);
+                            e.AssertNodeAndToken(ParseNodeType.Name, LanguageTokenType.Identifier, "b");
+                            e.AssertNodeAndToken(ParseNodeType.Name, LanguageTokenType.Identifier, "c");
                 }
             }
         }
@@ -61,20 +61,20 @@ namespace SlangLang.Tests
             {
                 using (AssertingExpressionTree e = new AssertingExpressionTree(expression))
                 {
-                    e.AssertNode(ExpressionNodeType.Binary);
-                        e.AssertNodeAndToken(ExpressionNodeType.Unary, unaryOp, LanguageFacts.GetText(unaryOp));
-                            e.AssertNodeAndToken(ExpressionNodeType.Name, LanguageTokenType.Identifier, "a");
-                        e.AssertNodeAndToken(ExpressionNodeType.Name, LanguageTokenType.Identifier, "b");
+                    e.AssertNode(ParseNodeType.Binary);
+                        e.AssertNodeAndToken(ParseNodeType.Unary, unaryOp, LanguageFacts.GetText(unaryOp));
+                            e.AssertNodeAndToken(ParseNodeType.Name, LanguageTokenType.Identifier, "a");
+                        e.AssertNodeAndToken(ParseNodeType.Name, LanguageTokenType.Identifier, "b");
                 }
             }
             else
             {
                 using (AssertingExpressionTree e = new AssertingExpressionTree(expression))
                 {
-                    e.AssertNodeAndToken(ExpressionNodeType.Unary, unaryOp, LanguageFacts.GetText(unaryOp));
-                        e.AssertNode(ExpressionNodeType.Binary);
-                            e.AssertNodeAndToken(ExpressionNodeType.Name, LanguageTokenType.Identifier, "a");
-                            e.AssertNodeAndToken(ExpressionNodeType.Name, LanguageTokenType.Identifier, "b");
+                    e.AssertNodeAndToken(ParseNodeType.Unary, unaryOp, LanguageFacts.GetText(unaryOp));
+                        e.AssertNode(ParseNodeType.Binary);
+                            e.AssertNodeAndToken(ParseNodeType.Name, LanguageTokenType.Identifier, "a");
+                            e.AssertNodeAndToken(ParseNodeType.Name, LanguageTokenType.Identifier, "b");
                 }
             }
         }

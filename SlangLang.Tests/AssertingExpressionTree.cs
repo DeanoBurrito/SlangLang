@@ -34,7 +34,7 @@ namespace SlangLang.Tests
             }
         }
 
-        public void AssertNodeAndToken(ExpressionNodeType nodeType, LanguageTokenType type, string text)
+        public void AssertNodeAndToken(ParseNodeType nodeType, LanguageTokenType type, string text)
         {
             Assert.True(enumerator.MoveNext());
             Assert.Equal(nodeType, enumerator.Current.nodeType);
@@ -44,7 +44,7 @@ namespace SlangLang.Tests
             Assert.Equal(text, token.text);
         }
 
-        public void AssertNode(ExpressionNodeType type)
+        public void AssertNode(ParseNodeType type)
         {
             Assert.True(enumerator.MoveNext());
             Assert.Equal(type, enumerator.Current.nodeType);

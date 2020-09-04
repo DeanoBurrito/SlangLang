@@ -2,7 +2,7 @@ using System;
 
 namespace SlangLang.Parsing
 {
-    public enum ExpressionNodeType : int
+    public enum ParseNodeType : int
     {
         Unary,
         Binary,

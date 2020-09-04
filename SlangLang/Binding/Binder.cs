@@ -30,15 +30,15 @@ namespace SlangLang.Binding
         {
             switch (node.nodeType)
             {
-                case ExpressionNodeType.Literal:
+                case ParseNodeType.Literal:
                     return BindLiteralExpression((LiteralExpression)node);
-                case ExpressionNodeType.Unary:
+                case ParseNodeType.Unary:
                     return BindUnaryExpression((UnaryExpression)node);
-                case ExpressionNodeType.Binary:
+                case ParseNodeType.Binary:
                     return BindBinaryExpression((BinaryExpression)node);
-                case ExpressionNodeType.Name:
+                case ParseNodeType.Name:
                     return BindNameExpression((NameExpression)node);
-                case ExpressionNodeType.Assignment:
+                case ParseNodeType.Assignment:
                     return BindAssignmentExpression((AssignmentExpression)node);
             }
 
