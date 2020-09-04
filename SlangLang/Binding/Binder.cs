@@ -61,7 +61,7 @@ namespace SlangLang.Binding
                 diagnostics.BinderError_UnaryOperatorNotDefined(expression.token, boundOperand.boundType, expression.textLocation.start);
                 return boundOperand;
             }
-            return new BoundUnaryExpression(boundOperator, boundOperand, new TextSpan(boundOperand.textLocation.start, boundOperand.textLocation.end));
+            return new BoundUnaryExpression(boundOperator, boundOperand, expression.textLocation);
         }
 
         private BoundExpression BindBinaryExpression(BinaryExpression expression)
@@ -74,7 +74,7 @@ namespace SlangLang.Binding
                 diagnostics.BinderError_BinaryOperatorNotDefined(expression.token, boundLeft.boundType, boundRight.boundType, expression.textLocation.start);
                 return boundLeft;
             }
-            return new BoundBinaryExpression(boundOperator, boundLeft, boundRight, new TextSpan(boundLeft.textLocation.start, boundRight.textLocation.end));
+            return new BoundBinaryExpression(boundOperator, boundLeft, boundRight, expression.textLocation);
         }
 
         private BoundExpression BindNameExpression(NameExpression expression)

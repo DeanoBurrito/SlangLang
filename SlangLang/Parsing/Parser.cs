@@ -44,7 +44,7 @@ namespace SlangLang.Parsing
                 LanguageToken identifierToken = NextToken();
                 LanguageToken operatorToken = NextToken();
                 ExpressionNode expr = ParseAssignmentExpression();
-                return new AssignmentExpression(identifierToken, expr, new TextSpan(identifierToken.textLocation.start, expr.textLocation.end));
+                return new AssignmentExpression(identifierToken, expr, expr.textLocation);
             }
             return ParseBinaryExpression();
         }
@@ -57,7 +57,7 @@ namespace SlangLang.Parsing
             {
                 LanguageToken operatorToken = NextToken();
                 ExpressionNode operand = ParseBinaryExpression(unaryOperatorPrecedence);
-                left = new UnaryExpression(operatorToken, operand, new TextSpan(operatorToken.textLocation.start, operand.textLocation.end));
+                left = new UnaryExpression(operatorToken, operand, operand.textLocation);
             }
             else
             {
@@ -72,7 +72,7 @@ namespace SlangLang.Parsing
                 
                 LanguageToken operatorToken = NextToken();
                 ExpressionNode right = ParseBinaryExpression(precedence);
-                left = new BinaryExpression(operatorToken, left, right, new TextSpan(left.textLocation.start, right.textLocation.end));
+                left = new BinaryExpression(operatorToken, left, right, operatorToken.textLocation);
             }
 
             return left;
