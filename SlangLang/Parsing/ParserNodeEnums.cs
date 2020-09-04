@@ -6,11 +6,13 @@ namespace SlangLang.Parsing
     {
         Unary,
         Binary,
-        Literal,
-        
+        Literal,  
         Name,
         Assignment,
+
         CompilationUnit,
+
+        BlockStatement,
     }
 
     public enum LiteralValueSpecifier
