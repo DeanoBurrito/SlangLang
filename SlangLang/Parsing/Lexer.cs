@@ -168,7 +168,7 @@ namespace SlangLang.Parsing
 
             if (text == null)
                 text = LanguageFacts.GetText(type);
-            if (text == null && type != LanguageTokenType.EndOfFile)
+            if (text == null && type != LanguageTokenType.BadToken && type != LanguageTokenType.EndOfFile)
                 throw new Exception("Unexpected null text, text did not trigger bad token, but was not an identifier/number/string or keyword.");
 
             return new LanguageToken(type, text, new TextSpan(startLocation, endLocation, textLength));
