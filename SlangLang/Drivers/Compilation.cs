@@ -40,7 +40,7 @@ namespace SlangLang.Drivers
             if (options.printParserOutput)
             {
                 Console.ForegroundColor = ConsoleColor.Gray;
-                PrettyPrintParsedTree(compilationUnit.expression);
+                //PrettyPrintParsedTree(compilationUnit.expression);
                 Console.ResetColor();
             }
         }
@@ -56,7 +56,7 @@ namespace SlangLang.Drivers
             if (options.printParserOutput)
             {
                 Console.ForegroundColor = ConsoleColor.Gray;
-                PrettyPrintParsedTree(compilationUnit.expression);
+                //PrettyPrintParsedTree(compilationUnit.expression); TODO
                 Console.ResetColor();
             }
         }
@@ -71,12 +71,12 @@ namespace SlangLang.Drivers
             if (options.printBinderOutput)
             {
                 Console.ForegroundColor = ConsoleColor.Gray;
-                PrettyPrintBoundTree(GlobalScope.expression);
+                //PrettyPrintBoundTree(GlobalScope.statement); TODO
                 Console.ResetColor();
             }
             
             diags.Aggregate(GlobalScope.diagnostics);
-            Evaluator eval = new Evaluator(diags, GlobalScope.expression, variables);
+            Evaluator eval = new Evaluator(diags, GlobalScope.statement, variables);
             if (diags.HasErrors)
                 return new EvaluationResult(null, diags); //just return the error, not the value
             return new EvaluationResult(eval.Evaluate(), diags);

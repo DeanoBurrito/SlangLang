@@ -26,6 +26,11 @@ namespace SlangLang.Debug
             diagnostics.AddFailure("Parser", "Token match failed, expected " + expected + ", found " + actual + " instead.", where, DateTime.Now);
         }
 
+        internal static void BinderError_UnexpectedStatementType(this Diagnostics diagnostics, ParseNodeType type, TextLocation where)
+        {
+            diagnostics.AddFailure("Binder", "Failed to bind statement, unexpected type " + type + ".", where, DateTime.Now);
+        }
+
         internal static void BinderError_UnexpectedExpressionType(this Diagnostics diagnostics, ParseNodeType type, TextLocation where)
         {
             diagnostics.AddFailure("Binder", "Failed to bind expression in tree, unexpected type " + type + ".", where, DateTime.Now);

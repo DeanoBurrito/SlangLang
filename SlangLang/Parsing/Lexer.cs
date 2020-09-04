@@ -83,6 +83,14 @@ namespace SlangLang.Parsing
                     currChar++;
                     type = LanguageTokenType.CloseParathesis;
                     break;
+                case '{':
+                    currChar++;
+                    type = LanguageTokenType.OpenBrace;
+                    break;
+                case '}':
+                    currChar++;
+                    type = LanguageTokenType.CloseBrace;
+                    break;
                 case '!':
                     currChar++;
                     if (PeekNext(0) == '=')

@@ -8,20 +8,48 @@ namespace SlangLang.Evaluation
 {
     internal sealed class Evaluator
     {
-        BoundExpression root;
-        Diagnostics diagnostics;
-        Dictionary<VariableSymbol, object> variables;
+        private BoundStatement root;
+        private Diagnostics diagnostics;
+        private Dictionary<VariableSymbol, object> variables;
+        private object lastValue;
 
-        public Evaluator(Diagnostics diag, BoundExpression rootNode, Dictionary<VariableSymbol, object> variables)
+        public Evaluator(Diagnostics diag, BoundStatement rootStatement, Dictionary<VariableSymbol, object> variables)
         {
-            root = rootNode;
+            root = rootStatement;
             diagnostics = diag;
             this.variables = variables;
         }
 
         public object Evaluate()
         {
-            return EvaluateExpression(root);
+            EvaluateStatement(root);
+            return lastValue;
+        }
+
+        private void EvaluateStatement(BoundStatement statement)
+        {
+            switch (statement.nodeType)
+            {
+                case BoundNodeType.BlockStatement:
+                    EvaluateBlockStatement((BoundBlockStatement)statement);
+                    return;
+                case BoundNodeType.ExpressionStatement:
+                    EvaluateExpressionStatement((BoundExpressionStatement)statement);
+                    return;
+            }
+
+            throw new Exception("Unexpected statement in evaluator");
+        }
+
+        private void EvaluateBlockStatement(BoundBlockStatement statement)
+        {
+            foreach (BoundStatement s in statement.statements)
+                EvaluateStatement(s);
+        }
+
+        private void EvaluateExpressionStatement(BoundExpressionStatement statement)
+        {
+            lastValue = EvaluateExpression(statement.expression);
         }
 
         private object EvaluateExpression(BoundExpression node)

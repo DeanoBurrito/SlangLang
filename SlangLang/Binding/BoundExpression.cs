@@ -5,17 +5,13 @@ using SlangLang.Debug;
 
 namespace SlangLang.Binding
 {
-    internal abstract class BoundExpression
+    internal abstract class BoundExpression : BoundNode
     {
         public readonly Type boundType;
-        public readonly BoundNodeType nodeType;
-        public readonly TextSpan textLocation;
         
-        public BoundExpression(Type bindingType, BoundNodeType nodeType, TextSpan where)
+        public BoundExpression(Type bindingType, BoundNodeType nodeType, TextSpan where) :base(nodeType, where)
         {
             boundType = bindingType;
-            this.nodeType = nodeType;
-            textLocation = where;
         }
 
         public List<BoundExpression> GetChildren()

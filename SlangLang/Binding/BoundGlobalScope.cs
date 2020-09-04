@@ -9,14 +9,14 @@ namespace SlangLang.Binding
         public readonly BoundGlobalScope previous;
         public readonly Diagnostics diagnostics;
         public readonly ImmutableArray<VariableSymbol> variables;
-        public readonly BoundExpression expression;
+        public readonly BoundStatement statement;
         
-        public BoundGlobalScope(BoundGlobalScope prev, Diagnostics diags, ImmutableArray<VariableSymbol> vars, BoundExpression expr)
+        public BoundGlobalScope(BoundGlobalScope prev, Diagnostics diags, ImmutableArray<VariableSymbol> vars, BoundStatement statement)
         {
             previous = prev;
             diagnostics = diags;
             variables = vars;
-            expression = expr;
+            this.statement = statement;
         }
     }
 }

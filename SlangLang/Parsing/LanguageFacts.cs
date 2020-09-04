@@ -116,6 +116,10 @@ namespace SlangLang.Parsing
                     return "(";
                 case LanguageTokenType.CloseParathesis:
                     return ")";
+                case LanguageTokenType.OpenBrace:
+                    return "{";
+                case LanguageTokenType.CloseBrace:
+                    return "}";
                 case LanguageTokenType.Semicolon:
                     return ";";
                 default:

@@ -5,12 +5,12 @@ namespace SlangLang.Parsing
 {
     public sealed class CompilationUnit : ParseNode
     {
-        public readonly ExpressionNode expression;
+        public readonly StatementNode statement;
         public readonly LanguageToken eofToken;
         
-        public CompilationUnit(ExpressionNode expr, LanguageToken eof, TextSpan where) : base(ParseNodeType.CompilationUnit, where)
+        public CompilationUnit(StatementNode statement, LanguageToken eof, TextSpan where) : base(ParseNodeType.CompilationUnit, where)
         {
-            expression = expr;
+            this.statement = statement;
             eofToken = eof;
         }
 

@@ -4,6 +4,9 @@ namespace SlangLang.Binding
 {
     internal enum BoundNodeType
     {
+        BlockStatement,
+        ExpressionStatement,
+        
         LiteralExpression,
         UnaryExpression,
         BinaryExpression,

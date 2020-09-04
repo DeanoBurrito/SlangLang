@@ -41,10 +41,40 @@ namespace SlangLang.Parsing
 
         public CompilationUnit ParseCompilationUnit()
         { 
-            ExpressionNode expr = ParseExpression();
+            StatementNode statement = ParseStatement();
+            
             //matching for EOF token validates that we're indeed at the end of the file.
             LanguageToken eofToken = MatchToken(LanguageTokenType.EndOfFile);
-            return new CompilationUnit(expr, eofToken, TextSpan.NoText);
+            return new CompilationUnit(statement, eofToken, TextSpan.NoText);
+        }
+
+        private StatementNode ParseStatement()
+        {
+            if (Peek().tokenType == LanguageTokenType.OpenBrace)
+                return ParseBlockStatement();
+            return ParseExpressionStatement();
+        }
+
+        private BlockStatement ParseBlockStatement()
+        {
+            ImmutableArray<StatementNode>.Builder statements = ImmutableArray.CreateBuilder<StatementNode>();
+            LanguageToken openBrace = MatchToken(LanguageTokenType.OpenBrace);
+
+            while (Peek().tokenType != LanguageTokenType.EndOfFile && Peek().tokenType != LanguageTokenType.CloseBrace)
+            {
+                StatementNode statement = ParseStatement();
+                statements.Add(statement);
+            }
+
+            LanguageToken closeBrace = MatchToken(LanguageTokenType.CloseBrace);
+            return new BlockStatement(openBrace, statements.ToImmutable(), closeBrace);
+        }
+
+        private ExpressionStatement ParseExpressionStatement()
+        {
+            ExpressionNode expression = ParseExpression();
+            LanguageToken semicolon = MatchToken(LanguageTokenType.Semicolon);
+            return new ExpressionStatement(expression, semicolon);
         }
 
         private ExpressionNode ParseExpression()

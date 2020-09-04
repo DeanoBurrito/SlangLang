@@ -8,8 +8,6 @@ namespace SlangLang.Parsing
         Whitespace,
         EndOfFile,
         BadToken,
-        OpenParanthesis,
-        CloseParathesis,
 
         //literals
         IntegerNumber,
@@ -34,6 +32,10 @@ namespace SlangLang.Parsing
         Semicolon,
         Equals,
         Identifier,
+        OpenParanthesis,
+        CloseParathesis,
+        OpenBrace,
+        CloseBrace,
 
         //keywords
         KeywordFalse,

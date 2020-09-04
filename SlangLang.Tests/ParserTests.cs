@@ -15,10 +15,10 @@ namespace SlangLang.Tests
         {
             int op1Precedence = LanguageFacts.GetBinaryOperatorPrecedence(new LanguageToken(op1, "", null));
             int op2Precedence = LanguageFacts.GetBinaryOperatorPrecedence(new LanguageToken(op2, "", null));
-            string text = $"a {LanguageFacts.GetText(op1)} b {LanguageFacts.GetText(op2)} c";
+            string text = $"a {LanguageFacts.GetText(op1)} b {LanguageFacts.GetText(op2)} c;";
 
             Debug.Diagnostics diagnostics = new Debug.Diagnostics(DateTime.Now);
-            ExpressionNode expression = new Parser(diagnostics, new TextStore("Tests", new string[] { text })).ParseCompilationUnit().expression;
+            ExpressionNode expression = ParseExpression(text, diagnostics);
             Assert.False(diagnostics.HasErrors);
 
             if (op1Precedence >= op2Precedence)
@@ -51,10 +51,10 @@ namespace SlangLang.Tests
         {
             int unaryPrecedence = LanguageFacts.GetUnaryOperatorPrecedence(new LanguageToken(unaryOp, "", null));
             int binaryPrecedence = LanguageFacts.GetUnaryOperatorPrecedence(new LanguageToken(BinaryOp, "", null));
-            string text = $"{LanguageFacts.GetText(unaryOp)} a {LanguageFacts.GetText(BinaryOp)} b";
+            string text = $"{LanguageFacts.GetText(unaryOp)} a {LanguageFacts.GetText(BinaryOp)} b;";
             
             Debug.Diagnostics diagnostics = new Debug.Diagnostics(DateTime.Now);
-            ExpressionNode expression = new Parser(diagnostics, new TextStore("Tests", new string[] { text })).ParseCompilationUnit().expression;
+            ExpressionNode expression = ParseExpression(text, diagnostics);
             Assert.False(diagnostics.HasErrors);
 
             if (unaryPrecedence >= binaryPrecedence)
@@ -77,6 +77,13 @@ namespace SlangLang.Tests
                             e.AssertNodeAndToken(ParseNodeType.Name, LanguageTokenType.Identifier, "b");
                 }
             }
+        }
+
+        public static ExpressionNode ParseExpression(string text, Diagnostics diag)
+        {
+            Parser parser = new Parser(diag, new TextStore("Tests", new string[] { text }));
+            CompilationUnit cunit = parser.ParseCompilationUnit();
+            return Assert.IsType<ExpressionStatement>(cunit.statement).expression;
         }
 
         public static IEnumerable<object[]> GetBinaryOperatorPairsData()

@@ -16,12 +16,12 @@ namespace SlangLang.Binding
             BoundScope parentScope = CreateParentScope(previous);
             Diagnostics binderDiags = new Diagnostics(DateTime.Now);
             Binder binder = new Binder(binderDiags, parentScope);
-            BoundExpression expression = binder.BindExpression(compilationUnit.expression);
+            BoundStatement statement = binder.BindStatement(compilationUnit.statement);
             ImmutableArray<VariableSymbol> vars = binder.scope.GetDeclaredVariables();
 
             if (previous != null)
                 binderDiags.Aggregate(previous.diagnostics);
-            return new BoundGlobalScope(previous, binderDiags, vars, expression);
+            return new BoundGlobalScope(previous, binderDiags, vars, statement);
         }
 
         private static BoundScope CreateParentScope(BoundGlobalScope previous)
@@ -53,7 +53,37 @@ namespace SlangLang.Binding
             scope = new BoundScope(parentScope);
         }
 
-        public BoundExpression BindExpression(ExpressionNode node)
+        private BoundStatement BindStatement(StatementNode statement)
+        {
+            switch (statement.nodeType)
+            {
+                case ParseNodeType.BlockStatement:
+                    return BindBlockStatement((BlockStatement)statement);
+                case ParseNodeType.ExpressionStatement:
+                    return BindExpressionStatement((ExpressionStatement)statement);
+            }
+
+            diagnostics.BinderError_UnexpectedStatementType(statement.nodeType, statement.textLocation.start);
+            throw new Exception("Unable to bind unexpected statement type: " + statement.nodeType + " @" + statement.textLocation);
+        }
+
+        private BoundStatement BindBlockStatement(BlockStatement statement)
+        {
+            ImmutableArray<BoundStatement>.Builder statements = ImmutableArray.CreateBuilder<BoundStatement>();
+            foreach (StatementNode s in statement.statements)
+            {
+                statements.Add(BindStatement(s));
+            }
+            return new BoundBlockStatement(statements.ToImmutable(), statement.textLocation);
+        }
+
+        private BoundStatement BindExpressionStatement(ExpressionStatement statement)
+        {
+            BoundExpression expression = BindExpression(statement.expression);
+            return new BoundExpressionStatement(expression, statement.textLocation);
+        }
+
+        private BoundExpression BindExpression(ExpressionNode node)
         {
             switch (node.nodeType)
             {

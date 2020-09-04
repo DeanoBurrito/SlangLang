@@ -13,6 +13,7 @@ namespace SlangLang.Parsing
         CompilationUnit,
 
         BlockStatement,
+        ExpressionStatement,
     }
 
     public enum LiteralValueSpecifier
