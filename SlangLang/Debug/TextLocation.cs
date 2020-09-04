@@ -34,7 +34,7 @@ namespace SlangLang.Debug
         {
             if (filename == "No Source Location")
                 return filename;
-            return "[" + filename + ": line " + line + ", col " + column + "]";
+            return "[" + filename + ": line " + (line + 1) + ", col " + (column + 1) + "]";
         }
     }
 }
