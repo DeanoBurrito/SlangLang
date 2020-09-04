@@ -16,7 +16,7 @@ namespace SlangLang.Tests
             if (text == null)
                 return;
             
-            LanguageToken[] tokens = new Lexer(new Debug.Diagnostics(DateTime.Now), new string[] { text }, "Tests").LexAll();
+            LanguageToken[] tokens = new Lexer(new Debug.Diagnostics(DateTime.Now), new Debug.TextStore("Tests", new string[] { text })).LexAll();
             Assert.Equal(tokens.Last().tokenType, LanguageTokenType.EndOfFile);
             Array.Resize(ref tokens, tokens.Length - 1);
 

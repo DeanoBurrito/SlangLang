@@ -13,35 +13,27 @@ namespace SlangLang.Drivers
         readonly Diagnostics diags;
         readonly CompilationOptions options;
 
-        ExpressionNode parseTree;
+        CompilationUnit compilationUnit;
         
         public Compilation(string[] sourceCode, CompilationOptions compOptions)
         {
             options = compOptions;
             diags = new Diagnostics(DateTime.Now);
 
-            Lexer lexer = new Lexer(diags, sourceCode, "Intepreter");
-            LanguageToken[] lexerOutput = lexer.LexAll();
-            if (options.printLexerOutput)
-            {
-                Console.ForegroundColor = ConsoleColor.Gray;
-                PrettyPrintTokenStream(lexerOutput);
-                Console.ResetColor();
-            }
-
-            Parser parser = new Parser(diags, lexerOutput);
-            parseTree = parser.ParseAll();
+            Parser parser = new Parser(diags, new TextStore("Interpreter", sourceCode));
+            compilationUnit = parser.ParseCompilationUnit();
             if (options.printParserOutput)
             {
                 Console.ForegroundColor = ConsoleColor.Gray;
-                PrettyPrintParsedTree(parseTree);
+                PrettyPrintParsedTree(compilationUnit.expression);
+                Console.WriteLine("TODO");
                 Console.ResetColor();
             }
         }
 
         public EvaluationResult Evaluate(Dictionary<VariableSymbol, object> variables)
         {
-            Binder binder = new Binder(diags, parseTree, variables);
+            Binder binder = new Binder(diags, compilationUnit.expression, variables);
             BoundExpression boundTree = binder.BindAll();
             if (options.printBinderOutput)
             {

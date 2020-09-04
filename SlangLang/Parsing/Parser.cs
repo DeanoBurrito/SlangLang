@@ -24,12 +24,27 @@ namespace SlangLang.Parsing
             pos = 0;
         }
 
-        public ExpressionNode ParseAll()
+        public Parser(Diagnostics diag, TextStore sourceText)
+        {
+            diagnostics = diag;
+            Lexer lexer = new Lexer(diag, sourceText);
+            List<LanguageToken> rawTokens = new List<LanguageToken>(lexer.LexAll());
+            ImmutableArray<LanguageToken>.Builder tokenBuilder = ImmutableArray.CreateBuilder<LanguageToken>();
+            foreach (LanguageToken t in rawTokens)
+            {
+                if (t.tokenType != LanguageTokenType.BadToken && t.tokenType != LanguageTokenType.Whitespace)
+                    tokenBuilder.Add(t);
+            }
+            tokens = tokenBuilder.ToImmutableArray();
+            pos = 0;
+        }
+
+        public CompilationUnit ParseCompilationUnit()
         { 
             ExpressionNode expr = ParseExpression();
             //matching for EOF token validates that we're indeed at the end of the file.
             LanguageToken eofToken = MatchToken(LanguageTokenType.EndOfFile);
-            return expr;
+            return new CompilationUnit(expr, eofToken, TextSpan.NoText);
         }
 
         private ExpressionNode ParseExpression()

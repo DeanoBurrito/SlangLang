@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 using SlangLang.Parsing;
+using SlangLang.Debug;
 
 namespace SlangLang.Tests
 {
@@ -17,7 +18,7 @@ namespace SlangLang.Tests
             string text = $"a {LanguageFacts.GetText(op1)} b {LanguageFacts.GetText(op2)} c";
 
             Debug.Diagnostics diagnostics = new Debug.Diagnostics(DateTime.Now);
-            ExpressionNode expression = new Parser(diagnostics, new Lexer(diagnostics, new string[] { text }, "Tests").LexAll()).ParseAll();
+            ExpressionNode expression = new Parser(diagnostics, new TextStore("Tests", new string[] { text })).ParseCompilationUnit().expression;
             Assert.False(diagnostics.HasErrors);
 
             if (op1Precedence >= op2Precedence)
@@ -53,7 +54,7 @@ namespace SlangLang.Tests
             string text = $"{LanguageFacts.GetText(unaryOp)} a {LanguageFacts.GetText(BinaryOp)} b";
             
             Debug.Diagnostics diagnostics = new Debug.Diagnostics(DateTime.Now);
-            ExpressionNode expression = new Parser(diagnostics, new Lexer(diagnostics, new string[] { text }, "Tests").LexAll()).ParseAll();
+            ExpressionNode expression = new Parser(diagnostics, new TextStore("Tests", new string[] { text })).ParseCompilationUnit().expression;
             Assert.False(diagnostics.HasErrors);
 
             if (unaryPrecedence >= binaryPrecedence)

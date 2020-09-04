@@ -10,6 +10,7 @@ namespace SlangLang.Parsing
         
         Name,
         Assignment,
+        CompilationUnit,
     }
 
     public enum LiteralValueSpecifier

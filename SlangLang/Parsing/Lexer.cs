@@ -17,14 +17,12 @@ namespace SlangLang.Parsing
         int textLength;
         LanguageTokenType type;
 
-        readonly string filename;
         readonly Diagnostics diagnostics;
 
-        public Lexer(Diagnostics diag, string[] source, string sourceName)
+        public Lexer(Diagnostics diag, TextStore source)
         {
-            sourceStore = new TextStore(sourceName, source);
             diagnostics = diag;
-            filename = sourceName;
+            sourceStore = source;
             currChar = 0;
         }
 

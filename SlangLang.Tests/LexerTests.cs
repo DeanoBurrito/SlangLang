@@ -26,7 +26,7 @@ namespace SlangLang.Tests
         [MemberData(nameof(GetTokensData))]
         public void LexTokenSingle(LanguageTokenType tokenType, string text)
         {
-            Lexer lexer = new Lexer(Diagnostics.DummyInstance, new string[] { text }, "Tests");
+            Lexer lexer = new Lexer(Diagnostics.DummyInstance, new TextStore("Tests", new string[] { text }));
             LanguageToken[] tokens = lexer.LexAll();
             
             Assert.Equal(tokens.Last().tokenType, LanguageTokenType.EndOfFile);
@@ -43,7 +43,7 @@ namespace SlangLang.Tests
         {
             string fullText = text1 + text2;
             TextStore textStore = new TextStore("Tests", new string[] { fullText });
-            Lexer lexer = new Lexer(Diagnostics.DummyInstance, new string[] { text1 + text2 }, "Tests");
+            Lexer lexer = new Lexer(Diagnostics.DummyInstance, new TextStore("Tests", new string[] { text1 + text2 }));
             LanguageToken[] tokens = lexer.LexAll();
 
             Assert.Equal(tokens.Last().tokenType, LanguageTokenType.EndOfFile);
@@ -63,7 +63,7 @@ namespace SlangLang.Tests
         [MemberData(nameof(GetTokenPairsWithSeparatorsData))]
         public void LexTokenPairsWithSeparators(LanguageTokenType l1, string t1, LanguageTokenType ls, string ts, LanguageTokenType l2, string t2)
         {
-            Lexer lexer = new Lexer(Diagnostics.DummyInstance, new string[] { t1 + ts + t2 }, "Tests");
+            Lexer lexer = new Lexer(Diagnostics.DummyInstance, new TextStore("Tests", new string[] { t1 + ts + t2 }));
             LanguageToken[] tokens = lexer.LexAll();
 
             Assert.Equal(tokens.Last().tokenType, LanguageTokenType.EndOfFile);
