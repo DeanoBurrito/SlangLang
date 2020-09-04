@@ -43,7 +43,12 @@ namespace SlangLang.Debug
 
         internal static void BinderError_VariableDoesNotExist(this Diagnostics diagnostics, string varName, TextLocation where)
         {
-            diagnostics.AddFailure("Binder", "Unable to bind to variable " + varName + ", no variable with that name has been defined.", where, DateTime.Now);
+            diagnostics.AddFailure("Binder", "No variable declared with name " + varName, where, DateTime.Now);
+        }
+
+        internal static void BinderError_CannotCastVariable(this Diagnostics diagnostics, VariableSymbol symbol, Type type, TextLocation where)
+        {
+            diagnostics.AddFailure("Binder", "Variable " + symbol.name + " (" + symbol.type + ") cannot cast to " + type, where, DateTime.Now);
         }
 
         internal static void EvaluatorError_UnexpectedUnaryOperator(this Diagnostics diagnostics, BoundUnaryOperator op, TextLocation where)

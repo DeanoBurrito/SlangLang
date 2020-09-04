@@ -39,6 +39,10 @@ namespace SlangLang.Debug
             if (diagnostics.dummyInstance || dummyInstance)
                 return;
             
+            if (diagnostics.initTime < initTime)
+                initTime = diagnostics.initTime;
+            HasErrors = diagnostics.HasErrors || HasErrors;
+            
             foreach (KeyValuePair<string, List<DiagnosticEntry>> pair in diagnostics.infoEntries)
             {
                 if (!infoEntries.ContainsKey(pair.Key))

@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using SlangLang.Parsing;
+using SlangLang.Binding;
 using SlangLang.Drivers;
+using SlangLang.Debug;
 
 namespace SlangLang.Interactive
 {
@@ -14,6 +15,7 @@ namespace SlangLang.Interactive
         bool autoEval = true;
 
         Dictionary<VariableSymbol, object> variables = new Dictionary<VariableSymbol, object>();
+        Compilation previousCompilation = null;
 
         public Repl()
         { }
@@ -105,10 +107,16 @@ namespace SlangLang.Interactive
                     options.printBinderOutput = showTree;
                     break;
             }
-            Compilation compilation = new Compilation(lines, options);
+
+            Compilation currentCompilation;
+            if (previousCompilation == null)
+                currentCompilation = new Compilation(new TextStore("REPL", lines), options);
+            else
+                currentCompilation = previousCompilation.ContinueWith(new TextStore("REPL", lines), options);
+            
             if (autoEval)
             {
-                Evaluation.EvaluationResult result = compilation.Evaluate(variables);
+                Evaluation.EvaluationResult result = currentCompilation.Evaluate(variables);
                 if (result.diagnostics.HasErrors)
                 {
                     result.diagnostics.WriteToStandardOut();
@@ -116,6 +124,7 @@ namespace SlangLang.Interactive
                 else
                 {
                     Console.WriteLine("Evaluation result: " + result.value.ToString());
+                    previousCompilation = currentCompilation;
                 }
             }
         }
@@ -212,10 +221,10 @@ namespace SlangLang.Interactive
                 }
             }
 
-            [ReplCommand("config", "Shows the current environment config")]
-            public static void ShowConfig(Repl repl, string[] args)
+            [ReplCommand("reset", "Forgets any previous compilations (variables and errors included).")]
+            public static void Reset(Repl repl, string[] args)
             {
-                throw new NotImplementedException();
+                repl.previousCompilation = null;
             }
         }
 

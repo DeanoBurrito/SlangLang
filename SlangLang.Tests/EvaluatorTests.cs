@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Xunit;
-using SlangLang.Parsing;
+using SlangLang.Binding;
 using SlangLang.Drivers;
 
 namespace SlangLang.Tests
@@ -26,12 +25,11 @@ namespace SlangLang.Tests
         [InlineData("3 == 3", true)]
         [InlineData("7 != 2", true)]
         [InlineData("(1 == 1 && 3 != 2) && (true || false)", true)]
-        [InlineData("a * a", 100)]
         [InlineData("(c = 10) * c", 100)]
         [InlineData("c = 33", 33)]
         public void Tests(string text, object expectedValue)
         {
-            Compilation comp = new Compilation(new string[] { text }, CompilationOptions.DefaultOptions);
+            Compilation comp = new Compilation(new Debug.TextStore("Tests", new string[] {text}), CompilationOptions.DefaultOptions);
             Dictionary<VariableSymbol, object> variables = new Dictionary<VariableSymbol, object>() 
             {
                 { new VariableSymbol("a", typeof(int)), 10 },

@@ -14,35 +14,69 @@ namespace SlangLang.Drivers
         readonly CompilationOptions options;
 
         CompilationUnit compilationUnit;
+        BoundGlobalScope globalScope;
+        Compilation previous;
+
+        internal BoundGlobalScope GlobalScope
+        { 
+            get
+            {
+                if (globalScope == null)
+                {
+                    globalScope = Binder.BindGlobalScope(previous?.globalScope, compilationUnit);
+                    System.Threading.Interlocked.CompareExchange(ref globalScope, globalScope, null);
+                }
+                return globalScope;
+            }
+        }
         
-        public Compilation(string[] sourceCode, CompilationOptions compOptions)
+        public Compilation(TextStore source, CompilationOptions compOptions)
         {
             options = compOptions;
             diags = new Diagnostics(DateTime.Now);
 
-            Parser parser = new Parser(diags, new TextStore("Interpreter", sourceCode));
+            Parser parser = new Parser(diags, source);
             compilationUnit = parser.ParseCompilationUnit();
             if (options.printParserOutput)
             {
                 Console.ForegroundColor = ConsoleColor.Gray;
                 PrettyPrintParsedTree(compilationUnit.expression);
-                Console.WriteLine("TODO");
                 Console.ResetColor();
             }
         }
 
+        private Compilation(Compilation previous, TextStore source, CompilationOptions compOptions)
+        {
+            options = compOptions;
+            diags = new Diagnostics(DateTime.Now);
+            this.previous = previous;
+
+            Parser parser = new Parser(diags, source);
+            compilationUnit = parser.ParseCompilationUnit();
+            if (options.printParserOutput)
+            {
+                Console.ForegroundColor = ConsoleColor.Gray;
+                PrettyPrintParsedTree(compilationUnit.expression);
+                Console.ResetColor();
+            }
+        }
+
+        public Compilation ContinueWith(TextStore source, CompilationOptions newOptions)
+        {
+            return new Compilation(this, source, newOptions);
+        }
+
         public EvaluationResult Evaluate(Dictionary<VariableSymbol, object> variables)
         {
-            Binder binder = new Binder(diags, compilationUnit.expression, variables);
-            BoundExpression boundTree = binder.BindAll();
             if (options.printBinderOutput)
             {
                 Console.ForegroundColor = ConsoleColor.Gray;
-                PrettyPrintBoundTree(boundTree);
+                PrettyPrintBoundTree(GlobalScope.expression);
                 Console.ResetColor();
             }
             
-            Evaluator eval = new Evaluator(diags, boundTree, variables);
+            diags.Aggregate(GlobalScope.diagnostics);
+            Evaluator eval = new Evaluator(diags, GlobalScope.expression, variables);
             if (diags.HasErrors)
                 return new EvaluationResult(null, diags); //just return the error, not the value
             return new EvaluationResult(eval.Evaluate(), diags);

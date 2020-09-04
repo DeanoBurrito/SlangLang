@@ -1,6 +1,6 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using SlangLang.Debug;
 using SlangLang.Parsing;
 
@@ -9,24 +9,51 @@ namespace SlangLang.Binding
     internal sealed class Binder
     {
         readonly Diagnostics diagnostics;
-        readonly ExpressionNode rootNode;
+        readonly BoundScope scope;
 
-        readonly Dictionary<VariableSymbol, object> variables;
+        public static BoundGlobalScope BindGlobalScope(BoundGlobalScope previous, CompilationUnit compilationUnit)
+        {
+            BoundScope parentScope = CreateParentScope(previous);
+            Diagnostics binderDiags = new Diagnostics(DateTime.Now);
+            Binder binder = new Binder(binderDiags, parentScope);
+            BoundExpression expression = binder.BindExpression(compilationUnit.expression);
+            ImmutableArray<VariableSymbol> vars = binder.scope.GetDeclaredVariables();
 
-        public Binder(Diagnostics diag, ExpressionNode root, Dictionary<VariableSymbol, object> availableVars)
+            if (previous != null)
+                binderDiags.Aggregate(previous.diagnostics);
+            return new BoundGlobalScope(previous, binderDiags, vars, expression);
+        }
+
+        private static BoundScope CreateParentScope(BoundGlobalScope previous)
+        {
+            Stack<BoundGlobalScope> stack = new Stack<BoundGlobalScope>();
+            while (previous != null)
+            {
+                stack.Push(previous);
+                previous = previous.previous;
+            }
+
+            BoundScope parent = null;
+            while (stack.Count > 0)
+            {
+                previous = stack.Pop();
+                BoundScope scope = new BoundScope(parent);
+                foreach (VariableSymbol var in previous.variables)
+                {
+                    scope.TryDeclare(var);
+                }
+                parent = scope;
+            }
+            return parent;
+        }
+
+        public Binder(Diagnostics diag, BoundScope parentScope)
         {
             diagnostics = diag;
-            rootNode = root;
-            variables = availableVars;
+            scope = new BoundScope(parentScope);
         }
 
-        public BoundExpression BindAll()
-        {
-            BoundExpression expr = BindExpression(rootNode);
-            return expr;
-        }
-
-        private BoundExpression BindExpression(ExpressionNode node)
+        public BoundExpression BindExpression(ExpressionNode node)
         {
             switch (node.nodeType)
             {
@@ -80,9 +107,8 @@ namespace SlangLang.Binding
         private BoundExpression BindNameExpression(NameExpression expression)
         {
             string name = expression.token.text;
-            VariableSymbol variable = variables.Keys.FirstOrDefault(v => v.name == name);
             
-            if (variable == null)
+            if (!scope.TryLookup(name, out VariableSymbol variable))
             {
                 diagnostics.BinderError_VariableDoesNotExist(name, expression.textLocation.start);
                 return new BoundLiteralExpression(0, TextSpan.NoText); //just return int(0) so the tree dosnt crash
@@ -94,13 +120,19 @@ namespace SlangLang.Binding
         private BoundExpression BindAssignmentExpression(AssignmentExpression expression)
         {
             BoundExpression boundExpr = BindExpression(expression.expression);
-
-            VariableSymbol existingVariable = variables.Keys.FirstOrDefault(v => v.name == expression.token.text);
-            if (existingVariable != null)
-                variables.Remove(existingVariable);
-            
             VariableSymbol variable = new VariableSymbol(expression.token.text, boundExpr.boundType); 
-            variables[variable] = null;
+
+            if (!scope.TryLookup(expression.token.text, out variable))
+            {
+                variable = new VariableSymbol(expression.token.text, boundExpr.boundType);
+                scope.TryDeclare(variable);
+            }
+            
+            if (boundExpr.boundType != variable.type)
+            {
+                diagnostics.BinderError_CannotCastVariable(variable, boundExpr.boundType, expression.textLocation.start);
+                return boundExpr;
+            }
 
             return new BoundAssignmentExpression(variable, boundExpr, expression.textLocation);
         }
