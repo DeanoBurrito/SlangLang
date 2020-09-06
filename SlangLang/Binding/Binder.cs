@@ -63,6 +63,8 @@ namespace SlangLang.Binding
                     return BindExpressionStatement((ExpressionStatement)statement);
                 case ParseNodeType.VariableDeclaration:
                     return BindVariableDeclaration((VariableDeclarationStatement)statement);
+                case ParseNodeType.IfStatement:
+                    return BindIfStatement((IfStatement)statement);
             }
 
             diagnostics.BinderError_UnexpectedStatementType(statement.nodeType, statement.textLocation.start);
@@ -99,6 +101,24 @@ namespace SlangLang.Binding
                 diagnostics.BinderError_VariableAlreadyDeclared(variable, statement.textLocation.start);
             }
             return new BoundVariableDeclaration(variable, initializer, statement.textLocation);
+        }
+
+        private BoundStatement BindIfStatement(IfStatement statement)
+        {
+            BoundExpression condition = BindExpression(statement.condition, typeof(bool));
+            BoundStatement body = BindStatement(statement.bodyStatement);
+            BoundStatement elseStatement = statement.elseClause == null ? null : BindStatement(statement.elseClause.statement);
+            return new BoundIfStatement(condition, body, elseStatement, statement.textLocation);
+        }
+
+        private BoundExpression BindExpression(ExpressionNode node, Type targetType)
+        {
+            BoundExpression result = BindExpression(node);
+            if (result.boundType != targetType)
+            {
+                diagnostics.BinderError_CannotConvertExpressionType(targetType, result.boundType, node.textLocation.start);
+            }
+            return result;
         }
 
         private BoundExpression BindExpression(ExpressionNode node)

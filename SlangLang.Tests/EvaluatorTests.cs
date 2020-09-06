@@ -31,14 +31,14 @@ namespace SlangLang.Tests
         [InlineData("(1 == 1 && 3 != 2) && (true || false);", true)]
         [InlineData("{ int c = 2; (c = 10) * c; }", 100)]
         [InlineData("int c = 33;", 33)]
+        [InlineData("{ let int a = 1; int b = 0; if a == 1 b = 1; b; }", 1)]
+        [InlineData("{ let int a = 5; int b = 0; if a == 1 b = 1; b; }", 0)]
+        [InlineData("{ let int a = 1; int b = 0; if a == 1 b = 1; else b = -1; b; } ", 1)]
+        [InlineData("{ let int a = 10; int b = 0; if a == 1 b = 1; else b = -1; b; } ", -1)]
         public void Tests(string text, object expectedValue)
         {
             Compilation comp = new Compilation(new Debug.TextStore("Tests", new string[] { text }), CompilationOptions.DefaultOptions);
-            Dictionary<VariableSymbol, object> variables = new Dictionary<VariableSymbol, object>() 
-            {
-                { new VariableSymbol("a", false, typeof(int)), 10 },
-                { new VariableSymbol("b", false, typeof(int)), 41 },
-            };
+            Dictionary<VariableSymbol, object> variables = new Dictionary<VariableSymbol, object>();
             Evaluation.EvaluationResult result = comp.Evaluate(variables);
             
             Assert.False(result.diagnostics.HasErrors);

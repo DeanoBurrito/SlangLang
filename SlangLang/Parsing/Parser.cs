@@ -50,10 +50,13 @@ namespace SlangLang.Parsing
 
         private StatementNode ParseStatement()
         {
-            if (Peek().tokenType == LanguageTokenType.OpenBrace)
+            LanguageToken current = Peek(); //TODO: move this into a switch statement
+            if (current.tokenType == LanguageTokenType.OpenBrace)
                 return ParseBlockStatement();
-            else if (LanguageFacts.KeywordIsVariableType(Peek().tokenType) || Peek().tokenType == LanguageTokenType.KeywordLet)
+            else if (LanguageFacts.KeywordIsVariableType(current.tokenType) || current.tokenType == LanguageTokenType.KeywordLet)
                 return ParseVariableDeclaration();
+            else if (current.tokenType == LanguageTokenType.KeywordIf)
+                return ParseIfStatement();
             return ParseExpressionStatement();
         }
 
@@ -85,6 +88,24 @@ namespace SlangLang.Parsing
             LanguageToken semicolon = MatchToken(LanguageTokenType.Semicolon);
             return new VariableDeclarationStatement(keyword, identifier, equals, initializer, semicolon, varIsReadonly, 
                 new TextSpan(keyword.textLocation.start, equals.textLocation.end));
+        }
+
+        private IfStatement ParseIfStatement()
+        {
+            LanguageToken keyword = MatchToken(LanguageTokenType.KeywordIf);
+            ExpressionNode condition = ParseExpression();
+            StatementNode body = ParseStatement();
+            ElseClauseData elseClause = ParseElseClause();
+            return new IfStatement(keyword, condition, body, elseClause, new TextSpan(keyword.textLocation.start, condition.textLocation.end));
+        }
+
+        private ElseClauseData ParseElseClause()
+        {
+            if (Peek().tokenType != LanguageTokenType.KeywordElse)
+                return null;
+            LanguageToken elseKeyword = MatchToken(LanguageTokenType.KeywordElse);
+            StatementNode elseBody = ParseStatement();
+            return new ElseClauseData(elseKeyword, elseBody);
         }
 
         private ExpressionStatement ParseExpressionStatement()

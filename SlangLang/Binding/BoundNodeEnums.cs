@@ -13,6 +13,7 @@ namespace SlangLang.Binding
         BinaryExpression,
         VariableExpression,
         AssignmentExpression,
+        IfStatement,
     }
 
     internal enum BoundUnaryOperatorType

@@ -39,6 +39,9 @@ namespace SlangLang.Evaluation
                 case BoundNodeType.VariableDeclarationStatement:
                     EvaluateVariableDeclaration((BoundVariableDeclaration)statement);
                     return;
+                case BoundNodeType.IfStatement:
+                    EvaluateIfStatement((BoundIfStatement)statement);
+                    return;
             }
 
             throw new Exception("Unexpected statement in evaluator");
@@ -60,6 +63,15 @@ namespace SlangLang.Evaluation
             object value = EvaluateExpression(statement.initializer);
             variables[statement.variable] = value;
             lastValue = value;
+        }
+
+        private void EvaluateIfStatement(BoundIfStatement statement)
+        {
+            bool condition = (bool)EvaluateExpression(statement.condition);
+            if (condition)
+                EvaluateStatement(statement.body);
+            else if (statement.elseStatement != null)
+                EvaluateStatement(statement.elseStatement);
         }
 
         private object EvaluateExpression(BoundExpression node)

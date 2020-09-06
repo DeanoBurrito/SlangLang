@@ -41,11 +41,15 @@ namespace SlangLang.Parsing
         OpenBrace,
         CloseBrace,
 
-        //keywords
+        //basic keywords
         KeywordFalse,
         KeywordTrue,
         KeywordLet,
         KeywordInt,
         KeywordBool,
+
+        //flow control keywords
+        KeywordIf,
+        KeywordElse,
     }
 }

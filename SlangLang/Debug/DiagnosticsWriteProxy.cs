@@ -71,6 +71,11 @@ namespace SlangLang.Debug
             diagnostics.AddFailure("Binder", "Variable " + symbol.name + " (" + symbol.type + ") is readonly and cannot be assigned to.", where, DateTime.Now);
         }
 
+        internal static void BinderError_CannotConvertExpressionType(this Diagnostics diagnostics, Type target, Type actual, TextLocation where)
+        {
+            diagnostics.AddFailure("Binder", "Could not convert expression result from " + actual + " to " + target, where, DateTime.Now);
+        }
+
         internal static void EvaluatorError_UnexpectedUnaryOperator(this Diagnostics diagnostics, BoundUnaryOperator op, TextLocation where)
         {
             diagnostics.AddFailure("Evaluator", "Unexpected unary operator in tree " + op, where, DateTime.Now);

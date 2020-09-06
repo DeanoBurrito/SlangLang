@@ -19,6 +19,10 @@ namespace SlangLang.Parsing
                     return LanguageTokenType.KeywordInt;
                 case "bool":
                     return LanguageTokenType.KeywordBool;
+                case "if":
+                    return LanguageTokenType.KeywordIf;
+                case "else":
+                    return LanguageTokenType.KeywordElse;
                 default:
                     return LanguageTokenType.Identifier;
             }
@@ -126,6 +130,11 @@ namespace SlangLang.Parsing
                     return "int";
                 case LanguageTokenType.KeywordBool:
                     return "bool";
+                
+                case LanguageTokenType.KeywordIf:
+                    return "if";
+                case LanguageTokenType.KeywordElse:
+                    return "else";
                 
                 case LanguageTokenType.Plus:
                     return "+";
