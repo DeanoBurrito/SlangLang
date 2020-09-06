@@ -57,6 +57,8 @@ namespace SlangLang.Parsing
                 return ParseVariableDeclaration();
             else if (current.tokenType == LanguageTokenType.KeywordIf)
                 return ParseIfStatement();
+            else if (current.tokenType == LanguageTokenType.KeywordWhile)
+                return ParseWhileStatement();
             return ParseExpressionStatement();
         }
 
@@ -97,6 +99,14 @@ namespace SlangLang.Parsing
             StatementNode body = ParseStatement();
             ElseClauseData elseClause = ParseElseClause();
             return new IfStatement(keyword, condition, body, elseClause, new TextSpan(keyword.textLocation.start, condition.textLocation.end));
+        }
+
+        private WhileStatement ParseWhileStatement()
+        {
+            LanguageToken keyword = MatchToken(LanguageTokenType.KeywordWhile);
+            ExpressionNode condition = ParseExpression();
+            StatementNode body = ParseStatement();
+            return new WhileStatement(keyword, condition, body, new TextSpan(keyword.textLocation.start, body.textLocation.end));
         }
 
         private ElseClauseData ParseElseClause()

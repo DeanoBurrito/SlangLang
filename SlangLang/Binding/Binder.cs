@@ -65,6 +65,8 @@ namespace SlangLang.Binding
                     return BindVariableDeclaration((VariableDeclarationStatement)statement);
                 case ParseNodeType.IfStatement:
                     return BindIfStatement((IfStatement)statement);
+                case ParseNodeType.WhileStatement:
+                    return BindWhileStatement((WhileStatement)statement);
             }
 
             diagnostics.BinderError_UnexpectedStatementType(statement.nodeType, statement.textLocation.start);
@@ -109,6 +111,13 @@ namespace SlangLang.Binding
             BoundStatement body = BindStatement(statement.bodyStatement);
             BoundStatement elseStatement = statement.elseClause == null ? null : BindStatement(statement.elseClause.statement);
             return new BoundIfStatement(condition, body, elseStatement, statement.textLocation);
+        }
+
+        private BoundStatement BindWhileStatement(WhileStatement statement)
+        {
+            BoundExpression condition = BindExpression(statement.condition, typeof(bool));
+            BoundStatement body = BindStatement(statement.body);
+            return new BoundWhileStatement(condition, body, statement.textLocation);
         }
 
         private BoundExpression BindExpression(ExpressionNode node, Type targetType)

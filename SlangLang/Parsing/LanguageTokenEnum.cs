@@ -51,5 +51,6 @@ namespace SlangLang.Parsing
         //flow control keywords
         KeywordIf,
         KeywordElse,
+        KeywordWhile,
     }
 }
