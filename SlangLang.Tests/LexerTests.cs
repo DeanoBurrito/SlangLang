@@ -165,6 +165,15 @@ namespace SlangLang.Tests
                 (type1 == LanguageTokenType.Equals && type2 == LanguageTokenType.EqualsEquals))
                 return true;
             
+            // (< + =), (>, =)
+            if ((type1 == LanguageTokenType.Less && type2 == LanguageTokenType.Equals) || 
+                (type1 == LanguageTokenType.Greater && type2 == LanguageTokenType.Equals))
+                return true;
+            // (< + ==), (>, ==)
+            if ((type1 == LanguageTokenType.Less && type2 == LanguageTokenType.EqualsEquals) ||
+                (type1 == LanguageTokenType.Greater && type2 == LanguageTokenType.EqualsEquals))
+                return true;
+            
             if (type1 == LanguageTokenType.Exclamation && (type2 == LanguageTokenType.Equals 
                 || type2 == LanguageTokenType.EqualsEquals))
                 return true;

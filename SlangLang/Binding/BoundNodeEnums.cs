@@ -30,7 +30,12 @@ namespace SlangLang.Binding
 
         ConditionalOr,
         ConditionalAnd,
+
         Equals,
-        NotEquals
+        NotEquals,
+        LessThan,
+        LessThanOrEqual,
+        GreaterThan,
+        GreaterThanOrEqual,
     }
 }

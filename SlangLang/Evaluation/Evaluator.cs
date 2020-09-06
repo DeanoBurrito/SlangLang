@@ -145,6 +145,14 @@ namespace SlangLang.Evaluation
                         return leftInt * rightInt;
                     case BoundBinaryOperatorType.Division:
                         return leftInt / rightInt;
+                    case BoundBinaryOperatorType.LessThan:
+                        return leftInt < rightInt;
+                    case BoundBinaryOperatorType.LessThanOrEqual:
+                        return leftInt <= rightInt;
+                    case BoundBinaryOperatorType.GreaterThan:
+                        return leftInt > rightInt;
+                    case BoundBinaryOperatorType.GreaterThanOrEqual:
+                        return leftInt >= rightInt;
                 }
             }
             else if (leftType == typeof(bool) && rightType == typeof(bool))

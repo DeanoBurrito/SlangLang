@@ -37,8 +37,13 @@ namespace SlangLang.Binding
             new BoundBinaryOperator(LanguageTokenType.Minus, BoundBinaryOperatorType.Subtract, typeof(int)),
             new BoundBinaryOperator(LanguageTokenType.Star, BoundBinaryOperatorType.Multiplication, typeof(int)),
             new BoundBinaryOperator(LanguageTokenType.ForwardSlash, BoundBinaryOperatorType.Division, typeof(int)),
+
             new BoundBinaryOperator(LanguageTokenType.EqualsEquals, BoundBinaryOperatorType.Equals, typeof(int), typeof(bool)),
             new BoundBinaryOperator(LanguageTokenType.ExclamationEquals, BoundBinaryOperatorType.NotEquals, typeof(int), typeof(bool)),
+            new BoundBinaryOperator(LanguageTokenType.Less, BoundBinaryOperatorType.LessThan, typeof(int), typeof(bool)),
+            new BoundBinaryOperator(LanguageTokenType.LessOrEquals, BoundBinaryOperatorType.LessThanOrEqual, typeof(int), typeof(bool)),
+            new BoundBinaryOperator(LanguageTokenType.Greater, BoundBinaryOperatorType.GreaterThan, typeof(int), typeof(bool)),
+            new BoundBinaryOperator(LanguageTokenType.GreaterOrEquals, BoundBinaryOperatorType.GreaterThanOrEqual, typeof(int), typeof(bool)),
 
             new BoundBinaryOperator(LanguageTokenType.PipePipe, BoundBinaryOperatorType.ConditionalOr, typeof(bool)),
             new BoundBinaryOperator(LanguageTokenType.AndAnd, BoundBinaryOperatorType.ConditionalAnd, typeof(bool)),

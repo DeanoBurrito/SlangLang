@@ -139,6 +139,30 @@ namespace SlangLang.Parsing
                         type = LanguageTokenType.Pipe;
                     }
                     break;
+                case '<':
+                    currChar++;
+                    if (PeekNext(0) == '=')
+                    {
+                        ExtendTokenEnd();
+                        type = LanguageTokenType.LessOrEquals;
+                    }
+                    else
+                    {
+                        type = LanguageTokenType.Less;
+                    }
+                    break;
+                case '>':
+                    currChar++;
+                    if (PeekNext(0) == '=')
+                    {
+                        ExtendTokenEnd();
+                        type = LanguageTokenType.GreaterOrEquals;
+                    }
+                    else
+                    {
+                        type = LanguageTokenType.Greater;
+                    }
+                    break;
                 case ' ':
                 case '\r':
                 case '\n':

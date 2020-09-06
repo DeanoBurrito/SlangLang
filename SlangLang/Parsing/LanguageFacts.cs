@@ -50,6 +50,10 @@ namespace SlangLang.Parsing
                 
                 case LanguageTokenType.EqualsEquals:
                 case LanguageTokenType.ExclamationEquals:
+                case LanguageTokenType.Less:
+                case LanguageTokenType.LessOrEquals:
+                case LanguageTokenType.Greater:
+                case LanguageTokenType.GreaterOrEquals:
                     return 3;
                 
                 case LanguageTokenType.Plus:
@@ -103,6 +107,14 @@ namespace SlangLang.Parsing
                     return "!";
                 case LanguageTokenType.ExclamationEquals:
                     return "!=";
+                case LanguageTokenType.Less:
+                    return "<";
+                case LanguageTokenType.LessOrEquals:
+                    return "<=";
+                case LanguageTokenType.Greater:
+                    return ">";
+                case LanguageTokenType.GreaterOrEquals:
+                    return ">=";
 
                 case LanguageTokenType.KeywordFalse:
                     return "false";

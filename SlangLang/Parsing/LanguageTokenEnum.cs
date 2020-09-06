@@ -21,6 +21,10 @@ namespace SlangLang.Parsing
         Exclamation,
         ExclamationEquals,
         EqualsEquals,
+        Less,
+        LessOrEquals,
+        Greater,
+        GreaterOrEquals,
         
         //maths operations
         Plus,
