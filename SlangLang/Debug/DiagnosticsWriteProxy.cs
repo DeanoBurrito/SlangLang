@@ -51,9 +51,24 @@ namespace SlangLang.Debug
             diagnostics.AddFailure("Binder", "No variable declared with name " + varName, where, DateTime.Now);
         }
 
+        internal static void BinderError_VariableAlreadyDeclared(this Diagnostics diagnostics, VariableSymbol var, TextLocation where)
+        {
+            diagnostics.AddFailure("Binder", "Variable " + var.name + " (" + var.type + ") has already been declared in this scope.", where, DateTime.Now);
+        }
+
         internal static void BinderError_CannotCastVariable(this Diagnostics diagnostics, VariableSymbol symbol, Type type, TextLocation where)
         {
             diagnostics.AddFailure("Binder", "Variable " + symbol.name + " (" + symbol.type + ") cannot cast to " + type, where, DateTime.Now);
+        }
+
+        internal static void BinderError_VariableUndeclared(this Diagnostics diagnostics, string name, TextLocation where)
+        {
+            diagnostics.AddFailure("Binder", "Variable " + name + " is not previously defined.", where, DateTime.Now);
+        }
+
+        internal static void BinderError_ReadonlyVariableAssignment(this Diagnostics diagnostics, VariableSymbol symbol, TextLocation where)
+        {
+            diagnostics.AddFailure("Binder", "Variable " + symbol.name + " (" + symbol.type + ") is readonly and cannot be assigned to.", where, DateTime.Now);
         }
 
         internal static void EvaluatorError_UnexpectedUnaryOperator(this Diagnostics diagnostics, BoundUnaryOperator op, TextLocation where)

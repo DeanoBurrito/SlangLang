@@ -36,6 +36,9 @@ namespace SlangLang.Evaluation
                 case BoundNodeType.ExpressionStatement:
                     EvaluateExpressionStatement((BoundExpressionStatement)statement);
                     return;
+                case BoundNodeType.VariableDeclarationStatement:
+                    EvaluateVariableDeclaration((BoundVariableDeclaration)statement);
+                    return;
             }
 
             throw new Exception("Unexpected statement in evaluator");
@@ -50,6 +53,13 @@ namespace SlangLang.Evaluation
         private void EvaluateExpressionStatement(BoundExpressionStatement statement)
         {
             lastValue = EvaluateExpression(statement.expression);
+        }
+
+        private void EvaluateVariableDeclaration(BoundVariableDeclaration statement)
+        {
+            object value = EvaluateExpression(statement.initializer);
+            variables[statement.variable] = value;
+            lastValue = value;
         }
 
         private object EvaluateExpression(BoundExpression node)

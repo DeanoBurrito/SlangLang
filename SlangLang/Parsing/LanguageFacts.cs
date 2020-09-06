@@ -13,6 +13,12 @@ namespace SlangLang.Parsing
                     return LanguageTokenType.KeywordTrue;
                 case "false":
                     return LanguageTokenType.KeywordFalse;
+                case "let":
+                    return LanguageTokenType.KeywordLet;
+                case "int":
+                    return LanguageTokenType.KeywordInt;
+                case "bool":
+                    return LanguageTokenType.KeywordBool;
                 default:
                     return LanguageTokenType.Identifier;
             }
@@ -102,6 +108,12 @@ namespace SlangLang.Parsing
                     return "false";
                 case LanguageTokenType.KeywordTrue:
                     return "true";
+                case LanguageTokenType.KeywordLet:
+                    return "let";
+                case LanguageTokenType.KeywordInt:
+                    return "int";
+                case LanguageTokenType.KeywordBool:
+                    return "bool";
                 
                 case LanguageTokenType.Plus:
                     return "+";
@@ -124,6 +136,18 @@ namespace SlangLang.Parsing
                     return ";";
                 default:
                     return null;
+            }
+        }
+
+        public static bool KeywordIsVariableType(LanguageTokenType keyword)
+        {
+            switch (keyword)
+            {
+                case LanguageTokenType.KeywordBool:
+                case LanguageTokenType.KeywordInt:
+                    return true;
+                default:
+                    return false;
             }
         }
     }

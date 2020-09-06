@@ -40,5 +40,8 @@ namespace SlangLang.Parsing
         //keywords
         KeywordFalse,
         KeywordTrue,
+        KeywordLet,
+        KeywordInt,
+        KeywordBool,
     }
 }

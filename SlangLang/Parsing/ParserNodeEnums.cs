@@ -14,6 +14,7 @@ namespace SlangLang.Parsing
 
         BlockStatement,
         ExpressionStatement,
+        VariableDeclaration,
     }
 
     public enum LiteralValueSpecifier

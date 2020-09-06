@@ -6,6 +6,7 @@ namespace SlangLang.Binding
     {
         BlockStatement,
         ExpressionStatement,
+        VariableDeclarationStatement,
         
         LiteralExpression,
         UnaryExpression,

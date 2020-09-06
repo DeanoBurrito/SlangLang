@@ -73,6 +73,9 @@ namespace SlangLang.Debug
         private int FindLine(int index, out int idxRemainder)
         {
             idxRemainder = index;
+            if (lineLengths.Length == 0)
+                return -1;
+            
             int curLineLen = lineLengths[0];
             int curLine = 0;
             while (index >= curLineLen)

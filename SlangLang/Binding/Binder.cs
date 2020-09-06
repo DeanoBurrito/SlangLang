@@ -9,7 +9,7 @@ namespace SlangLang.Binding
     internal sealed class Binder
     {
         readonly Diagnostics diagnostics;
-        readonly BoundScope scope;
+        BoundScope scope;
 
         public static BoundGlobalScope BindGlobalScope(BoundGlobalScope previous, CompilationUnit compilationUnit)
         {
@@ -61,6 +61,8 @@ namespace SlangLang.Binding
                     return BindBlockStatement((BlockStatement)statement);
                 case ParseNodeType.ExpressionStatement:
                     return BindExpressionStatement((ExpressionStatement)statement);
+                case ParseNodeType.VariableDeclaration:
+                    return BindVariableDeclaration((VariableDeclarationStatement)statement);
             }
 
             diagnostics.BinderError_UnexpectedStatementType(statement.nodeType, statement.textLocation.start);
@@ -70,10 +72,14 @@ namespace SlangLang.Binding
         private BoundStatement BindBlockStatement(BlockStatement statement)
         {
             ImmutableArray<BoundStatement>.Builder statements = ImmutableArray.CreateBuilder<BoundStatement>();
+            scope = new BoundScope(scope);
+            
             foreach (StatementNode s in statement.statements)
             {
                 statements.Add(BindStatement(s));
             }
+
+            scope = scope.parent;
             return new BoundBlockStatement(statements.ToImmutable(), statement.textLocation);
         }
 
@@ -81,6 +87,18 @@ namespace SlangLang.Binding
         {
             BoundExpression expression = BindExpression(statement.expression);
             return new BoundExpressionStatement(expression, statement.textLocation);
+        }
+
+        private BoundStatement BindVariableDeclaration(VariableDeclarationStatement statement)
+        {
+            BoundExpression initializer = BindExpression(statement.intializer);
+            VariableSymbol variable = new VariableSymbol(statement.identifier.text, statement.isReadOnly, initializer.boundType);
+
+            if (!scope.TryDeclare(variable))
+            {
+                diagnostics.BinderError_VariableAlreadyDeclared(variable, statement.textLocation.start);
+            }
+            return new BoundVariableDeclaration(variable, initializer, statement.textLocation);
         }
 
         private BoundExpression BindExpression(ExpressionNode node)
@@ -150,12 +168,16 @@ namespace SlangLang.Binding
         private BoundExpression BindAssignmentExpression(AssignmentExpression expression)
         {
             BoundExpression boundExpr = BindExpression(expression.expression);
-            VariableSymbol variable = new VariableSymbol(expression.token.text, boundExpr.boundType); 
 
-            if (!scope.TryLookup(expression.token.text, out variable))
+            if (!scope.TryLookup(expression.token.text, out VariableSymbol variable))
             {
-                variable = new VariableSymbol(expression.token.text, boundExpr.boundType);
-                scope.TryDeclare(variable);
+                diagnostics.BinderError_VariableUndeclared(expression.token.text, expression.textLocation.start);
+                return boundExpr;
+            }
+
+            if (variable.isReadOnly)
+            {
+                diagnostics.BinderError_ReadonlyVariableAssignment(variable, expression.textLocation.start);
             }
             
             if (boundExpr.boundType != variable.type)

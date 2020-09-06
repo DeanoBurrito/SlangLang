@@ -7,11 +7,13 @@ namespace SlangLang.Binding
     {
         public readonly string name;
         public readonly Type type;
+        public readonly bool isReadOnly;
 
-        internal VariableSymbol(string vName, Type vType)
+        internal VariableSymbol(string vName, bool isReadonly, Type vType)
         {
             name = vName;
             type = vType;
+            isReadOnly = isReadonly;
         }
     }
 }

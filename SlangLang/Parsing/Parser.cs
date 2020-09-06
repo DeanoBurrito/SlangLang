@@ -52,6 +52,8 @@ namespace SlangLang.Parsing
         {
             if (Peek().tokenType == LanguageTokenType.OpenBrace)
                 return ParseBlockStatement();
+            else if (LanguageFacts.KeywordIsVariableType(Peek().tokenType) || Peek().tokenType == LanguageTokenType.KeywordLet)
+                return ParseVariableDeclaration();
             return ParseExpressionStatement();
         }
 
@@ -68,6 +70,21 @@ namespace SlangLang.Parsing
 
             LanguageToken closeBrace = MatchToken(LanguageTokenType.CloseBrace);
             return new BlockStatement(openBrace, statements.ToImmutable(), closeBrace);
+        }
+
+        private VariableDeclarationStatement ParseVariableDeclaration()
+        {
+            bool varIsReadonly = Peek().tokenType == LanguageTokenType.KeywordLet;
+            if (varIsReadonly)
+                NextToken();
+
+            LanguageToken keyword = MatchToken(LanguageTokenType.KeywordInt); //TODO: accept more variable types
+            LanguageToken identifier = MatchToken(LanguageTokenType.Identifier);
+            LanguageToken equals = MatchToken(LanguageTokenType.Equals);
+            ExpressionNode initializer = ParseExpression();
+            LanguageToken semicolon = MatchToken(LanguageTokenType.Semicolon);
+            return new VariableDeclarationStatement(keyword, identifier, equals, initializer, semicolon, varIsReadonly, 
+                new TextSpan(keyword.textLocation.start, equals.textLocation.end));
         }
 
         private ExpressionStatement ParseExpressionStatement()
