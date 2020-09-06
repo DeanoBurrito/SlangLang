@@ -38,8 +38,8 @@ namespace SlangLang.Tests
         {
             Assert.True(enumerator.MoveNext());
             Assert.Equal(nodeType, enumerator.Current.nodeType);
-            
-            ExpressionNode node = Assert.IsType<ExpressionNode>(enumerator.Current);
+        
+            ExpressionNode node = Assert.IsAssignableFrom<ExpressionNode>(enumerator.Current);
             LanguageToken token = Assert.IsType<LanguageToken>(node.token);
             Assert.Equal(type, token.tokenType);
             Assert.Equal(text, token.text);
