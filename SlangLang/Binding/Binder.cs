@@ -67,6 +67,8 @@ namespace SlangLang.Binding
                     return BindIfStatement((IfStatement)statement);
                 case ParseNodeType.WhileStatement:
                     return BindWhileStatement((WhileStatement)statement);
+                case ParseNodeType.ForStatement:
+                    return BindForStatement((ForStatement)statement);
             }
 
             diagnostics.BinderError_UnexpectedStatementType(statement.nodeType, statement.textLocation.start);
@@ -118,6 +120,15 @@ namespace SlangLang.Binding
             BoundExpression condition = BindExpression(statement.condition, typeof(bool));
             BoundStatement body = BindStatement(statement.body);
             return new BoundWhileStatement(condition, body, statement.textLocation);
+        }
+
+        private BoundStatement BindForStatement(ForStatement statement)
+        {
+            BoundStatement setup = BindStatement(statement.setupStatement);
+            BoundExpression condition = BindExpression(statement.condition, typeof(bool));
+            BoundStatement post = BindStatement(statement.postStatement);
+            BoundStatement body = BindStatement(statement.body);
+            return new BoundForStatement(setup, condition, post, body, statement.textLocation);
         }
 
         private BoundExpression BindExpression(ExpressionNode node, Type targetType)

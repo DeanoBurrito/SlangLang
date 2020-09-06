@@ -25,6 +25,8 @@ namespace SlangLang.Parsing
                     return LanguageTokenType.KeywordElse;
                 case "while":
                     return LanguageTokenType.KeywordWhile;
+                case "for":
+                    return LanguageTokenType.KeywordFor;
                 default:
                     return LanguageTokenType.Identifier;
             }
@@ -139,6 +141,8 @@ namespace SlangLang.Parsing
                     return "else";
                 case LanguageTokenType.KeywordWhile:
                     return "while";
+                case LanguageTokenType.KeywordFor:
+                    return "for";
                 
                 case LanguageTokenType.Plus:
                     return "+";

@@ -45,6 +45,9 @@ namespace SlangLang.Evaluation
                 case BoundNodeType.WhileStatement:
                     EvaluateWhileStatement((BoundWhileStatement)statement);
                     return;
+                case BoundNodeType.ForStatement:
+                    EvaluateForStatement((BoundForStatement)statement);
+                    return;
             }
 
             throw new Exception("Unexpected statement in evaluator");
@@ -82,6 +85,16 @@ namespace SlangLang.Evaluation
             while ((bool)EvaluateExpression(statement.condition))
             {
                 EvaluateStatement(statement.body);
+            }
+        }
+
+        private void EvaluateForStatement(BoundForStatement statement)
+        {
+            EvaluateStatement(statement.setupStatement);
+            while ((bool)EvaluateExpression(statement.condition))
+            {
+                EvaluateStatement(statement.body);
+                EvaluateStatement(statement.postStatement);
             }
         }
 

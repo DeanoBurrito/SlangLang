@@ -59,6 +59,8 @@ namespace SlangLang.Parsing
                 return ParseIfStatement();
             else if (current.tokenType == LanguageTokenType.KeywordWhile)
                 return ParseWhileStatement();
+            else if (current.tokenType == LanguageTokenType.KeywordFor)
+                return ParseForStatement();
             return ParseExpressionStatement();
         }
 
@@ -106,7 +108,18 @@ namespace SlangLang.Parsing
             LanguageToken keyword = MatchToken(LanguageTokenType.KeywordWhile);
             ExpressionNode condition = ParseExpression();
             StatementNode body = ParseStatement();
-            return new WhileStatement(keyword, condition, body, new TextSpan(keyword.textLocation.start, body.textLocation.end));
+            return new WhileStatement(keyword, condition, body, new TextSpan(keyword.textLocation.start, condition.textLocation.end));
+        }
+
+        private ForStatement ParseForStatement()
+        {
+            LanguageToken keyword = MatchToken(LanguageTokenType.KeywordFor);
+            StatementNode setup = ParseStatement();
+            ExpressionNode condition = ParseExpression();
+            MatchToken(LanguageTokenType.Semicolon); //since condition is an expression, not a statement. Expect a semicolon for consistency
+            StatementNode post = ParseStatement();
+            StatementNode body = ParseStatement();
+            return new ForStatement(keyword, setup, condition, post, body, new TextSpan(keyword.textLocation.start, condition.textLocation.end));
         }
 
         private ElseClauseData ParseElseClause()

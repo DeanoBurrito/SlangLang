@@ -15,6 +15,7 @@ namespace SlangLang.Binding
         AssignmentExpression,
         IfStatement,
         WhileStatement,
+        ForStatement,
     }
 
     internal enum BoundUnaryOperatorType

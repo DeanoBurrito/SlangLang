@@ -36,6 +36,7 @@ namespace SlangLang.Tests
         [InlineData("{ let int a = 1; int b = 0; if a == 1 b = 1; else b = -1; b; } ", 1)]
         [InlineData("{ let int a = 10; int b = 0; if a == 1 b = 1; else b = -1; b; } ", -1)]
         [InlineData("{ int i = 0; int x = 0; while i < 10 { x = x + 2; i = i + 1; } x;}", 20)]
+        [InlineData("{ int a = 0; for int i = 0; i < 5; i = i + 1; a = a + 2; a;}", 10)]
         public void Tests(string text, object expectedValue)
         {
             Compilation comp = new Compilation(new Debug.TextStore("Tests", new string[] { text }), CompilationOptions.DefaultOptions);

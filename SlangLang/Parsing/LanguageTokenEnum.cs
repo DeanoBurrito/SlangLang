@@ -52,5 +52,6 @@ namespace SlangLang.Parsing
         KeywordIf,
         KeywordElse,
         KeywordWhile,
+        KeywordFor,
     }
 }

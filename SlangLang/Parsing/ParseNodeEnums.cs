@@ -17,5 +17,6 @@ namespace SlangLang.Parsing
         VariableDeclaration,
         IfStatement,
         WhileStatement,
+        ForStatement,
     }
 }
