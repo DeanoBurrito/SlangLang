@@ -7,18 +7,20 @@ namespace SlangLang.Parsing
     public sealed class LiteralExpression : ExpressionNode
     {
         public readonly object value;
-        public readonly LiteralValueSpecifier valueSpecifier = LiteralValueSpecifier.Default;
 
-        public LiteralExpression(object val, LanguageToken token, TextSpan where, LiteralValueSpecifier spec = LiteralValueSpecifier.Default) : base(token, ParseNodeType.Literal, where)
+        public LiteralExpression(object val, LanguageToken token, TextSpan where) : base(token, ParseNodeType.Literal, where)
         {
             value = val;
-            valueSpecifier = spec;
+        }
+
+        public override List<ParseNode> GetChildren()
+        {
+            return new List<ParseNode>();
         }
 
         public override string ToString()
         {
-            string specifierStr = valueSpecifier != LiteralValueSpecifier.Default ? " (" + valueSpecifier.ToString() + ")" : " (*)";
-            return "[Literal] " + value.ToString() + specifierStr;
+            return "[Literal] " + value.ToString();
         }
     }
 }

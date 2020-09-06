@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Immutable;
+using System.Collections.Generic;
 using SlangLang.Debug;
 
 namespace SlangLang.Parsing
@@ -13,6 +13,16 @@ namespace SlangLang.Parsing
         {
             expression = expr;
             semicolonToken = semicolon;
+        }
+
+        public override List<ParseNode> GetChildren()
+        {
+            return new List<ParseNode>() { expression };
+        }
+
+        public override string ToString()
+        {
+            return "[ExpressionStatement]";
         }
     }
 }

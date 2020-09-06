@@ -56,7 +56,7 @@ namespace SlangLang.Drivers
             if (options.printParserOutput)
             {
                 Console.ForegroundColor = ConsoleColor.Gray;
-                //PrettyPrintParsedTree(compilationUnit.expression); TODO
+                PrettyPrintParsedTree(compilationUnit.statement);
                 Console.ResetColor();
             }
         }
@@ -71,7 +71,7 @@ namespace SlangLang.Drivers
             if (options.printBinderOutput)
             {
                 Console.ForegroundColor = ConsoleColor.Gray;
-                //PrettyPrintBoundTree(GlobalScope.statement); TODO
+                PrettyPrintBoundTree(GlobalScope.statement);
                 Console.ResetColor();
             }
             
@@ -85,7 +85,7 @@ namespace SlangLang.Drivers
         private static void PrettyPrintTokenStream(LanguageToken[] tokens)
         {}
 
-        private static void PrettyPrintParsedTree(ExpressionNode node, string indent = "", bool isLast = true)
+        private static void PrettyPrintParsedTree(ParseNode node, string indent = "", bool isLast = true)
         {
             string marker = isLast ? "└──" : "├──";
             Console.Write(indent);
@@ -93,14 +93,14 @@ namespace SlangLang.Drivers
             Console.WriteLine(node.ToString());
 
             indent += isLast ? "   " : "│  ";
-            ExpressionNode lastChild = node.GetChildren().LastOrDefault();
-            foreach (ExpressionNode child in node.GetChildren())
+            ParseNode lastChild = node.GetChildren().LastOrDefault();
+            foreach (ParseNode child in node.GetChildren())
             {
                 PrettyPrintParsedTree(child, indent, child == lastChild);
             }
         }
 
-        private static void PrettyPrintBoundTree(BoundExpression node, string indent = "", bool isLast = true)
+        private static void PrettyPrintBoundTree(BoundNode node, string indent = "", bool isLast = true)
         {
             string marker = isLast ? "└──" : "├──";
             Console.Write(indent);
@@ -108,8 +108,8 @@ namespace SlangLang.Drivers
             Console.WriteLine(node.ToString());
 
             indent += isLast ? "   " : "│  ";
-            BoundExpression lastChild = node.GetChildren().LastOrDefault();
-            foreach (BoundExpression child in node.GetChildren())
+            BoundNode lastChild = node.GetChildren().LastOrDefault();
+            foreach (BoundNode child in node.GetChildren())
             {
                 PrettyPrintBoundTree(child, indent, child == lastChild);
             }

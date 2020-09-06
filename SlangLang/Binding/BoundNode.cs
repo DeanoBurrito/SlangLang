@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Reflection;
 using SlangLang.Debug;
 
 namespace SlangLang.Binding
@@ -13,5 +15,9 @@ namespace SlangLang.Binding
             nodeType = type;
             textLocation = where;
         }
+
+        public abstract List<BoundNode> GetChildren();
+
+        public abstract override string ToString();
     }
 }

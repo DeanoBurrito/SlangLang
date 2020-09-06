@@ -91,7 +91,7 @@ namespace SlangLang.Binding
 
         private BoundStatement BindVariableDeclaration(VariableDeclarationStatement statement)
         {
-            BoundExpression initializer = BindExpression(statement.intializer);
+            BoundExpression initializer = BindExpression(statement.initializer);
             VariableSymbol variable = new VariableSymbol(statement.identifier.text, statement.isReadOnly, initializer.boundType);
 
             if (!scope.TryDeclare(variable))

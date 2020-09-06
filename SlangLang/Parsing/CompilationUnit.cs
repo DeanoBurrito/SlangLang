@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using SlangLang.Debug;
 
 namespace SlangLang.Parsing
@@ -12,6 +13,11 @@ namespace SlangLang.Parsing
         {
             this.statement = statement;
             eofToken = eof;
+        }
+
+        public override List<ParseNode> GetChildren()
+        {
+            return new List<ParseNode>() { statement };
         }
 
         public override string ToString()

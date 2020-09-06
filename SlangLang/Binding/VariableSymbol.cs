@@ -15,5 +15,10 @@ namespace SlangLang.Binding
             type = vType;
             isReadOnly = isReadonly;
         }
+
+        public override string ToString()
+        {
+            return name + " (" + type + ") " + (isReadOnly ? "ReadOnly" : "");
+        }
     }
 }

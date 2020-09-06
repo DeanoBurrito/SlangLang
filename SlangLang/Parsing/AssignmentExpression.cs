@@ -13,6 +13,11 @@ namespace SlangLang.Parsing
             this.expression = expression;
         }
 
+        public override List<ParseNode> GetChildren()
+        {
+            return new List<ParseNode>() { expression };
+        }
+
         public override string ToString() 
         {
             return "[Assignment] => " + base.token.text;

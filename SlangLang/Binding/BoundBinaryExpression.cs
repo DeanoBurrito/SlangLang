@@ -18,6 +18,14 @@ namespace SlangLang.Binding
             this.right = right;
         }
 
+        public override List<BoundNode> GetChildren()
+        {
+            return new List<BoundNode>() 
+            {
+                left, right
+            };
+        }
+
         public override string ToString()
         {
             return "[BinaryExpression] " + op;

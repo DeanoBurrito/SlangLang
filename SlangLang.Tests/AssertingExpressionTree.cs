@@ -8,26 +8,26 @@ namespace SlangLang.Tests
 {
     internal sealed class AssertingExpressionTree : IDisposable
     {
-        private readonly IEnumerator<ExpressionNode> enumerator;
+        private readonly IEnumerator<ParseNode> enumerator;
         
-        public AssertingExpressionTree(ExpressionNode node)
+        public AssertingExpressionTree(ParseNode node)
         {
             enumerator = Flattern(node).GetEnumerator();
         }
 
-        private static IEnumerable<ExpressionNode> Flattern(ExpressionNode node)
+        private static IEnumerable<ParseNode> Flattern(ParseNode node)
         {
-            Stack<ExpressionNode> stack = new Stack<ExpressionNode>();
+            Stack<ParseNode> stack = new Stack<ParseNode>();
             stack.Push(node);
 
             while (stack.Count > 0)
             {
-                ExpressionNode popped = stack.Pop();
+                ParseNode popped = stack.Pop();
                 yield return popped;
 
-                List<ExpressionNode> children = popped.GetChildren();
+                List<ParseNode> children = popped.GetChildren();
                 children.Reverse();
-                foreach (ExpressionNode child in children)
+                foreach (ParseNode child in children)
                 {
                     stack.Push(child);
                 }
@@ -39,7 +39,8 @@ namespace SlangLang.Tests
             Assert.True(enumerator.MoveNext());
             Assert.Equal(nodeType, enumerator.Current.nodeType);
             
-            LanguageToken token = Assert.IsType<LanguageToken>(enumerator.Current.token);
+            ExpressionNode node = Assert.IsType<ExpressionNode>(enumerator.Current);
+            LanguageToken token = Assert.IsType<LanguageToken>(node.token);
             Assert.Equal(type, token.tokenType);
             Assert.Equal(text, token.text);
         }

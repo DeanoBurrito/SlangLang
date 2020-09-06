@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using SlangLang.Debug;
 
 namespace SlangLang.Binding
@@ -12,6 +13,16 @@ namespace SlangLang.Binding
         {
             this.initializer = initializer;
             this.variable = variable;
+        }
+
+        public override List<BoundNode> GetChildren()
+        {
+            return new List<BoundNode>() { initializer };
+        }
+
+        public override string ToString()
+        {
+            return "[VariableDeclaration] " + variable.ToString();
         }
     }
 }

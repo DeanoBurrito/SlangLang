@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using SlangLang.Debug;
 
 namespace SlangLang.Parsing
@@ -15,5 +14,9 @@ namespace SlangLang.Parsing
             nodeType = type;
             textLocation = where;
         } 
+
+        public abstract List<ParseNode> GetChildren();
+
+        public abstract override string ToString();
     }
 }

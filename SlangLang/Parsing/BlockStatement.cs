@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using SlangLang.Debug;
 
@@ -16,6 +17,16 @@ namespace SlangLang.Parsing
             openBraceToken = openBrace;
             closeBraceToken = closeBrace;
             this.statements = statements;
+        }
+
+        public override List<ParseNode> GetChildren()
+        {
+            return new List<ParseNode>(statements);
+        }
+
+        public override string ToString()
+        {
+            return "[BlockStatement]";
         }
     }
 }
