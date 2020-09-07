@@ -195,6 +195,8 @@ namespace SlangLang.Binding
         private BoundExpression BindNameExpression(NameExpression expression)
         {
             string name = expression.token.text;
+            if (string.IsNullOrEmpty(name)) //inserted by parser, error has already been reported.
+                return new BoundLiteralExpression(0, TextSpan.NoText);
             
             if (!scope.TryLookup(name, out VariableSymbol variable))
             {

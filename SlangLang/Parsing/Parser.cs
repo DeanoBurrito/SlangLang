@@ -71,8 +71,17 @@ namespace SlangLang.Parsing
 
             while (Peek().tokenType != LanguageTokenType.EndOfFile && Peek().tokenType != LanguageTokenType.CloseBrace)
             {
+                int startPosition = pos;
                 StatementNode statement = ParseStatement();
                 statements.Add(statement);
+
+                if (pos == startPosition)
+                {
+                    //we havent moved, just produced a synthesized token to prevent tree from crashing, time to escape infinite loop
+                    //error will already have been reported from MatchToken() at some point.
+                    NextToken();
+                }
+                startPosition = pos;
             }
 
             LanguageToken closeBrace = MatchToken(LanguageTokenType.CloseBrace);
