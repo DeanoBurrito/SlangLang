@@ -9,7 +9,8 @@ namespace SlangLang.Binding
     {
         public readonly ImmutableArray<BoundStatement> statements;
         
-        public BoundBlockStatement(ImmutableArray<BoundStatement> statements, TextSpan where) : base (BoundNodeType.BlockStatement, where)
+        public BoundBlockStatement(ImmutableArray<BoundStatement> statements, TextSpan where) 
+            : base (BoundNodeType.BlockStatement, where)
         {
             this.statements = statements;
         }

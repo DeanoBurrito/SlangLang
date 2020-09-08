@@ -7,7 +7,7 @@ namespace SlangLang.Binding
     {
         public readonly Type boundType;
         
-        public BoundExpression(Type bindingType, BoundNodeType nodeType, TextSpan where) :base(nodeType, where)
+        public BoundExpression(Type bindingType, BoundNodeType nodeType, TextSpan where) : base(nodeType, where)
         {
             boundType = bindingType;
         }

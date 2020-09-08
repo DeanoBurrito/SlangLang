@@ -9,7 +9,8 @@ namespace SlangLang.Binding
         public readonly BoundExpression condition;
         public readonly BoundStatement body;
         
-        public BoundWhileStatement(BoundExpression condition, BoundStatement body, TextSpan where) : base(BoundNodeType.WhileStatement, where)
+        public BoundWhileStatement(BoundExpression condition, BoundStatement body, TextSpan where) 
+            : base(BoundNodeType.WhileStatement, where)
         {
             this.condition = condition;
             this.body = body;

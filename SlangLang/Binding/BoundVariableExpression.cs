@@ -9,7 +9,8 @@ namespace SlangLang.Binding
     {
         public readonly VariableSymbol variable;
 
-        public BoundVariableExpression(VariableSymbol variableSymbol, TextSpan where) : base(variableSymbol.type, BoundNodeType.VariableExpression, where)
+        public BoundVariableExpression(VariableSymbol variableSymbol, TextSpan where) 
+            : base(variableSymbol.type, BoundNodeType.VariableExpression, where)
         {
             variable = variableSymbol;
         }

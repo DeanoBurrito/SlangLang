@@ -9,7 +9,8 @@ namespace SlangLang.Binding
         public readonly VariableSymbol variable;
         public readonly BoundExpression initializer;
 
-        public BoundVariableDeclaration(VariableSymbol variable, BoundExpression initializer, TextSpan where) : base(BoundNodeType.VariableDeclarationStatement, where)
+        public BoundVariableDeclaration(VariableSymbol variable, BoundExpression initializer, TextSpan where) 
+            : base(BoundNodeType.VariableDeclarationStatement, where)
         {
             this.initializer = initializer;
             this.variable = variable;

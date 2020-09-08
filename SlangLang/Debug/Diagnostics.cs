@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace SlangLang.Debug
 {
@@ -105,79 +106,96 @@ namespace SlangLang.Debug
             failureEntries.Clear();
         }
 
-        public void WriteToStandardOut()
+        public void WriteToStream(TextWriter stream)
         {   
             if (dummyInstance)
                 return;
 
             const int wrapIndent = 8;
-            int terminalWidth = Console.WindowWidth - wrapIndent;
+            bool isConsoleOut = stream == Console.Out;
+            int terminalWidth = int.MaxValue;
+            if (isConsoleOut)
+                terminalWidth = Console.WindowWidth - wrapIndent;
             
-            Console.WriteLine("[SlangLang Diagnostics " + DateTime.Now.ToShortDateString() + " @ " + DateTime.Now.ToShortTimeString() + "]");
-            Console.WriteLine("Run initialized at " + initTime.ToString("HH:mm:ss.fffff") + ", " + (DateTime.Now - initTime).TotalSeconds.ToString("###,##0.00000") + " seconds ago.");
+            stream.WriteLine("[SlangLang Diagnostics " + DateTime.Now.ToShortDateString() + " @ " + DateTime.Now.ToShortTimeString() + "]");
+            stream.WriteLine("Run initialized at " + initTime.ToString("HH:mm:ss.fffff") + ", " + (DateTime.Now - initTime).TotalSeconds.ToString("###,##0.00000") + " seconds ago.");
 
-            Console.ForegroundColor = infoColor.fg;
-            Console.BackgroundColor = infoColor.bg;
+            if (isConsoleOut)
+            {
+                Console.ForegroundColor = infoColor.fg;
+                Console.BackgroundColor = infoColor.bg;
+            }
             foreach (KeyValuePair<string, List<DiagnosticEntry>> moduleEntries in infoEntries)
             {
-                Console.WriteLine("[" + moduleEntries.Key + " - Info]");
+                stream.WriteLine("[" + moduleEntries.Key + " - Info]");
                 foreach (DiagnosticEntry entry in moduleEntries.Value)
                 {
                     string remainingStr = entry.when.ToString("HH:mm:ss.fffff") + " - " + entry.message;
                     bool prependIndent = false;
                     while (remainingStr.Length > terminalWidth)
                     {
-                        Console.WriteLine((prependIndent ? new string(' ', wrapIndent) : "") + remainingStr.Remove(terminalWidth));
+                        stream.WriteLine((prependIndent ? new string(' ', wrapIndent) : "") + remainingStr.Remove(terminalWidth));
                         remainingStr = remainingStr.Remove(0, terminalWidth);
                         prependIndent = true;
                     }
-                    Console.WriteLine((prependIndent ? new string(' ', wrapIndent) : "") + remainingStr);
+                    stream.WriteLine((prependIndent ? new string(' ', wrapIndent) : "") + remainingStr);
                 }
 
             }
-            Console.WriteLine();
+            stream.WriteLine();
 
-            Console.ForegroundColor = warningColor.fg;
-            Console.BackgroundColor = warningColor.bg;
+            if (isConsoleOut)
+            {
+                Console.ForegroundColor = warningColor.fg;
+                Console.BackgroundColor = warningColor.bg;
+            }
             foreach (KeyValuePair<string, List<DiagnosticEntry>> moduleEntries in warningEntries)
             {
-                Console.WriteLine("[" + moduleEntries.Key + " - " + moduleEntries.Value.Count + " warnings from this module.]");
+                stream.WriteLine("[" + moduleEntries.Key + " - " + moduleEntries.Value.Count + " warnings from this module.]");
                 foreach (DiagnosticEntry entry in moduleEntries.Value)
                 {
                     string remainingStr = entry.when.ToString("HH:mm:ss.fffff") + " " + entry.where.ToString() + " - " + entry.message;
                     bool prependIndent = false;
                     while (remainingStr.Length > terminalWidth)
                     {
-                        Console.WriteLine((prependIndent ? new string(' ', wrapIndent) : "") + remainingStr.Remove(terminalWidth));
+                        stream.WriteLine((prependIndent ? new string(' ', wrapIndent) : "") + remainingStr.Remove(terminalWidth));
                         remainingStr = remainingStr.Remove(0, terminalWidth);
                         prependIndent = true;
                     }
-                    Console.WriteLine((prependIndent ? new string(' ', wrapIndent) : "") + remainingStr);
+                    stream.WriteLine((prependIndent ? new string(' ', wrapIndent) : "") + remainingStr);
                 }
             }
+            stream.WriteLine();
 
-            Console.ForegroundColor = failureColor.fg;
-            Console.BackgroundColor = failureColor.bg;
+            if (isConsoleOut)
+            {
+                Console.ForegroundColor = failureColor.fg;
+                Console.BackgroundColor = failureColor.bg;
+            }
             foreach (KeyValuePair<string, List<DiagnosticEntry>> moduleEntries in failureEntries)
             {
-                Console.WriteLine("[" + moduleEntries.Key + " - " + moduleEntries.Value.Count + " errors from this module.]" );
+                stream.WriteLine("[" + moduleEntries.Key + " - " + moduleEntries.Value.Count + " errors from this module.]" );
                 foreach (DiagnosticEntry entry in moduleEntries.Value)
                 {
                     string remainingStr = entry.when.ToString("HH:mm:ss.fffff") + " " + entry.where.ToString() + " - " + entry.message;
                     bool prependIndent = false;
                     while (remainingStr.Length > terminalWidth)
                     {
-                        Console.WriteLine((prependIndent ? new string(' ', wrapIndent) : "") + remainingStr.Remove(terminalWidth));
+                        stream.WriteLine((prependIndent ? new string(' ', wrapIndent) : "") + remainingStr.Remove(terminalWidth));
                         remainingStr = remainingStr.Remove(0, terminalWidth);
                         prependIndent = true;
                     }
-                    Console.WriteLine((prependIndent ? new string(' ', wrapIndent) : "") + remainingStr);
+                    stream.WriteLine((prependIndent ? new string(' ', wrapIndent) : "") + remainingStr);
                 }
             }
-            Console.ResetColor();
+            stream.WriteLine();
+            if (isConsoleOut)
+            {
+                Console.ResetColor();
+            }
 
             if (failureEntries.Count == 0)
-                Console.WriteLine("No errors. Process complete.");
+                stream.WriteLine("No errors. Process complete.");
 
         }
     }

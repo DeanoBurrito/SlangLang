@@ -119,7 +119,7 @@ namespace SlangLang.Interactive
                 Evaluation.EvaluationResult result = currentCompilation.Evaluate(variables);
                 if (result.diagnostics.HasErrors)
                 {
-                    result.diagnostics.WriteToStandardOut();
+                    result.diagnostics.WriteToStream(Console.Out);
                 }
                 else
                 {

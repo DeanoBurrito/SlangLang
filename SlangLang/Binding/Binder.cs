@@ -189,7 +189,7 @@ namespace SlangLang.Binding
                 diagnostics.BinderError_BinaryOperatorNotDefined(expression.token, boundLeft.boundType, boundRight.boundType, expression.textLocation.start);
                 return boundLeft;
             }
-            return new BoundBinaryExpression(boundOperator, boundLeft, boundRight, expression.textLocation);
+            return new BoundBinaryExpression(boundLeft, boundOperator, boundRight, expression.textLocation);
         }
 
         private BoundExpression BindNameExpression(NameExpression expression)

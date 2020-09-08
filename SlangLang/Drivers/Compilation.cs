@@ -40,7 +40,7 @@ namespace SlangLang.Drivers
             if (options.printParserOutput)
             {
                 Console.ForegroundColor = ConsoleColor.Gray;
-                //PrettyPrintParsedTree(compilationUnit.expression);
+                PrettyPrintParsedTree(compilationUnit.statement);
                 Console.ResetColor();
             }
         }
@@ -83,7 +83,22 @@ namespace SlangLang.Drivers
         }
 
         private static void PrettyPrintTokenStream(LanguageToken[] tokens)
-        {}
+        {
+            int currLineLength = 0;
+            int terminalWidth = Console.WindowWidth;
+            foreach (LanguageToken token in tokens)
+            {
+                string tokenStr = token.ToString() + " ";
+                currLineLength += tokenStr.Length;
+                if (currLineLength >= terminalWidth)
+                {
+                    Console.WriteLine();
+                    currLineLength = tokenStr.Length;
+                }
+                
+                Console.Write(tokenStr);
+            }
+        }
 
         private static void PrettyPrintParsedTree(ParseNode node, string indent = "", bool isLast = true)
         {

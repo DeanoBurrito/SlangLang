@@ -10,7 +10,8 @@ namespace SlangLang.Binding
         public readonly BoundStatement body;
         public readonly BoundStatement elseStatement;
 
-        public BoundIfStatement(BoundExpression condition, BoundStatement body, BoundStatement elseStatement, TextSpan where) : base(BoundNodeType.IfStatement, where)
+        public BoundIfStatement(BoundExpression condition, BoundStatement body, BoundStatement elseStatement, TextSpan where) 
+            : base(BoundNodeType.IfStatement, where)
         {
             this.condition = condition;
             this.body = body;

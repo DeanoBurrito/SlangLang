@@ -8,7 +8,8 @@ namespace SlangLang.Binding
     {
         public readonly BoundExpression expression;
 
-        public BoundExpressionStatement(BoundExpression expr, TextSpan where) : base(BoundNodeType.ExpressionStatement, where)
+        public BoundExpressionStatement(BoundExpression expr, TextSpan where) 
+            : base(BoundNodeType.ExpressionStatement, where)
         {
             expression = expr;
         }
