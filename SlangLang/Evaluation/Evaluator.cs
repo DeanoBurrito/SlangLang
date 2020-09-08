@@ -189,6 +189,12 @@ namespace SlangLang.Evaluation
                         return leftInt > rightInt;
                     case BoundBinaryOperatorType.GreaterThanOrEqual:
                         return leftInt >= rightInt;
+                    case BoundBinaryOperatorType.BitwiseOr:
+                        return leftInt | rightInt;
+                    case BoundBinaryOperatorType.BitwiseAnd:
+                        return leftInt & rightInt;
+                    case BoundBinaryOperatorType.BitwiseXor:
+                        return leftInt ^ rightInt;
                 }
             }
             else if (leftType == typeof(bool) && rightType == typeof(bool))
@@ -197,10 +203,16 @@ namespace SlangLang.Evaluation
                 bool rightBool = (bool)rightResult;
                 switch (expr.op.binaryOperator)
                 {
+                    case BoundBinaryOperatorType.BitwiseOr:
+                        return leftBool | rightBool;
                     case BoundBinaryOperatorType.ConditionalOr:
                         return leftBool || rightBool;
+                    case BoundBinaryOperatorType.BitwiseAnd:
+                        return leftBool & rightBool;
                     case BoundBinaryOperatorType.ConditionalAnd:
                         return leftBool && rightBool;
+                    case BoundBinaryOperatorType.BitwiseXor:
+                        return leftBool ^ rightBool;
                 }
             }
             if (expr.op.binaryOperator == BoundBinaryOperatorType.Equals)

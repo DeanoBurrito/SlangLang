@@ -38,6 +38,24 @@ namespace SlangLang.Tests
             yield return new object[] { "!true;", false };
             yield return new object[] { "false == false;", true };
             yield return new object[] { "true == false;", false };
+            yield return new object[] { "true == true;", true};
+
+            yield return new object[] { "false | false;", false };
+            yield return new object[] { "false | true;", true };
+            yield return new object[] { "true | true;", true };
+            yield return new object[] { "false & false;", false };
+            yield return new object[] { "false & true;", false };
+            yield return new object[] { "true & true;", true };
+            yield return new object[] { "true ^ false;", true };
+            yield return new object[] { "false ^ false;", false };
+
+            yield return new object[] { "1 | 2;", 3 };
+            yield return new object[] { "1 | 0;", 1 };
+            yield return new object[] { "2 & 3;", 2 };
+            yield return new object[] { "1 & 0;", 0 };
+            yield return new object[] { "1 ^ 0;", 1 };
+            yield return new object[] { "1 ^ 1;", 0 };
+            yield return new object[] { "1 ^ 3;" , 2 };
 
             yield return new object[] { "3 == 3;", true };
             yield return new object[] { "7 != 2;", true };

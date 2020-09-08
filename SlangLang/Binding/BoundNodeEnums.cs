@@ -31,8 +31,11 @@ namespace SlangLang.Binding
         Multiplication,
         Division,
 
+        BitwiseOr,
         ConditionalOr,
+        BitwiseAnd,
         ConditionalAnd,
+        BitwiseXor,
 
         Equals,
         NotEquals,

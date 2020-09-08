@@ -37,6 +37,9 @@ namespace SlangLang.Binding
             new BoundBinaryOperator(LanguageTokenType.Minus, BoundBinaryOperatorType.Subtract, typeof(int)),
             new BoundBinaryOperator(LanguageTokenType.Star, BoundBinaryOperatorType.Multiplication, typeof(int)),
             new BoundBinaryOperator(LanguageTokenType.ForwardSlash, BoundBinaryOperatorType.Division, typeof(int)),
+            new BoundBinaryOperator(LanguageTokenType.Pipe, BoundBinaryOperatorType.BitwiseOr, typeof(int)),
+            new BoundBinaryOperator(LanguageTokenType.And, BoundBinaryOperatorType.BitwiseAnd, typeof(int)),
+            new BoundBinaryOperator(LanguageTokenType.Circumflex, BoundBinaryOperatorType.BitwiseXor, typeof(int)),
 
             new BoundBinaryOperator(LanguageTokenType.EqualsEquals, BoundBinaryOperatorType.Equals, typeof(int), typeof(bool)),
             new BoundBinaryOperator(LanguageTokenType.ExclamationEquals, BoundBinaryOperatorType.NotEquals, typeof(int), typeof(bool)),
@@ -45,8 +48,11 @@ namespace SlangLang.Binding
             new BoundBinaryOperator(LanguageTokenType.Greater, BoundBinaryOperatorType.GreaterThan, typeof(int), typeof(bool)),
             new BoundBinaryOperator(LanguageTokenType.GreaterOrEquals, BoundBinaryOperatorType.GreaterThanOrEqual, typeof(int), typeof(bool)),
 
+            new BoundBinaryOperator(LanguageTokenType.Pipe, BoundBinaryOperatorType.BitwiseOr, typeof(bool)),
             new BoundBinaryOperator(LanguageTokenType.PipePipe, BoundBinaryOperatorType.ConditionalOr, typeof(bool)),
+            new BoundBinaryOperator(LanguageTokenType.And, BoundBinaryOperatorType.BitwiseAnd, typeof(bool)),
             new BoundBinaryOperator(LanguageTokenType.AndAnd, BoundBinaryOperatorType.ConditionalAnd, typeof(bool)),
+            new BoundBinaryOperator(LanguageTokenType.Circumflex, BoundBinaryOperatorType.BitwiseXor, typeof(bool)),
             new BoundBinaryOperator(LanguageTokenType.EqualsEquals, BoundBinaryOperatorType.Equals, typeof(bool)),
             new BoundBinaryOperator(LanguageTokenType.ExclamationEquals, BoundBinaryOperatorType.NotEquals, typeof(bool)),
         };

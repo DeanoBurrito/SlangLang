@@ -51,6 +51,7 @@ namespace SlangLang.Parsing
             {
                 case LanguageTokenType.Pipe:
                 case LanguageTokenType.PipePipe:
+                case LanguageTokenType.Circumflex:
                     return 1;
                 case LanguageTokenType.And:
                 case LanguageTokenType.AndAnd:
@@ -107,6 +108,8 @@ namespace SlangLang.Parsing
                     return "*";
                 case LanguageTokenType.ForwardSlash:
                     return "/";
+                case LanguageTokenType.Circumflex:
+                    return "^";
 
                 case LanguageTokenType.Semicolon:
                     return ";";

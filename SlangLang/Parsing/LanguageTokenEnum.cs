@@ -31,6 +31,7 @@ namespace SlangLang.Parsing
         Minus,
         Star,
         ForwardSlash,
+        Circumflex,
 
         //assignment and control
         Semicolon,

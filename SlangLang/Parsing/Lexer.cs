@@ -91,6 +91,10 @@ namespace SlangLang.Parsing
                     currChar++;
                     type = LanguageTokenType.CloseBrace;
                     break;
+                case '^':
+                    currChar++;
+                    type = LanguageTokenType.Circumflex;
+                    break;
                 case '!':
                     currChar++;
                     if (PeekNext(0) == '=')
