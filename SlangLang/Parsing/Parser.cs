@@ -133,8 +133,7 @@ namespace SlangLang.Parsing
         {
             LanguageToken keyword = MatchToken(LanguageTokenType.KeywordFor);
             StatementNode setup = ParseStatement();
-            ExpressionNode condition = ParseExpression();
-            MatchToken(LanguageTokenType.Semicolon); 
+            ExpressionNode condition = ParseExpressionStatement().expression;
             StatementNode post = ParseStatement();
             StatementNode body = ParseStatement();
 
