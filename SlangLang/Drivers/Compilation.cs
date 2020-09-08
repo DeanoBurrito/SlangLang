@@ -118,15 +118,41 @@ namespace SlangLang.Drivers
         private static void PrettyPrintBoundTree(BoundNode node, string indent = "", bool isLast = true)
         {
             string marker = isLast ? "└──" : "├──";
+            Console.ForegroundColor = ConsoleColor.Gray;
             Console.Write(indent);
             Console.Write(marker);
+            Console.ForegroundColor = GetNodeTypeColor(node.nodeType);
             Console.WriteLine(node.ToString());
+            Console.ForegroundColor = ConsoleColor.Gray;
 
             indent += isLast ? "   " : "│  ";
             BoundNode lastChild = node.GetChildren().LastOrDefault();
             foreach (BoundNode child in node.GetChildren())
             {
                 PrettyPrintBoundTree(child, indent, child == lastChild);
+            }
+        }
+
+        private static ConsoleColor GetNodeTypeColor(BoundNodeType type)
+        {
+            switch (type)
+            {
+                case BoundNodeType.AssignmentExpression:
+                case BoundNodeType.VariableExpression:
+                    return ConsoleColor.Blue;
+                case BoundNodeType.VariableDeclarationStatement:
+                    return ConsoleColor.DarkBlue;
+                case BoundNodeType.LiteralExpression:
+                    return ConsoleColor.Green;
+                case BoundNodeType.UnaryExpression:
+                case BoundNodeType.BinaryExpression:
+                    return ConsoleColor.Yellow;
+                case BoundNodeType.IfStatement:
+                case BoundNodeType.WhileStatement:
+                case BoundNodeType.ForStatement:
+                    return ConsoleColor.DarkMagenta;
+                default:
+                    return ConsoleColor.Gray;
             }
         }
     }
