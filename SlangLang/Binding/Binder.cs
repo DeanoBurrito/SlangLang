@@ -102,7 +102,7 @@ namespace SlangLang.Binding
 
             if (!scope.TryDeclare(variable))
             {
-                diagnostics.BinderError_VariableAlreadyDeclared(variable, statement.textLocation);
+                diagnostics.BinderError_VariableAlreadyDeclared(variable, new TextSpan(statement.keyword.textLocation.start, statement.identifier.textLocation.end));
             }
             return new BoundVariableDeclaration(variable, initializer, statement.textLocation);
         }
@@ -213,7 +213,7 @@ namespace SlangLang.Binding
 
             if (!scope.TryLookup(expression.token.text, out VariableSymbol variable))
             {
-                diagnostics.BinderError_VariableUndeclared(expression.token.text, expression.textLocation);
+                diagnostics.BinderError_VariableUndeclared(expression.token.text, expression.token.textLocation);
                 return boundExpr;
             }
 

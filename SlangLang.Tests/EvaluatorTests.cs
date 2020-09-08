@@ -61,7 +61,7 @@ namespace SlangLang.Tests
         }
 
         [Fact]
-        public void ErrorOnWriteReadonlyVariable()
+        public void ErrorWriteReadonlyVariable()
         {
             string src = @"
             {
@@ -72,7 +72,116 @@ namespace SlangLang.Tests
             string error = @"
             Variable a (System.Int32) is readonly and cannot be assigned to.
             ";
+            AssertDiagnostics(src, error);
+        }
 
+        [Fact]
+        public void ErrorBadInput()
+        {
+            string src = @"
+            {
+                int a = 0; 
+                while (a != 0)
+                    int b = 0;
+                [$]
+            }
+            ";
+            string error = @"
+            Bad character in input text, found $.
+            ";
+            AssertDiagnostics(src, error);
+        }
+
+        [Fact]
+        public void ErrorTokenMatchFailed()
+        {
+            string src = @"
+            {
+                int a = [;]
+            }
+            ";
+            string error = @"
+            Token match failed, expected Identifier, found Semicolon instead.
+            ";
+            AssertDiagnostics(src, error);
+
+            src = @"
+            {
+                int a = (10 * [)];
+            }
+            ";
+            error = @"
+            Token match failed, expected Identifier, found CloseParanthesis instead.
+            ";
+            AssertDiagnostics(src, error);
+        }
+
+        [Fact]
+        public void ErrorUnaryOperatorNotDefined()
+        {
+            string src = @"
+            {
+                [!0];
+            }
+            ";
+            string error = @"
+            Unary operator ! is not defined for type System.Int32.
+            ";
+            AssertDiagnostics(src, error);
+        }
+
+        [Fact]
+        public void ErrorBinaryOperatorNotDefined()
+        {
+            string src = @"
+            {
+                int c = 10;
+                c = 200;
+                [10 || 20];
+            }
+            ";
+            string error = @"
+            Binary operator || is not defined for types System.Int32, System.Int32.
+            ";
+            AssertDiagnostics(src, error);
+        }
+
+        [Fact]
+        public void ErrorVariableDoesNotExists()
+        {
+            string src = @"
+            {
+                int a = 10;
+                [b] = true;
+                {
+                    let int b = 10;
+                    [c] = 10;
+                }
+            }
+            ";
+            string error = @"
+            Variable b is not previously defined.
+            Variable c is not previously defined.
+            ";
+            AssertDiagnostics(src, error);
+        }
+
+        [Fact]
+        public void ErrorVariableAlreadyDeclared()
+        {
+            string src = @"
+            {
+                int a = 10;
+                int z = 20;
+                {
+                    a = 20;
+                    [int z] = 20; 
+                }
+            }
+            ";
+            string error = @"
+            Variable z (System.Int32) has already been declared in this scope.
+            ";
             AssertDiagnostics(src, error);
         }
 
@@ -89,7 +198,8 @@ namespace SlangLang.Tests
             Assert.True(result.diagnostics.HasErrors);
             (string message, TextSpan span)[] collapsedDiagnostics = CollapseDiagnostics(result.diagnostics);
 
-            Assert.True(collapsedDiagnostics.Length == expectedDiagnostics.Length); //verify we have the same number of errors as we expected
+            Assert.Equal(collapsedDiagnostics.Length, expectedDiagnostics.Length);
+            Assert.Equal(annotatedText.spans.Length, expectedDiagnostics.Length);
 
             for (int i = 0; i < expectedDiagnostics.Length; i++)
             {

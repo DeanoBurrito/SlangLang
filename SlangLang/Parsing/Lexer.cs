@@ -81,7 +81,7 @@ namespace SlangLang.Parsing
                     break;
                 case ')':
                     currChar++;
-                    type = LanguageTokenType.CloseParathesis;
+                    type = LanguageTokenType.CloseParanthesis;
                     break;
                 case '{':
                     currChar++;

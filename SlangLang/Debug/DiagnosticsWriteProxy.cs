@@ -38,17 +38,17 @@ namespace SlangLang.Debug
 
         internal static void BinderError_UnaryOperatorNotDefined(this Diagnostics diagnostics, LanguageToken opToken, Type operandType, TextSpan where)
         {
-            diagnostics.AddFailure("Binder", "Unary operator " + opToken + " is not defined for type " + operandType + ".", where, DateTime.Now);
+            diagnostics.AddFailure("Binder", "Unary operator " + opToken.text + " is not defined for type " + operandType + ".", where, DateTime.Now);
         }
 
         internal static void BinderError_BinaryOperatorNotDefined(this Diagnostics diagnostics, LanguageToken opToken, Type leftType, Type rightType, TextSpan where)
         {
-            diagnostics.AddFailure("Binder", "Binary operator " + opToken + " is not defined for types " + leftType + ", " + rightType + ".", where, DateTime.Now);
+            diagnostics.AddFailure("Binder", "Binary operator " + opToken.text + " is not defined for types " + leftType + ", " + rightType + ".", where, DateTime.Now);
         }
 
         internal static void BinderError_VariableDoesNotExist(this Diagnostics diagnostics, string varName, TextSpan where)
         {
-            diagnostics.AddFailure("Binder", "No variable declared with name " + varName, where, DateTime.Now);
+            diagnostics.AddFailure("Binder", "No variable declared with name " + varName + ".", where, DateTime.Now);
         }
 
         internal static void BinderError_VariableAlreadyDeclared(this Diagnostics diagnostics, VariableSymbol var, TextSpan where)

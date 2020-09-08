@@ -112,7 +112,7 @@ namespace SlangLang.Parsing
                     return ";";
                 case LanguageTokenType.OpenParanthesis:
                     return "(";
-                case LanguageTokenType.CloseParathesis:
+                case LanguageTokenType.CloseParanthesis:
                     return ")";
                 case LanguageTokenType.OpenBrace:
                     return "{";

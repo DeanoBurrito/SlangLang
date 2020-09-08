@@ -37,7 +37,7 @@ namespace SlangLang.Parsing
         Equals,
         Identifier,
         OpenParanthesis,
-        CloseParathesis,
+        CloseParanthesis,
         OpenBrace,
         CloseBrace,
 

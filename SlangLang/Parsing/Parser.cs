@@ -235,7 +235,7 @@ namespace SlangLang.Parsing
         {
             LanguageToken left = MatchToken(LanguageTokenType.OpenParanthesis);
             ExpressionNode inner = ParseExpression();
-            LanguageToken right = MatchToken(LanguageTokenType.CloseParathesis);
+            LanguageToken right = MatchToken(LanguageTokenType.CloseParanthesis);
 
             return inner;
         }

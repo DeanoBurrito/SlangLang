@@ -26,6 +26,8 @@ namespace SlangLang.Binding
 
         public bool TryDeclare(VariableSymbol variable)
         {
+            if (parent != null && parent.TryLookup(variable.name, out _))
+                return false;
             if (variables.ContainsKey(variable.name))
                 return false;
             variables.Add(variable.name, variable);
