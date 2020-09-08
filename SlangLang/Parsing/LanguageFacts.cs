@@ -99,6 +99,34 @@ namespace SlangLang.Parsing
         {
             switch (token)
             {
+                case LanguageTokenType.Plus:
+                    return "+";
+                case LanguageTokenType.Minus:
+                    return "-";
+                case LanguageTokenType.Star:
+                    return "*";
+                case LanguageTokenType.ForwardSlash:
+                    return "/";
+
+                case LanguageTokenType.Semicolon:
+                    return ";";
+                case LanguageTokenType.OpenParanthesis:
+                    return "(";
+                case LanguageTokenType.CloseParathesis:
+                    return ")";
+                case LanguageTokenType.OpenBrace:
+                    return "{";
+                case LanguageTokenType.CloseBrace:
+                    return "}";
+                
+                case LanguageTokenType.Exclamation:
+                    return "!";
+                case LanguageTokenType.ExclamationEquals:
+                    return "!=";
+                case LanguageTokenType.Equals:
+                    return "=";
+                case LanguageTokenType.EqualsEquals:
+                    return "==";
                 case LanguageTokenType.And:
                     return "&";
                 case LanguageTokenType.AndAnd:
@@ -107,14 +135,6 @@ namespace SlangLang.Parsing
                     return "|";
                 case LanguageTokenType.PipePipe:
                     return "||";
-                case LanguageTokenType.Equals:
-                    return "=";
-                case LanguageTokenType.EqualsEquals:
-                    return "==";
-                case LanguageTokenType.Exclamation:
-                    return "!";
-                case LanguageTokenType.ExclamationEquals:
-                    return "!=";
                 case LanguageTokenType.Less:
                     return "<";
                 case LanguageTokenType.LessOrEquals:
@@ -124,10 +144,10 @@ namespace SlangLang.Parsing
                 case LanguageTokenType.GreaterOrEquals:
                     return ">=";
 
-                case LanguageTokenType.KeywordFalse:
-                    return "false";
                 case LanguageTokenType.KeywordTrue:
                     return "true";
+                case LanguageTokenType.KeywordFalse:
+                    return "false";
                 case LanguageTokenType.KeywordLet:
                     return "let";
                 case LanguageTokenType.KeywordInt:
@@ -143,26 +163,7 @@ namespace SlangLang.Parsing
                     return "while";
                 case LanguageTokenType.KeywordFor:
                     return "for";
-                
-                case LanguageTokenType.Plus:
-                    return "+";
-                case LanguageTokenType.Minus:
-                    return "-";
-                case LanguageTokenType.Star:
-                    return "*";
-                case LanguageTokenType.ForwardSlash:
-                    return "/";
 
-                case LanguageTokenType.OpenParanthesis:
-                    return "(";
-                case LanguageTokenType.CloseParathesis:
-                    return ")";
-                case LanguageTokenType.OpenBrace:
-                    return "{";
-                case LanguageTokenType.CloseBrace:
-                    return "}";
-                case LanguageTokenType.Semicolon:
-                    return ";";
                 default:
                     return null;
             }
@@ -172,8 +173,8 @@ namespace SlangLang.Parsing
         {
             switch (keyword)
             {
-                case LanguageTokenType.KeywordBool:
                 case LanguageTokenType.KeywordInt:
+                case LanguageTokenType.KeywordBool:
                     return true;
                 default:
                     return false;

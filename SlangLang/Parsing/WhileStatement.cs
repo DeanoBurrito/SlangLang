@@ -10,7 +10,8 @@ namespace SlangLang.Parsing
         public readonly ExpressionNode condition;
         public readonly StatementNode body;
 
-        public WhileStatement(LanguageToken keyword, ExpressionNode condition, StatementNode body, TextSpan where) : base(where, ParseNodeType.WhileStatement)
+        public WhileStatement(LanguageToken keyword, ExpressionNode condition, StatementNode body) 
+            : base(ParseNodeType.WhileStatement, new TextSpan(keyword.textLocation.start, body.textLocation.end))
         {
             whileKeyword = keyword;
             this.condition = condition;

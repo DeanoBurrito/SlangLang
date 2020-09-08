@@ -14,8 +14,8 @@ namespace SlangLang.Parsing
         public readonly bool isReadOnly;
         
         public VariableDeclarationStatement(LanguageToken keyword, LanguageToken identifier, LanguageToken equals, 
-            ExpressionNode initializer, LanguageToken semicolon, bool readOnly, TextSpan where) 
-            : base(where, ParseNodeType.VariableDeclaration)
+            ExpressionNode initializer, LanguageToken semicolon, bool readOnly) 
+            : base(ParseNodeType.VariableDeclaration, new TextSpan(keyword.textLocation.start, semicolon.textLocation.end))
         {
             this.keyword = keyword;
             this.identifier = identifier;

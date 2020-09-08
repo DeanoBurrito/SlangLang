@@ -12,7 +12,7 @@ namespace SlangLang.Parsing
         public readonly LanguageToken closeBraceToken;
         
         public BlockStatement(LanguageToken openBrace, ImmutableArray<StatementNode> statements, LanguageToken closeBrace) 
-            : base (new TextSpan(openBrace.textLocation.start, closeBrace.textLocation.end), ParseNodeType.BlockStatement)
+            : base (ParseNodeType.BlockStatement, new TextSpan(openBrace.textLocation.start, closeBrace.textLocation.end))
         {
             openBraceToken = openBrace;
             closeBraceToken = closeBrace;

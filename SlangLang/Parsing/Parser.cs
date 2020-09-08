@@ -45,23 +45,30 @@ namespace SlangLang.Parsing
             
             //matching for EOF token validates that we're indeed at the end of the file.
             LanguageToken eofToken = MatchToken(LanguageTokenType.EndOfFile);
-            return new CompilationUnit(statement, eofToken, TextSpan.NoText);
+            return new CompilationUnit(statement, eofToken);
         }
 
         private StatementNode ParseStatement()
         {
-            LanguageToken current = Peek(); //TODO: move this into a switch statement
-            if (current.tokenType == LanguageTokenType.OpenBrace)
-                return ParseBlockStatement();
-            else if (LanguageFacts.KeywordIsVariableType(current.tokenType) || current.tokenType == LanguageTokenType.KeywordLet)
-                return ParseVariableDeclaration();
-            else if (current.tokenType == LanguageTokenType.KeywordIf)
-                return ParseIfStatement();
-            else if (current.tokenType == LanguageTokenType.KeywordWhile)
-                return ParseWhileStatement();
-            else if (current.tokenType == LanguageTokenType.KeywordFor)
-                return ParseForStatement();
-            return ParseExpressionStatement();
+            LanguageToken current = Peek();
+            switch (current.tokenType)
+            {
+                case LanguageTokenType.OpenBrace:
+                    return ParseBlockStatement();
+                case LanguageTokenType.KeywordInt: //TODO: replace this with a more general solution than individual keywords
+                case LanguageTokenType.KeywordBool:
+                case LanguageTokenType.KeywordLet:
+                    return ParseVariableDeclaration();
+                case LanguageTokenType.KeywordIf:
+                    return ParseIfStatement();
+                case LanguageTokenType.KeywordWhile:
+                    return ParseWhileStatement();
+                case LanguageTokenType.KeywordFor:
+                    return ParseForStatement();
+
+                default:
+                    return ParseExpressionStatement();
+            }
         }
 
         private BlockStatement ParseBlockStatement()
@@ -77,8 +84,7 @@ namespace SlangLang.Parsing
 
                 if (pos == startPosition)
                 {
-                    //we havent moved, just produced a synthesized token to prevent tree from crashing, time to escape infinite loop
-                    //error will already have been reported from MatchToken() at some point.
+                    //in the event of the entire chain failing and producing a synthesized token, this will keep the parser from entering an infinite loop here
                     NextToken();
                 }
                 startPosition = pos;
@@ -94,13 +100,14 @@ namespace SlangLang.Parsing
             if (varIsReadonly)
                 NextToken();
 
-            LanguageToken keyword = MatchToken(LanguageTokenType.KeywordInt); //TODO: accept more variable types
+            //TODO: detect types based on more than keywords here (also allow more than ints for immediate future)
+            LanguageToken keyword = MatchToken(LanguageTokenType.KeywordInt); 
             LanguageToken identifier = MatchToken(LanguageTokenType.Identifier);
             LanguageToken equals = MatchToken(LanguageTokenType.Equals);
             ExpressionNode initializer = ParseExpression();
             LanguageToken semicolon = MatchToken(LanguageTokenType.Semicolon);
-            return new VariableDeclarationStatement(keyword, identifier, equals, initializer, semicolon, varIsReadonly, 
-                new TextSpan(keyword.textLocation.start, equals.textLocation.end));
+
+            return new VariableDeclarationStatement(keyword, identifier, equals, initializer, semicolon, varIsReadonly);
         }
 
         private IfStatement ParseIfStatement()
@@ -109,7 +116,8 @@ namespace SlangLang.Parsing
             ExpressionNode condition = ParseExpression();
             StatementNode body = ParseStatement();
             ElseClauseData elseClause = ParseElseClause();
-            return new IfStatement(keyword, condition, body, elseClause, new TextSpan(keyword.textLocation.start, condition.textLocation.end));
+
+            return new IfStatement(keyword, condition, body, elseClause);
         }
 
         private WhileStatement ParseWhileStatement()
@@ -117,7 +125,8 @@ namespace SlangLang.Parsing
             LanguageToken keyword = MatchToken(LanguageTokenType.KeywordWhile);
             ExpressionNode condition = ParseExpression();
             StatementNode body = ParseStatement();
-            return new WhileStatement(keyword, condition, body, new TextSpan(keyword.textLocation.start, condition.textLocation.end));
+
+            return new WhileStatement(keyword, condition, body);
         }
 
         private ForStatement ParseForStatement()
@@ -125,18 +134,21 @@ namespace SlangLang.Parsing
             LanguageToken keyword = MatchToken(LanguageTokenType.KeywordFor);
             StatementNode setup = ParseStatement();
             ExpressionNode condition = ParseExpression();
-            MatchToken(LanguageTokenType.Semicolon); //since condition is an expression, not a statement. Expect a semicolon for consistency
+            MatchToken(LanguageTokenType.Semicolon); 
             StatementNode post = ParseStatement();
             StatementNode body = ParseStatement();
-            return new ForStatement(keyword, setup, condition, post, body, new TextSpan(keyword.textLocation.start, condition.textLocation.end));
+
+            return new ForStatement(keyword, setup, condition, post, body);
         }
 
         private ElseClauseData ParseElseClause()
         {
             if (Peek().tokenType != LanguageTokenType.KeywordElse)
                 return null;
+
             LanguageToken elseKeyword = MatchToken(LanguageTokenType.KeywordElse);
             StatementNode elseBody = ParseStatement();
+
             return new ElseClauseData(elseKeyword, elseBody);
         }
 
@@ -144,6 +156,7 @@ namespace SlangLang.Parsing
         {
             ExpressionNode expression = ParseExpression();
             LanguageToken semicolon = MatchToken(LanguageTokenType.Semicolon);
+
             return new ExpressionStatement(expression, semicolon);
         }
 
@@ -159,8 +172,10 @@ namespace SlangLang.Parsing
                 LanguageToken identifierToken = NextToken();
                 LanguageToken operatorToken = NextToken();
                 ExpressionNode expr = ParseAssignmentExpression();
-                return new AssignmentExpression(identifierToken, expr, expr.textLocation);
+
+                return new AssignmentExpression(identifierToken, expr);
             }
+
             return ParseBinaryExpression();
         }
         
@@ -172,7 +187,7 @@ namespace SlangLang.Parsing
             {
                 LanguageToken operatorToken = NextToken();
                 ExpressionNode operand = ParseBinaryExpression(unaryOperatorPrecedence);
-                left = new UnaryExpression(operatorToken, operand, operand.textLocation);
+                left = new UnaryExpression(operatorToken, operand);
             }
             else
             {
@@ -187,7 +202,7 @@ namespace SlangLang.Parsing
                 
                 LanguageToken operatorToken = NextToken();
                 ExpressionNode right = ParseBinaryExpression(precedence);
-                left = new BinaryExpression(operatorToken, left, right, operatorToken.textLocation);
+                left = new BinaryExpression(left, operatorToken, right);
             }
 
             return left;
@@ -214,7 +229,7 @@ namespace SlangLang.Parsing
         private ExpressionNode ParseNameExpression()
         {
             LanguageToken identifier = MatchToken(LanguageTokenType.Identifier);
-            return new NameExpression(identifier, identifier.textLocation);
+            return new NameExpression(identifier);
         }
 
         private ExpressionNode ParseParanthesizedExpression()
@@ -222,6 +237,7 @@ namespace SlangLang.Parsing
             LanguageToken left = MatchToken(LanguageTokenType.OpenParanthesis);
             ExpressionNode inner = ParseExpression();
             LanguageToken right = MatchToken(LanguageTokenType.CloseParathesis);
+
             return inner;
         }
         
@@ -229,7 +245,8 @@ namespace SlangLang.Parsing
         {
             bool isTrue = Peek().tokenType == LanguageTokenType.KeywordTrue;
             LanguageToken boolToken = MatchToken(isTrue ? LanguageTokenType.KeywordTrue : LanguageTokenType.KeywordFalse);
-            return new LiteralExpression(isTrue, boolToken, boolToken.textLocation);
+
+            return new LiteralExpression(isTrue, boolToken);
         }
 
         private ExpressionNode ParseIntegerLiteral()
@@ -240,7 +257,7 @@ namespace SlangLang.Parsing
             if (!int.TryParse(token.text, out int val)) 
                 diagnostics.ParserError_CouldNotParseInt(current.textLocation.start);
 
-            return new LiteralExpression(val, token, current.textLocation);
+            return new LiteralExpression(val, token);
         }
 
         private LanguageToken MatchToken(LanguageTokenType tokenType)

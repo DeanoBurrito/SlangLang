@@ -6,7 +6,7 @@ namespace SlangLang.Parsing
 {
     public abstract class StatementNode : ParseNode
     {
-        public StatementNode(TextSpan where, ParseNodeType type) : base(type, where)
+        public StatementNode(ParseNodeType type, TextSpan where) : base(type, where)
         {}
     }
 }

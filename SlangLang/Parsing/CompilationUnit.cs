@@ -9,7 +9,7 @@ namespace SlangLang.Parsing
         public readonly StatementNode statement;
         public readonly LanguageToken eofToken;
         
-        public CompilationUnit(StatementNode statement, LanguageToken eof, TextSpan where) : base(ParseNodeType.CompilationUnit, where)
+        public CompilationUnit(StatementNode statement, LanguageToken eof) : base(ParseNodeType.CompilationUnit, statement.textLocation)
         {
             this.statement = statement;
             eofToken = eof;

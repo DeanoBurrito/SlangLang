@@ -9,7 +9,8 @@ namespace SlangLang.Parsing
         public readonly ExpressionNode expression;
         public readonly LanguageToken semicolonToken;
         
-        public ExpressionStatement(ExpressionNode expr, LanguageToken semicolon) : base(expr.textLocation, ParseNodeType.ExpressionStatement)
+        public ExpressionStatement(ExpressionNode expr, LanguageToken semicolon) 
+            : base(ParseNodeType.ExpressionStatement, expr.textLocation)
         {
             expression = expr;
             semicolonToken = semicolon;

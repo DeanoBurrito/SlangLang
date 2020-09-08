@@ -11,8 +11,8 @@ namespace SlangLang.Parsing
         public readonly StatementNode bodyStatement;
         public readonly ElseClauseData elseClause;
         
-        public IfStatement(LanguageToken ifKeyword, ExpressionNode condition, StatementNode thenStatement, 
-            ElseClauseData elseClause, TextSpan where) : base(where, ParseNodeType.IfStatement)
+        public IfStatement(LanguageToken ifKeyword, ExpressionNode condition, StatementNode thenStatement, ElseClauseData elseClause) 
+            : base(ParseNodeType.IfStatement, new TextSpan(ifKeyword.textLocation.start, elseClause == null ? thenStatement.textLocation.end : elseClause.statement.textLocation.end))
         {
             this.ifKeyword = ifKeyword;
             this.condition = condition;

@@ -12,8 +12,8 @@ namespace SlangLang.Parsing
         public readonly StatementNode postStatement;
         public readonly StatementNode body;
         
-        public ForStatement(LanguageToken keyword, StatementNode setup, ExpressionNode condition, StatementNode post, StatementNode body,TextSpan where) 
-            : base(where, ParseNodeType.ForStatement)
+        public ForStatement(LanguageToken keyword, StatementNode setup, ExpressionNode condition, StatementNode post, StatementNode body) 
+            : base(ParseNodeType.ForStatement, new TextSpan(keyword.textLocation.start, body.textLocation.end))
         {
             this.forKeyword = keyword;
             this.setupStatement = setup;

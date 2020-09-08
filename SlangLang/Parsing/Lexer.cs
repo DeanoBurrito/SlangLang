@@ -199,7 +199,7 @@ namespace SlangLang.Parsing
             if (text == null)
                 text = LanguageFacts.GetText(type);
             if (text == null && type != LanguageTokenType.BadToken && type != LanguageTokenType.EndOfFile)
-                throw new Exception("Unexpected null text, text did not trigger bad token, but was not an identifier/number/string or keyword.");
+                throw new Exception("Unexpected null text, text did not trigger bad token, but was not lexable as any known token.");
 
             return new LanguageToken(type, text, new TextSpan(startLocation, endLocation, textLength));
         }

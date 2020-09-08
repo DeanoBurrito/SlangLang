@@ -9,7 +9,8 @@ namespace SlangLang.Parsing
         public readonly ExpressionNode leftNode;
         public readonly ExpressionNode rightNode;
 
-        public BinaryExpression(LanguageToken opToken, ExpressionNode left, ExpressionNode right, TextSpan where) : base(opToken, ParseNodeType.Binary, where)
+        public BinaryExpression(ExpressionNode left, LanguageToken opToken, ExpressionNode right) 
+            : base(opToken, ParseNodeType.Binary, new TextSpan(left.textLocation.start, right.textLocation.end))
         {
             leftNode = left;
             rightNode = right;
