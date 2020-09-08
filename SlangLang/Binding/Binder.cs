@@ -71,7 +71,7 @@ namespace SlangLang.Binding
                     return BindForStatement((ForStatement)statement);
             }
 
-            diagnostics.BinderError_UnexpectedStatementType(statement.nodeType, statement.textLocation.start);
+            diagnostics.BinderError_UnexpectedStatementType(statement.nodeType, statement.textLocation);
             throw new Exception("Unable to bind unexpected statement type: " + statement.nodeType + " @" + statement.textLocation);
         }
 
@@ -102,7 +102,7 @@ namespace SlangLang.Binding
 
             if (!scope.TryDeclare(variable))
             {
-                diagnostics.BinderError_VariableAlreadyDeclared(variable, statement.textLocation.start);
+                diagnostics.BinderError_VariableAlreadyDeclared(variable, statement.textLocation);
             }
             return new BoundVariableDeclaration(variable, initializer, statement.textLocation);
         }
@@ -136,7 +136,7 @@ namespace SlangLang.Binding
             BoundExpression result = BindExpression(node);
             if (result.boundType != targetType)
             {
-                diagnostics.BinderError_CannotConvertExpressionType(targetType, result.boundType, node.textLocation.start);
+                diagnostics.BinderError_CannotConvertExpressionType(targetType, result.boundType, node.textLocation);
             }
             return result;
         }
@@ -157,7 +157,7 @@ namespace SlangLang.Binding
                     return BindAssignmentExpression((AssignmentExpression)node);
             }
 
-            diagnostics.BinderError_UnexpectedExpressionType(node.nodeType, node.textLocation.start);
+            diagnostics.BinderError_UnexpectedExpressionType(node.nodeType, node.textLocation);
             throw new Exception("Unable to bind on unexpected expresson node: " + node.nodeType + " @" + node.textLocation.ToString());
         }
 
@@ -173,7 +173,7 @@ namespace SlangLang.Binding
             BoundUnaryOperator boundOperator = BoundUnaryOperator.Bind(expression.token.tokenType, boundOperand.boundType);
             if (boundOperator == null)
             {
-                diagnostics.BinderError_UnaryOperatorNotDefined(expression.token, boundOperand.boundType, expression.textLocation.start);
+                diagnostics.BinderError_UnaryOperatorNotDefined(expression.token, boundOperand.boundType, expression.textLocation);
                 return boundOperand;
             }
             return new BoundUnaryExpression(boundOperator, boundOperand, expression.textLocation);
@@ -186,7 +186,7 @@ namespace SlangLang.Binding
             BoundBinaryOperator boundOperator = BoundBinaryOperator.Bind(expression.token.tokenType, boundLeft.boundType, boundRight.boundType);
             if (boundOperator == null)
             {
-                diagnostics.BinderError_BinaryOperatorNotDefined(expression.token, boundLeft.boundType, boundRight.boundType, expression.textLocation.start);
+                diagnostics.BinderError_BinaryOperatorNotDefined(expression.token, boundLeft.boundType, boundRight.boundType, expression.textLocation);
                 return boundLeft;
             }
             return new BoundBinaryExpression(boundLeft, boundOperator, boundRight, expression.textLocation);
@@ -200,7 +200,7 @@ namespace SlangLang.Binding
             
             if (!scope.TryLookup(name, out VariableSymbol variable))
             {
-                diagnostics.BinderError_VariableDoesNotExist(name, expression.textLocation.start);
+                diagnostics.BinderError_VariableDoesNotExist(name, expression.textLocation);
                 return new BoundLiteralExpression(0, TextSpan.NoText); //just return int(0) so the tree dosnt crash
             }
 
@@ -213,18 +213,18 @@ namespace SlangLang.Binding
 
             if (!scope.TryLookup(expression.token.text, out VariableSymbol variable))
             {
-                diagnostics.BinderError_VariableUndeclared(expression.token.text, expression.textLocation.start);
+                diagnostics.BinderError_VariableUndeclared(expression.token.text, expression.textLocation);
                 return boundExpr;
             }
 
             if (variable.isReadOnly)
             {
-                diagnostics.BinderError_ReadonlyVariableAssignment(variable, expression.textLocation.start);
+                diagnostics.BinderError_ReadonlyVariableAssignment(variable, expression.textLocation);
             }
             
             if (boundExpr.boundType != variable.type)
             {
-                diagnostics.BinderError_CannotCastVariable(variable, boundExpr.boundType, expression.textLocation.start);
+                diagnostics.BinderError_CannotCastVariable(variable, boundExpr.boundType, expression.textLocation);
                 return boundExpr;
             }
 

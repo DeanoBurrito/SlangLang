@@ -6,10 +6,10 @@ namespace SlangLang.Debug
     {
         public readonly string module;
         public readonly string message;
-        public readonly TextLocation where;
+        public readonly TextSpan where;
         public DateTime when;
 
-        public DiagnosticEntry(string sender, string msg, TextLocation location, DateTime dt)
+        public DiagnosticEntry(string sender, string msg, TextSpan location, DateTime dt)
         {
             module = sender;
             message = msg;

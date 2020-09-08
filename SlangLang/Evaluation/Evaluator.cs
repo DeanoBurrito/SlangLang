@@ -157,7 +157,7 @@ namespace SlangLang.Evaluation
                 }
             }
 
-            diagnostics.EvaluatorError_UnexpectedUnaryOperator(expr.op, expr.textLocation.start);
+            diagnostics.EvaluatorError_UnexpectedUnaryOperator(expr.op, expr.textLocation);
             throw new Exception("Unexpected unary operator in evaluator!");
         }
 
@@ -208,7 +208,7 @@ namespace SlangLang.Evaluation
             else if (expr.op.binaryOperator == BoundBinaryOperatorType.NotEquals)
                 return !Equals(leftResult, rightResult);
             
-            diagnostics.EvaluatorError_UnxpectedBinaryOperator(expr.op, expr.textLocation.start);
+            diagnostics.EvaluatorError_UnxpectedBinaryOperator(expr.op, expr.textLocation);
             throw new Exception("Unexpected binary operator in evaluator!");
         }
     }

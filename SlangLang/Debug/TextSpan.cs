@@ -42,5 +42,19 @@ namespace SlangLang.Debug
         {
             return start.ToString().Replace("]", "") + ", " + end.ToString().Replace("[", "");
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is TextSpan span)
+            {
+                if (span.start.absoluteFilePosition == this.start.absoluteFilePosition &&
+                    span.end.absoluteFilePosition == this.end.absoluteFilePosition &&
+                    span.length == this.length)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

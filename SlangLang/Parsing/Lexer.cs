@@ -190,7 +190,7 @@ namespace SlangLang.Parsing
                     else
                     {
                         currChar++;
-                        diagnostics.LexerError_GotBadInput(current.ToString(), startLocation);
+                        diagnostics.LexerError_GotBadInput(current.ToString(), new TextSpan(startLocation, endLocation));
                     }
                     break;
                 }
@@ -218,7 +218,7 @@ namespace SlangLang.Parsing
                 current = MoveNext();
             }
 
-            endLocation = sourceStore.GetLocation(currChar - 1);
+            endLocation = sourceStore.GetLocation(currChar);
             textLength = currChar - start;
             text = sourceStore.GetSubstring(start, currChar - start);
             type = LanguageTokenType.IntegerNumber;
@@ -258,7 +258,7 @@ namespace SlangLang.Parsing
                 current = MoveNext();
                 if (current == '\0')
                 {
-                    diagnostics.LexerError_ExpectedEndOfStringLiteral("EOF", startLocation);
+                    diagnostics.LexerError_ExpectedEndOfStringLiteral("EOF", new TextSpan(startLocation, endLocation));
 
                     endLocation = TextLocation.NoLocation;
                     textLength = 0;

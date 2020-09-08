@@ -1,16 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("SlangLang.Tests")]
 namespace SlangLang.Debug
 {
     public sealed class Diagnostics
     {
         public static Diagnostics DummyInstance = new Diagnostics();
         
-        Dictionary<string, List<DiagnosticEntry>> infoEntries;
-        Dictionary<string, List<DiagnosticEntry>> warningEntries;
-        Dictionary<string, List<DiagnosticEntry>> failureEntries;
+        internal Dictionary<string, List<DiagnosticEntry>> infoEntries;
+        internal Dictionary<string, List<DiagnosticEntry>> warningEntries;
+        internal Dictionary<string, List<DiagnosticEntry>> failureEntries;
         (ConsoleColor fg, ConsoleColor bg) infoColor = (ConsoleColor.White, ConsoleColor.Black);
         (ConsoleColor fg, ConsoleColor bg) warningColor = (ConsoleColor.Yellow, ConsoleColor.Black);
         (ConsoleColor fg, ConsoleColor bg) failureColor = (ConsoleColor.Red, ConsoleColor.Black);
@@ -71,10 +73,10 @@ namespace SlangLang.Debug
 
             if (!infoEntries.ContainsKey(module))
                 infoEntries.Add(module, new List<DiagnosticEntry>());
-            infoEntries[module].Add(new DiagnosticEntry(module, message, null, when));
+            infoEntries[module].Add(new DiagnosticEntry(module, message, TextSpan.NoText, when));
         }
 
-        public void AddWarning(string module, string message, TextLocation where, DateTime when)
+        public void AddWarning(string module, string message, TextSpan where, DateTime when)
         {
             if (dummyInstance)
                 return;
@@ -84,7 +86,7 @@ namespace SlangLang.Debug
             warningEntries[module].Add(new DiagnosticEntry(module, message, where, when));
         }
 
-        public void AddFailure(string module, string message, TextLocation where, DateTime when)
+        public void AddFailure(string module, string message, TextSpan where, DateTime when)
         {
             if (dummyInstance)
                 return;
