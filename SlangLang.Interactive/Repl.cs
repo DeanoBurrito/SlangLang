@@ -106,6 +106,9 @@ namespace SlangLang.Interactive
                 case 2:
                     options.printBinderOutput = showTree;
                     break;
+                case 3:
+                    options.printLoweredOutput = showTree;
+                    break;
             }
 
             Compilation currentCompilation;
@@ -184,7 +187,7 @@ namespace SlangLang.Interactive
                 if (args.Length > 0 && int.TryParse(args[0], out int stage))
                 {
                     repl.showTree = true;
-                    if (stage < 0 || stage > 2)
+                    if (stage < 0 || stage > 3)
                         repl.treeStage = 0;
                     else
                         repl.treeStage = stage;

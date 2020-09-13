@@ -7,15 +7,15 @@ namespace SlangLang.Binding
         BlockStatement,
         ExpressionStatement,
         VariableDeclarationStatement,
-        
-        LiteralExpression,
-        UnaryExpression,
-        BinaryExpression,
-        VariableExpression,
-        AssignmentExpression,
         IfStatement,
         WhileStatement,
         ForStatement,
+        
+        LiteralExpression,
+        VariableExpression,
+        AssignmentExpression,
+        UnaryExpression,
+        BinaryExpression,
     }
 
     internal enum BoundUnaryOperatorType

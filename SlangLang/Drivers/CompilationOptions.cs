@@ -9,5 +9,6 @@ namespace SlangLang.Drivers
         public bool printLexerOutput = false;
         public bool printParserOutput = false;
         public bool printBinderOutput = false;
+        public bool printLoweredOutput = false;
     }
 }
