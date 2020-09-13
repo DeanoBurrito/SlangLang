@@ -5,6 +5,7 @@ using SlangLang.Debug;
 using SlangLang.Parsing;
 using SlangLang.Binding;
 using SlangLang.Evaluation;
+using SlangLang.Lowering;
 
 namespace SlangLang.Drivers
 {
@@ -70,16 +71,26 @@ namespace SlangLang.Drivers
         {
             if (options.printBinderOutput)
             {
-                Console.ForegroundColor = ConsoleColor.Gray;
+                //get this before we call GetStatement() to print before lowering takes place
                 PrettyPrintBoundTree(GlobalScope.statement);
-                Console.ResetColor();
+            }
+            BoundStatement statement = GetStatement();
+            if (options.printLoweredOutput)
+            {
+                PrettyPrintBoundTree(statement);
             }
             
             diags.Aggregate(GlobalScope.diagnostics);
-            Evaluator eval = new Evaluator(diags, GlobalScope.statement, variables);
+            Evaluator eval = new Evaluator(diags, statement, variables);
             if (diags.HasErrors)
                 return new EvaluationResult(null, diags); //just return the error, not the value
             return new EvaluationResult(eval.Evaluate(), diags);
+        }
+
+        private BoundStatement GetStatement()
+        {
+            BoundStatement result = GlobalScope.statement;
+            return Lowerer.Lower(result);
         }
 
         private static void PrettyPrintTokenStream(LanguageToken[] tokens)
