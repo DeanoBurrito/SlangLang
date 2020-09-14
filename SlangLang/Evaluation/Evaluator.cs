@@ -54,7 +54,7 @@ namespace SlangLang.Evaluation
                     case BoundNodeType.ConditionalGotoStatement:
                         BoundConditionalGoto condGoto = (BoundConditionalGoto)statement;
                         bool condResult = (bool)EvaluateExpression(condGoto.condition);
-                        if (condResult != condGoto.jumpIfFalse)
+                        if (condResult == condGoto.jumpIfTrue)
                             statementPointer = labelIndexMap[condGoto.label];
                         else
                             statementPointer++;

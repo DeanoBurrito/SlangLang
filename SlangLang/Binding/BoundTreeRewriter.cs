@@ -140,7 +140,7 @@ namespace SlangLang.Binding
             if (condition == node.condition)
                 return node;
                 
-            return new BoundConditionalGoto(node.label, condition, node.textLocation, node.jumpIfFalse);
+            return new BoundConditionalGoto(node.label, condition, node.textLocation, node.jumpIfTrue);
         }
 
         public virtual BoundExpression RewriteExpression(BoundExpression node)

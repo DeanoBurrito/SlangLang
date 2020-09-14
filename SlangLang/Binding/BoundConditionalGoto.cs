@@ -8,13 +8,13 @@ namespace SlangLang.Binding
     {
         public readonly LabelSymbol label;
         public readonly BoundExpression condition;
-        public readonly bool jumpIfFalse;
+        public readonly bool jumpIfTrue;
 
-        public BoundConditionalGoto(LabelSymbol symbol, BoundExpression condition, TextSpan where, bool jumpIfFalse = false) : base(BoundNodeType.ConditionalGotoStatement, where)
+        public BoundConditionalGoto(LabelSymbol symbol, BoundExpression condition, TextSpan where, bool jumpIfTrue = true) : base(BoundNodeType.ConditionalGotoStatement, where)
         {
             label = symbol;
             this.condition = condition;
-            this.jumpIfFalse = jumpIfFalse;
+            this.jumpIfTrue = jumpIfTrue;
         }
 
         public override List<BoundNode> GetChildren()
@@ -24,7 +24,7 @@ namespace SlangLang.Binding
 
         public override string ToString()
         {
-            return "[ConditionalGoto] " + label + ", Jump when [" + !jumpIfFalse + "]";
+            return "[ConditionalGoto] " + label + ", Jump when [" + !jumpIfTrue + "]";
         }
     }
 }

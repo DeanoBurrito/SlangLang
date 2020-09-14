@@ -55,7 +55,7 @@ namespace SlangLang.Lowering
             {
                 LabelSymbol endLabel = GenerateLabel();
 
-                BoundConditionalGoto gotoFalse = new BoundConditionalGoto(endLabel, node.condition, TextSpan.NoText, true);
+                BoundConditionalGoto gotoFalse = new BoundConditionalGoto(endLabel, node.condition, TextSpan.NoText, false);
                 BoundLabelStatement endLabelStatement = new BoundLabelStatement(endLabel, TextSpan.NoText);
 
                 BoundBlockStatement result = new BoundBlockStatement(ImmutableArray.Create<BoundStatement>(
@@ -71,7 +71,7 @@ namespace SlangLang.Lowering
                 LabelSymbol endLabel = GenerateLabel();
                 LabelSymbol elseLabel = GenerateLabel();
 
-                BoundConditionalGoto gotoElseFalse = new BoundConditionalGoto(elseLabel, node.condition, TextSpan.NoText, true);
+                BoundConditionalGoto gotoElseFalse = new BoundConditionalGoto(elseLabel, node.condition, TextSpan.NoText, false);
                 BoundGotoStatement gotoEnd = new BoundGotoStatement(endLabel, TextSpan.NoText);
                 BoundLabelStatement boundElseLabel = new BoundLabelStatement(elseLabel, TextSpan.NoText);
                 BoundLabelStatement boundEndLabel = new BoundLabelStatement(endLabel, TextSpan.NoText);
@@ -94,7 +94,7 @@ namespace SlangLang.Lowering
             LabelSymbol topLabel = GenerateLabel();
             LabelSymbol endLabel = GenerateLabel();
             
-            BoundConditionalGoto gotoEndFalse = new BoundConditionalGoto(endLabel, node.condition, TextSpan.NoText, true);
+            BoundConditionalGoto gotoEndFalse = new BoundConditionalGoto(endLabel, node.condition, TextSpan.NoText, false);
             BoundGotoStatement gotoTop = new BoundGotoStatement(topLabel, TextSpan.NoText);
             BoundLabelStatement boundTopLabel = new BoundLabelStatement(topLabel, TextSpan.NoText);
             BoundLabelStatement boundEndLabel = new BoundLabelStatement(endLabel, TextSpan.NoText);
