@@ -8,12 +8,12 @@ namespace SlangLang.Evaluation
 {
     internal sealed class Evaluator
     {
-        private BoundStatement root;
+        private BoundBlockStatement root;
         private Diagnostics diagnostics;
         private Dictionary<VariableSymbol, object> variables;
         private object lastValue;
 
-        public Evaluator(Diagnostics diag, BoundStatement rootStatement, Dictionary<VariableSymbol, object> variables)
+        public Evaluator(Diagnostics diag, BoundBlockStatement rootStatement, Dictionary<VariableSymbol, object> variables)
         {
             root = rootStatement;
             diagnostics = diag;
@@ -22,41 +22,49 @@ namespace SlangLang.Evaluation
 
         public object Evaluate()
         {
-            EvaluateStatement(root);
-            return lastValue;
-        }
-
-        private void EvaluateStatement(BoundStatement statement)
-        {
-            switch (statement.nodeType)
+            Dictionary<LabelSymbol, int> labelIndexMap = new Dictionary<LabelSymbol, int>();
+            for (int i = 0; i < root.statements.Length; i++)
             {
-                case BoundNodeType.BlockStatement:
-                    EvaluateBlockStatement((BoundBlockStatement)statement);
-                    return;
-                case BoundNodeType.ExpressionStatement:
-                    EvaluateExpressionStatement((BoundExpressionStatement)statement);
-                    return;
-                case BoundNodeType.VariableDeclarationStatement:
-                    EvaluateVariableDeclaration((BoundVariableDeclaration)statement);
-                    return;
-                case BoundNodeType.IfStatement:
-                    EvaluateIfStatement((BoundIfStatement)statement);
-                    return;
-                case BoundNodeType.WhileStatement:
-                    EvaluateWhileStatement((BoundWhileStatement)statement);
-                    return;
-                case BoundNodeType.ForStatement:
-                    EvaluateForStatement((BoundForStatement)statement);
-                    return;
+                if (root.statements[i] is BoundLabelStatement label)
+                {
+                    labelIndexMap.Add(label.label, i + 1);
+                }
             }
 
-            throw new Exception("Unexpected statement in evaluator");
-        }
+            int statementPointer = 0;
+            while (statementPointer < root.statements.Length)
+            {
+                BoundStatement statement = root.statements[statementPointer];
+                switch (statement.nodeType)
+                {
+                    case BoundNodeType.ExpressionStatement:
+                        EvaluateExpressionStatement((BoundExpressionStatement)statement);
+                        statementPointer++;
+                        break;
+                    case BoundNodeType.VariableDeclarationStatement:
+                        EvaluateVariableDeclaration((BoundVariableDeclaration)statement);
+                        statementPointer++;
+                        break;
+                    case BoundNodeType.LabelStatement:
+                        statementPointer++;
+                        break;
+                    case BoundNodeType.GotoStatement:
+                        statementPointer = labelIndexMap[((BoundGotoStatement)statement).label];
+                        break;
+                    case BoundNodeType.ConditionalGotoStatement:
+                        BoundConditionalGoto condGoto = (BoundConditionalGoto)statement;
+                        bool condResult = (bool)EvaluateExpression(condGoto.condition);
+                        if (condResult != condGoto.jumpIfFalse)
+                            statementPointer = labelIndexMap[condGoto.label];
+                        else
+                            statementPointer++;
+                        break;
+                    default:
+                        throw new Exception("Unexpected statement in evaluator");
+                }
+            }
 
-        private void EvaluateBlockStatement(BoundBlockStatement statement)
-        {
-            foreach (BoundStatement s in statement.statements)
-                EvaluateStatement(s);
+            return lastValue;
         }
 
         private void EvaluateExpressionStatement(BoundExpressionStatement statement)
@@ -69,33 +77,6 @@ namespace SlangLang.Evaluation
             object value = EvaluateExpression(statement.initializer);
             variables[statement.variable] = value;
             lastValue = value;
-        }
-
-        private void EvaluateIfStatement(BoundIfStatement statement)
-        {
-            bool condition = (bool)EvaluateExpression(statement.condition);
-            if (condition)
-                EvaluateStatement(statement.body);
-            else if (statement.elseStatement != null)
-                EvaluateStatement(statement.elseStatement);
-        }
-
-        private void EvaluateWhileStatement(BoundWhileStatement statement)
-        {
-            while ((bool)EvaluateExpression(statement.condition))
-            {
-                EvaluateStatement(statement.body);
-            }
-        }
-
-        private void EvaluateForStatement(BoundForStatement statement)
-        {
-            EvaluateStatement(statement.setupStatement);
-            while ((bool)EvaluateExpression(statement.condition))
-            {
-                EvaluateStatement(statement.body);
-                EvaluateStatement(statement.postStatement);
-            }
         }
 
         private object EvaluateExpression(BoundExpression node)

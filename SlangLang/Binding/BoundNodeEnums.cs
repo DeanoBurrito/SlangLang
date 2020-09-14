@@ -10,6 +10,9 @@ namespace SlangLang.Binding
         IfStatement,
         WhileStatement,
         ForStatement,
+        LabelStatement,
+        GotoStatement,
+        ConditionalGotoStatement,
         
         LiteralExpression,
         VariableExpression,

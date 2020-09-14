@@ -74,7 +74,7 @@ namespace SlangLang.Drivers
                 //get this before we call GetStatement() to print before lowering takes place
                 PrettyPrintBoundTree(GlobalScope.statement);
             }
-            BoundStatement statement = GetStatement();
+            BoundBlockStatement statement = GetStatement();
             if (options.printLoweredOutput)
             {
                 PrettyPrintBoundTree(statement);
@@ -87,7 +87,7 @@ namespace SlangLang.Drivers
             return new EvaluationResult(eval.Evaluate(), diags);
         }
 
-        private BoundStatement GetStatement()
+        private BoundBlockStatement GetStatement()
         {
             BoundStatement result = GlobalScope.statement;
             return Lowerer.Lower(result);

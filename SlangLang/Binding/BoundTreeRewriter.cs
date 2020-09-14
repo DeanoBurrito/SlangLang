@@ -15,12 +15,20 @@ namespace SlangLang.Binding
                     return RewriteExpressionStatement((BoundExpressionStatement)node);
                 case BoundNodeType.VariableDeclarationStatement:
                     return RewriteVariableDeclaration((BoundVariableDeclaration)node);
+
                 case BoundNodeType.IfStatement:
                     return RewriteIfStatement((BoundIfStatement)node);
                 case BoundNodeType.WhileStatement:
                     return RewriteWhileStatement((BoundWhileStatement)node);
                 case BoundNodeType.ForStatement:
                     return RewriteForStatement((BoundForStatement)node);
+
+                case BoundNodeType.LabelStatement:
+                    return RewriteLabelStatement((BoundLabelStatement)node);
+                case BoundNodeType.GotoStatement:
+                    return RewriteGotoStatement((BoundGotoStatement)node);
+                case BoundNodeType.ConditionalGotoStatement:
+                    return RewriteConditionalGoto((BoundConditionalGoto)node);
                 default:
                     throw new Exception("Unexpected bound statement type in rewriter: " + node.nodeType);
             }
@@ -114,6 +122,25 @@ namespace SlangLang.Binding
             }
 
             return new BoundForStatement(setupStatement, condition, postStatement, body, node.textLocation);
+        }
+
+        protected virtual BoundStatement RewriteLabelStatement(BoundLabelStatement node)
+        {
+            return node;
+        }
+
+        protected virtual BoundStatement RewriteGotoStatement(BoundGotoStatement node)
+        {
+            return node;
+        }
+
+        protected virtual BoundStatement RewriteConditionalGoto(BoundConditionalGoto node)
+        {
+            BoundExpression condition = RewriteExpression(node.condition);
+            if (condition == node.condition)
+                return node;
+                
+            return new BoundConditionalGoto(node.label, condition, node.textLocation, node.jumpIfFalse);
         }
 
         public virtual BoundExpression RewriteExpression(BoundExpression node)
