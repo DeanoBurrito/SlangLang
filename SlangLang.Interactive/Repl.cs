@@ -14,6 +14,8 @@ namespace SlangLang.Interactive
         int treeStage = 2; //default of 2 (bound tree)
         bool autoEval = true;
 
+        ConsoleTextEditor document = null;
+
         Dictionary<VariableSymbol, object> variables = new Dictionary<VariableSymbol, object>();
         Compilation previousCompilation = null;
 
@@ -31,64 +33,63 @@ namespace SlangLang.Interactive
             Console.WriteLine("All input is interpreted and run as code, unless prefixed with '#'.");
             Console.WriteLine("Use '#help' for a list of other repl commands.");
 
-            bool inMultilineMode = false;
-            List<string> multilineTexts = new List<string>();
             while (true)
             {
-                if (inMultilineMode)
+                if (document == null)
                 {
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    Console.Write("> ");
-                    Console.ResetColor();
-                }
-                else
-                {
+                    Console.ForegroundColor = ConsoleColor.Green;
                     Console.Write(">>> ");
-                }
-                
-                string line = Console.ReadLine();
-                if (inMultilineMode)
-                {
-                    if (line == "#exit")
-                    {
-                        DoCompilation(multilineTexts.ToArray());
-                        inMultilineMode = false;
-                        multilineTexts.Clear();
-                    }
-                    else
-                    {
-                        multilineTexts.Add(line);
-                    }
-                }
-                else if (line.StartsWith("#"))
-                {
-                    if (line.Length == 1)
-                        continue;
-                    //try process meta command
-                    line = line.Remove(0, 1);
-                    string[] args = line.Split(' ');
-                    if (metaCommands.ContainsKey(args[0]))
-                    {
-                        List<string> argList = new List<string>(args);
-                        argList.RemoveRange(0, 1);
-                        metaCommands[args[0]].method.Invoke(null, new object[] { this, argList.ToArray() });
-                    }
-                    else
-                    {
-                        Console.WriteLine("Command '" + args[0] + "' not recognised.");
-                    }
-                }
-                else if (line.Length == 0)
-                {
-                    inMultilineMode = true;
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    Console.WriteLine("* [Multiline edit mode: to exit type '#exit']");
                     Console.ResetColor();
+
+                    string line = Console.ReadLine();
+                    if (string.IsNullOrEmpty(line))
+                        continue;
+
+                    if (line.StartsWith("#"))
+                    {
+                        if (line.Length == 1)
+                            continue;
+                        HandleReplCommand(line);
+                    }
+                    else
+                    {
+                        DoCompilation(new string[] { line });
+                    }
                 }
                 else
                 {
-                    DoCompilation(new string[] { line });
+                    document.HandleConsoleKey(Console.ReadKey(true));
+
+                    if (document.readyToExit)
+                    {
+                        document = null;
+                        Console.WriteLine();
+                    }
+                    else if (document.readyToExecute)
+                    {
+                        string[] lines = document.GetText();
+                        document = null;
+                        Console.WriteLine();
+
+                        DoCompilation(lines);
+                    }
                 }
+            }
+        }
+
+        private void HandleReplCommand(string line)
+        {
+            line = line.Remove(0, 1);
+            string[] args = line.Split(' ');
+            if (metaCommands.ContainsKey(args[0]))
+            {
+                List<string> argList = new List<string>(args);
+                argList.RemoveRange(0, 1);
+                metaCommands[args[0]].method.Invoke(null, new object[] { this, argList.ToArray() });
+            }
+            else
+            {
+                Console.WriteLine("Command '" + args[0] + "' not recognised.");
             }
         }
 
@@ -116,7 +117,7 @@ namespace SlangLang.Interactive
                 currentCompilation = new Compilation(new TextStore("REPL", lines), options);
             else
                 currentCompilation = previousCompilation.ContinueWith(new TextStore("REPL", lines), options);
-            
+
             if (autoEval)
             {
                 Evaluation.EvaluationResult result = currentCompilation.Evaluate(variables);
@@ -151,6 +152,27 @@ namespace SlangLang.Interactive
 
         static class ReplCommands
         {
+            static ConsoleTextEditor lastScript;
+
+            [ReplCommand("script", "Creates a new script and presents an editor.")]
+            public static void NewScript(Repl repl, string[] args)
+            {
+                repl.document = new ConsoleTextEditor();
+                lastScript = repl.document;
+            }
+
+            [ReplCommand("last", "Loads the last script (successful or not) and presents the editor.")]
+            public static void LastScript(Repl repl, string[] args)
+            {
+                if (lastScript == null)
+                {
+                    Console.WriteLine("Command error, no last script to load.");
+                    return;
+                }
+
+                repl.document = lastScript;
+            }
+
             [ReplCommand("exit", "Exits this CLI.")]
             public static void Exit(Repl repl, string[] args)
             {
