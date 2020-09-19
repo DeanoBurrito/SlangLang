@@ -2,11 +2,11 @@ using System;
 
 namespace SlangLang.Binding
 {
-    public sealed class LabelSymbol
+    public sealed class BoundLabel
     {
         public readonly string name;
 
-        internal LabelSymbol(string vName)
+        internal BoundLabel(string vName)
         {
             name = vName;
         }

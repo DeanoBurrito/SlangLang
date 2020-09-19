@@ -22,7 +22,7 @@ namespace SlangLang.Evaluation
 
         public object Evaluate()
         {
-            Dictionary<LabelSymbol, int> labelIndexMap = new Dictionary<LabelSymbol, int>();
+            Dictionary<BoundLabel, int> labelIndexMap = new Dictionary<BoundLabel, int>();
             for (int i = 0; i < root.statements.Length; i++)
             {
                 if (root.statements[i] is BoundLabelStatement label)

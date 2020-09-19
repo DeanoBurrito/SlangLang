@@ -58,6 +58,7 @@ namespace SlangLang.Parsing
                 case LanguageTokenType.KeywordInt: //TODO: replace this with a more general solution than individual keywords
                 case LanguageTokenType.KeywordBool:
                 case LanguageTokenType.KeywordLet:
+                case LanguageTokenType.KeywordString:
                     return ParseVariableDeclaration();
                 case LanguageTokenType.KeywordIf:
                     return ParseIfStatement();
@@ -101,7 +102,7 @@ namespace SlangLang.Parsing
                 NextToken();
 
             //TODO: detect types based on more than keywords here (also allow more than ints for immediate future)
-            LanguageToken keyword = MatchToken(LanguageTokenType.KeywordInt); 
+            LanguageToken keyword = NextToken();
             LanguageToken identifier = MatchToken(LanguageTokenType.Identifier);
             LanguageToken equals = MatchToken(LanguageTokenType.Equals);
             ExpressionNode initializer = ParseExpression();
@@ -219,6 +220,8 @@ namespace SlangLang.Parsing
                     return ParseBoolLiteral();
                 case LanguageTokenType.IntegerNumber:
                     return ParseIntegerLiteral();
+                case LanguageTokenType.String:
+                    return ParseStringLiteral();
                 case LanguageTokenType.Identifier:
                 default: 
                     return ParseNameExpression();
@@ -257,6 +260,12 @@ namespace SlangLang.Parsing
                 diagnostics.ParserError_CouldNotParseInt(current.textLocation);
 
             return new LiteralExpression(val, token);
+        }
+
+        private ExpressionNode ParseStringLiteral()
+        {
+            LanguageToken token = MatchToken(LanguageTokenType.String);
+            return new LiteralExpression(token.text, token);
         }
 
         private LanguageToken MatchToken(LanguageTokenType tokenType)

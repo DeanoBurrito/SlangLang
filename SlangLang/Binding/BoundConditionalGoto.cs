@@ -6,11 +6,11 @@ namespace SlangLang.Binding
 {
     internal sealed class BoundConditionalGoto : BoundStatement
     {
-        public readonly LabelSymbol label;
+        public readonly BoundLabel label;
         public readonly BoundExpression condition;
         public readonly bool jumpIfTrue;
 
-        public BoundConditionalGoto(LabelSymbol symbol, BoundExpression condition, TextSpan where, bool jumpIfTrue = true) : base(BoundNodeType.ConditionalGotoStatement, where)
+        public BoundConditionalGoto(BoundLabel symbol, BoundExpression condition, TextSpan where, bool jumpIfTrue = true) : base(BoundNodeType.ConditionalGotoStatement, where)
         {
             label = symbol;
             this.condition = condition;

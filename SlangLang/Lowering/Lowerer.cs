@@ -53,7 +53,7 @@ namespace SlangLang.Lowering
         {
             if (node.elseStatement == null)
             {
-                LabelSymbol endLabel = GenerateLabel();
+                BoundLabel endLabel = GenerateLabel();
 
                 BoundConditionalGoto gotoFalse = new BoundConditionalGoto(endLabel, node.condition, TextSpan.NoText, false);
                 BoundLabelStatement endLabelStatement = new BoundLabelStatement(endLabel, TextSpan.NoText);
@@ -68,8 +68,8 @@ namespace SlangLang.Lowering
             }
             else
             {
-                LabelSymbol endLabel = GenerateLabel();
-                LabelSymbol elseLabel = GenerateLabel();
+                BoundLabel endLabel = GenerateLabel();
+                BoundLabel elseLabel = GenerateLabel();
 
                 BoundConditionalGoto gotoElseFalse = new BoundConditionalGoto(elseLabel, node.condition, TextSpan.NoText, false);
                 BoundGotoStatement gotoEnd = new BoundGotoStatement(endLabel, TextSpan.NoText);
@@ -91,8 +91,8 @@ namespace SlangLang.Lowering
 
         protected override BoundStatement RewriteWhileStatement(BoundWhileStatement node)
         {
-            LabelSymbol topLabel = GenerateLabel();
-            LabelSymbol endLabel = GenerateLabel();
+            BoundLabel topLabel = GenerateLabel();
+            BoundLabel endLabel = GenerateLabel();
             
             BoundConditionalGoto gotoEndFalse = new BoundConditionalGoto(endLabel, node.condition, TextSpan.NoText, false);
             BoundGotoStatement gotoTop = new BoundGotoStatement(topLabel, TextSpan.NoText);
@@ -119,10 +119,10 @@ namespace SlangLang.Lowering
             return RewriteStatement(result);
         }
 
-        private LabelSymbol GenerateLabel()
+        private BoundLabel GenerateLabel()
         {
             labelCount++;
-            return new LabelSymbol("GeneratedLabel_" + labelCount);
+            return new BoundLabel("GeneratedLabel_" + labelCount);
         }
     }
 }

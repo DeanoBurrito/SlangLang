@@ -6,9 +6,9 @@ namespace SlangLang.Binding
 {
     internal sealed class BoundLabelStatement : BoundStatement
     {
-        public readonly LabelSymbol label;
+        public readonly BoundLabel label;
 
-        public BoundLabelStatement(LabelSymbol symbol, TextSpan where) : base(BoundNodeType.LabelStatement, where)
+        public BoundLabelStatement(BoundLabel symbol, TextSpan where) : base(BoundNodeType.LabelStatement, where)
         {
             label = symbol;
         }

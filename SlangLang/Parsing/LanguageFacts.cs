@@ -27,6 +27,8 @@ namespace SlangLang.Parsing
                     return LanguageTokenType.KeywordWhile;
                 case "for":
                     return LanguageTokenType.KeywordFor;
+                case "string":
+                    return LanguageTokenType.KeywordString;
                 default:
                     return LanguageTokenType.Identifier;
             }
@@ -157,6 +159,8 @@ namespace SlangLang.Parsing
                     return "int";
                 case LanguageTokenType.KeywordBool:
                     return "bool";
+                case LanguageTokenType.KeywordString:
+                    return "string";
                 
                 case LanguageTokenType.KeywordIf:
                     return "if";
@@ -169,18 +173,6 @@ namespace SlangLang.Parsing
 
                 default:
                     return null;
-            }
-        }
-
-        public static bool KeywordIsVariableType(LanguageTokenType keyword)
-        {
-            switch (keyword)
-            {
-                case LanguageTokenType.KeywordInt:
-                case LanguageTokenType.KeywordBool:
-                    return true;
-                default:
-                    return false;
             }
         }
     }

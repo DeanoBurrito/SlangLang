@@ -48,6 +48,7 @@ namespace SlangLang.Parsing
         KeywordLet,
         KeywordInt,
         KeywordBool,
+        KeywordString,
 
         //flow control keywords
         KeywordIf,
