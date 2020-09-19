@@ -99,12 +99,9 @@ namespace SlangLang.Binding
         private BoundStatement BindVariableDeclaration(VariableDeclarationStatement statement)
         {
             BoundExpression initializer = BindExpression(statement.initializer);
-            VariableSymbol variable = new VariableSymbol(statement.identifier.text, statement.isReadOnly, initializer.boundType);
+            VariableSymbol variable = BindVariable(statement.identifier?.text, statement.isReadOnly, initializer.boundType, 
+                new TextSpan(statement.keyword.textLocation.start, statement.identifier.textLocation.end));
 
-            if (!scope.TryDeclare(variable))
-            {
-                diagnostics.BinderError_VariableAlreadyDeclared(variable, new TextSpan(statement.keyword.textLocation.start, statement.identifier.textLocation.end));
-            }
             return new BoundVariableDeclaration(variable, initializer, statement.textLocation);
         }
 
@@ -135,7 +132,7 @@ namespace SlangLang.Binding
         private BoundExpression BindExpression(ExpressionNode node, TypeSymbol targetType)
         {
             BoundExpression result = BindExpression(node);
-            if (result.boundType != targetType)
+            if (result.boundType != targetType && result.boundType != TypeSymbol.Error && targetType != TypeSymbol.Error)
             {
                 diagnostics.BinderError_CannotConvertExpressionType(targetType, result.boundType, node.textLocation);
             }
@@ -255,6 +252,16 @@ namespace SlangLang.Binding
             }
 
             return new BoundAssignmentExpression(variable, boundExpr, expression.textLocation);
+        }
+
+        private VariableSymbol BindVariable(string identifier, bool isReadOnly, TypeSymbol type, TextSpan where)
+        {
+            string name = identifier ?? "?";
+
+            VariableSymbol variable = new VariableSymbol(name, isReadOnly, type);
+            if (!scope.TryDeclare(variable))
+                diagnostics.BinderError_VariableAlreadyDeclared(variable, where);
+            return variable;
         }
     }
 }
