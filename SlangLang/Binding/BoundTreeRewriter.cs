@@ -157,6 +157,8 @@ namespace SlangLang.Binding
                     return RewriteUnaryExpression((BoundUnaryExpression)node);
                 case BoundNodeType.BinaryExpression:
                     return RewriteBinaryExpression((BoundBinaryExpression)node);
+                case BoundNodeType.ErrorExpression:
+                    return node;
                 default:
                     throw new Exception("Unexpected bound expression type in rewriter: " + node.nodeType);
             }

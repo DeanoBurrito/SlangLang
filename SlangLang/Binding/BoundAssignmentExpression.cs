@@ -4,7 +4,7 @@ using SlangLang.Debug;
 using SlangLang.Symbols;
 
 namespace SlangLang.Binding
-{
+{   
     internal sealed class BoundAssignmentExpression : BoundExpression
     {
         public readonly VariableSymbol variable;

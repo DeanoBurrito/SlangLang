@@ -14,6 +14,7 @@ namespace SlangLang.Binding
         GotoStatement,
         ConditionalGotoStatement,
         
+        ErrorExpression,
         LiteralExpression,
         VariableExpression,
         AssignmentExpression,

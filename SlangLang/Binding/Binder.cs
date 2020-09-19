@@ -165,6 +165,7 @@ namespace SlangLang.Binding
         private BoundExpression BindLiteralExpression(LiteralExpression expression)
         {
             object val = expression.value == null ? 0 : expression.value; //TODO: try and bind type based on the literal used
+            //TODO: add a way to get the default value for a type.
             TypeSymbol type;
             switch (expression.token.tokenType)
             {
@@ -181,18 +182,23 @@ namespace SlangLang.Binding
                 default:
                     throw new Exception("Unable to bind type of literal.");
             }
+
             return new BoundLiteralExpression(val, type, expression.textLocation);
         }
 
         private BoundExpression BindUnaryExpression(UnaryExpression expression)
         {
             BoundExpression boundOperand = BindExpression(expression.operand);
+            if (boundOperand.nodeType == BoundNodeType.ErrorExpression)
+                return new BoundErrorExpression(boundOperand.textLocation);
+
             BoundUnaryOperator boundOperator = BoundUnaryOperator.Bind(expression.token.tokenType, boundOperand.boundType);
             if (boundOperator == null)
             {
                 diagnostics.BinderError_UnaryOperatorNotDefined(expression.token, boundOperand.boundType, expression.textLocation);
-                return boundOperand;
+                return new BoundErrorExpression(expression.textLocation);
             }
+
             return new BoundUnaryExpression(boundOperator, boundOperand, expression.textLocation);
         }
 
@@ -200,11 +206,14 @@ namespace SlangLang.Binding
         {
             BoundExpression boundLeft = BindExpression(expression.leftNode);
             BoundExpression boundRight = BindExpression(expression.rightNode);
+            if (boundLeft.nodeType == BoundNodeType.ErrorExpression || boundRight.nodeType == BoundNodeType.ErrorExpression)
+                return new BoundErrorExpression(new TextSpan(boundLeft.textLocation.start, boundRight.textLocation.end));
+
             BoundBinaryOperator boundOperator = BoundBinaryOperator.Bind(expression.token.tokenType, boundLeft.boundType, boundRight.boundType);
             if (boundOperator == null)
             {
                 diagnostics.BinderError_BinaryOperatorNotDefined(expression.token, boundLeft.boundType, boundRight.boundType, expression.textLocation);
-                return boundLeft;
+                return new BoundErrorExpression(expression.textLocation);
             }
             return new BoundBinaryExpression(boundLeft, boundOperator, boundRight, expression.textLocation);
         }
@@ -213,12 +222,12 @@ namespace SlangLang.Binding
         {
             string name = expression.token.text;
             if (string.IsNullOrEmpty(name)) //inserted by parser, error has already been reported.
-                return new BoundLiteralExpression(0, TypeSymbol.Int, TextSpan.NoText);
+                return new BoundErrorExpression(expression.textLocation);
             
             if (!scope.TryLookup(name, out VariableSymbol variable))
             {
                 diagnostics.BinderError_VariableDoesNotExist(name, expression.textLocation);
-                return new BoundLiteralExpression(0, TypeSymbol.Int, TextSpan.NoText); //just return int(0) so the tree dosnt crash
+                return new BoundErrorExpression(expression.textLocation);
             }
 
             return new BoundVariableExpression(variable, expression.textLocation);
