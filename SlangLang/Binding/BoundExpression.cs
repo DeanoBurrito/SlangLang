@@ -1,13 +1,14 @@
 using System;
 using SlangLang.Debug;
+using SlangLang.Symbols;
 
 namespace SlangLang.Binding
 {
     internal abstract class BoundExpression : BoundNode
     {
-        public readonly Type boundType;
+        public readonly TypeSymbol boundType;
         
-        public BoundExpression(Type bindingType, BoundNodeType nodeType, TextSpan where) : base(nodeType, where)
+        public BoundExpression(TypeSymbol bindingType, BoundNodeType nodeType, TextSpan where) : base(nodeType, where)
         {
             boundType = bindingType;
         }

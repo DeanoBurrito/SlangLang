@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using SlangLang.Debug;
+using SlangLang.Symbols;
 
 namespace SlangLang.Binding
 {
@@ -8,8 +9,8 @@ namespace SlangLang.Binding
     {
         public readonly object value;
 
-        public BoundLiteralExpression(object val, TextSpan where) 
-            : base(val.GetType(), BoundNodeType.LiteralExpression, where)
+        public BoundLiteralExpression(object val, TypeSymbol type, TextSpan where) 
+            : base(type, BoundNodeType.LiteralExpression, where)
         {
             value = val;
         }

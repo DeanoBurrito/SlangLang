@@ -1,5 +1,6 @@
 using System;
 using SlangLang.Parsing;
+using SlangLang.Symbols;
 
 namespace SlangLang.Binding
 {
@@ -7,10 +8,10 @@ namespace SlangLang.Binding
     {
         public readonly LanguageTokenType opToken;
         public readonly BoundUnaryOperatorType unaryOperator;
-        public readonly Type operandType;
-        public readonly Type resultType;
+        public readonly TypeSymbol operandType;
+        public readonly TypeSymbol resultType;
         
-        private BoundUnaryOperator(LanguageTokenType opToken, BoundUnaryOperatorType unaryOp, Type operandType, Type resultType)
+        private BoundUnaryOperator(LanguageTokenType opToken, BoundUnaryOperatorType unaryOp, TypeSymbol operandType, TypeSymbol resultType)
         {
             this.opToken = opToken;
             unaryOperator = unaryOp;
@@ -18,7 +19,7 @@ namespace SlangLang.Binding
             this.resultType = resultType;
         }
 
-        private BoundUnaryOperator(LanguageTokenType opToken, BoundUnaryOperatorType unaryOp, Type operandType) : this(opToken, unaryOp, operandType, operandType)
+        private BoundUnaryOperator(LanguageTokenType opToken, BoundUnaryOperatorType unaryOp, TypeSymbol operandType) : this(opToken, unaryOp, operandType, operandType)
         {}
 
         public override string ToString()
@@ -28,12 +29,12 @@ namespace SlangLang.Binding
 
         private static BoundUnaryOperator[] ops = 
         {
-            new BoundUnaryOperator(LanguageTokenType.Minus, BoundUnaryOperatorType.Negate, typeof(int)),
+            new BoundUnaryOperator(LanguageTokenType.Minus, BoundUnaryOperatorType.Negate, TypeSymbol.Int),
             
-            new BoundUnaryOperator(LanguageTokenType.Exclamation, BoundUnaryOperatorType.Not, typeof(bool)),
+            new BoundUnaryOperator(LanguageTokenType.Exclamation, BoundUnaryOperatorType.Not, TypeSymbol.Bool),
         };
 
-        public static BoundUnaryOperator Bind(LanguageTokenType langTokenType, Type operandType)
+        public static BoundUnaryOperator Bind(LanguageTokenType langTokenType, TypeSymbol operandType)
         {
             foreach (BoundUnaryOperator op in ops)
             {

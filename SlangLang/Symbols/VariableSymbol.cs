@@ -5,10 +5,10 @@ namespace SlangLang.Symbols
 {    
     public sealed class VariableSymbol : Symbol
     {
-        public readonly Type type;
+        public readonly TypeSymbol type;
         public readonly bool isReadOnly;
 
-        internal VariableSymbol(string vName, bool isReadonly, Type vType) : base(SymbolType.Variable, vName)
+        internal VariableSymbol(string vName, bool isReadonly, TypeSymbol vType) : base(SymbolType.Variable, vName)
         {
             type = vType;
             isReadOnly = isReadonly;
@@ -16,7 +16,7 @@ namespace SlangLang.Symbols
 
         public override string ToString()
         {
-            return name + " (" + type + ") " + (isReadOnly ? "ReadOnly" : "");
+            return base.ToString() + " (" + type + ") " + (isReadOnly ? "ReadOnly" : "");
         }
     }
 }

@@ -88,7 +88,7 @@ namespace SlangLang.Tests
             }
             ";
             string error = @"
-            Variable a (System.Int32) is readonly and cannot be assigned to.
+            Variable a (Int32) is readonly and cannot be assigned to.
             ";
             AssertDiagnostics(src, error);
         }
@@ -143,7 +143,7 @@ namespace SlangLang.Tests
             }
             ";
             string error = @"
-            Unary operator ! is not defined for type System.Int32.
+            Unary operator ! is not defined for type Int32.
             ";
             AssertDiagnostics(src, error);
         }
@@ -159,7 +159,7 @@ namespace SlangLang.Tests
             }
             ";
             string error = @"
-            Binary operator || is not defined for types System.Int32, System.Int32.
+            Binary operator || is not defined for types Int32, Int32.
             ";
             AssertDiagnostics(src, error);
         }
@@ -198,7 +198,7 @@ namespace SlangLang.Tests
             }
             ";
             string error = @"
-            Variable z (System.Int32) has already been declared in this scope.
+            Variable z (Int32) has already been declared in this scope.
             ";
             AssertDiagnostics(src, error);
         }

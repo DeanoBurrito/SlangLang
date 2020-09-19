@@ -37,12 +37,12 @@ namespace SlangLang.Debug
             diagnostics.AddFailure("Binder", "Failed to bind expression in tree, unexpected type " + type + ".", where, DateTime.Now);
         }
 
-        internal static void BinderError_UnaryOperatorNotDefined(this Diagnostics diagnostics, LanguageToken opToken, Type operandType, TextSpan where)
+        internal static void BinderError_UnaryOperatorNotDefined(this Diagnostics diagnostics, LanguageToken opToken, TypeSymbol operandType, TextSpan where)
         {
             diagnostics.AddFailure("Binder", "Unary operator " + opToken.text + " is not defined for type " + operandType + ".", where, DateTime.Now);
         }
 
-        internal static void BinderError_BinaryOperatorNotDefined(this Diagnostics diagnostics, LanguageToken opToken, Type leftType, Type rightType, TextSpan where)
+        internal static void BinderError_BinaryOperatorNotDefined(this Diagnostics diagnostics, LanguageToken opToken, TypeSymbol leftType, TypeSymbol rightType, TextSpan where)
         {
             diagnostics.AddFailure("Binder", "Binary operator " + opToken.text + " is not defined for types " + leftType + ", " + rightType + ".", where, DateTime.Now);
         }
@@ -57,7 +57,7 @@ namespace SlangLang.Debug
             diagnostics.AddFailure("Binder", "Variable " + var.name + " (" + var.type + ") has already been declared in this scope.", where, DateTime.Now);
         }
 
-        internal static void BinderError_CannotCastVariable(this Diagnostics diagnostics, VariableSymbol symbol, Type type, TextSpan where)
+        internal static void BinderError_CannotCastVariable(this Diagnostics diagnostics, VariableSymbol symbol, TypeSymbol type, TextSpan where)
         {
             diagnostics.AddFailure("Binder", "Variable " + symbol.name + " (" + symbol.type + ") cannot cast to " + type, where, DateTime.Now);
         }
@@ -72,7 +72,7 @@ namespace SlangLang.Debug
             diagnostics.AddFailure("Binder", "Variable " + symbol.name + " (" + symbol.type + ") is readonly and cannot be assigned to.", where, DateTime.Now);
         }
 
-        internal static void BinderError_CannotConvertExpressionType(this Diagnostics diagnostics, Type target, Type actual, TextSpan where)
+        internal static void BinderError_CannotConvertExpressionType(this Diagnostics diagnostics, TypeSymbol target, TypeSymbol actual, TextSpan where)
         {
             diagnostics.AddFailure("Binder", "Could not convert expression result from " + actual + " to " + target, where, DateTime.Now);
         }

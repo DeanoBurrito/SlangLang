@@ -110,7 +110,7 @@ namespace SlangLang.Binding
 
         private BoundStatement BindIfStatement(IfStatement statement)
         {
-            BoundExpression condition = BindExpression(statement.condition, typeof(bool));
+            BoundExpression condition = BindExpression(statement.condition, TypeSymbol.Bool);
             BoundStatement body = BindStatement(statement.bodyStatement);
             BoundStatement elseStatement = statement.elseClause == null ? null : BindStatement(statement.elseClause.statement);
             return new BoundIfStatement(condition, body, elseStatement, statement.textLocation);
@@ -118,7 +118,7 @@ namespace SlangLang.Binding
 
         private BoundStatement BindWhileStatement(WhileStatement statement)
         {
-            BoundExpression condition = BindExpression(statement.condition, typeof(bool));
+            BoundExpression condition = BindExpression(statement.condition, TypeSymbol.Bool);
             BoundStatement body = BindStatement(statement.body);
             return new BoundWhileStatement(condition, body, statement.textLocation);
         }
@@ -126,13 +126,13 @@ namespace SlangLang.Binding
         private BoundStatement BindForStatement(ForStatement statement)
         {
             BoundStatement setup = BindStatement(statement.setupStatement);
-            BoundExpression condition = BindExpression(statement.condition, typeof(bool));
+            BoundExpression condition = BindExpression(statement.condition, TypeSymbol.Bool);
             BoundStatement post = BindStatement(statement.postStatement);
             BoundStatement body = BindStatement(statement.body);
             return new BoundForStatement(setup, condition, post, body, statement.textLocation);
         }
 
-        private BoundExpression BindExpression(ExpressionNode node, Type targetType)
+        private BoundExpression BindExpression(ExpressionNode node, TypeSymbol targetType)
         {
             BoundExpression result = BindExpression(node);
             if (result.boundType != targetType)
@@ -164,8 +164,24 @@ namespace SlangLang.Binding
 
         private BoundExpression BindLiteralExpression(LiteralExpression expression)
         {
-            object val = expression.value == null ? 0 : expression.value; //TODO: move this away from just integer literals
-            return new BoundLiteralExpression(val, expression.textLocation);
+            object val = expression.value == null ? 0 : expression.value; //TODO: try and bind type based on the literal used
+            TypeSymbol type;
+            switch (expression.token.tokenType)
+            {
+                case LanguageTokenType.String:
+                    type = TypeSymbol.String;
+                    break;
+                case LanguageTokenType.IntegerNumber:
+                    type = TypeSymbol.Int;
+                    break;
+                case LanguageTokenType.KeywordTrue:
+                case LanguageTokenType.KeywordFalse:
+                    type = TypeSymbol.Bool;
+                    break;
+                default:
+                    throw new Exception("Unable to bind type of literal.");
+            }
+            return new BoundLiteralExpression(val, type, expression.textLocation);
         }
 
         private BoundExpression BindUnaryExpression(UnaryExpression expression)
@@ -197,12 +213,12 @@ namespace SlangLang.Binding
         {
             string name = expression.token.text;
             if (string.IsNullOrEmpty(name)) //inserted by parser, error has already been reported.
-                return new BoundLiteralExpression(0, TextSpan.NoText);
+                return new BoundLiteralExpression(0, TypeSymbol.Int, TextSpan.NoText);
             
             if (!scope.TryLookup(name, out VariableSymbol variable))
             {
                 diagnostics.BinderError_VariableDoesNotExist(name, expression.textLocation);
-                return new BoundLiteralExpression(0, TextSpan.NoText); //just return int(0) so the tree dosnt crash
+                return new BoundLiteralExpression(0, TypeSymbol.Int, TextSpan.NoText); //just return int(0) so the tree dosnt crash
             }
 
             return new BoundVariableExpression(variable, expression.textLocation);

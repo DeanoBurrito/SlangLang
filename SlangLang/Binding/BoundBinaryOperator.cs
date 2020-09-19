@@ -1,5 +1,6 @@
 using System;
 using SlangLang.Parsing;
+using SlangLang.Symbols;
 
 namespace SlangLang.Binding
 {
@@ -7,11 +8,11 @@ namespace SlangLang.Binding
     {
         public readonly LanguageTokenType langToken;
         public readonly BoundBinaryOperatorType binaryOperator;
-        public readonly Type leftOperandType;
-        public readonly Type rightOperandType;
-        public readonly Type resultType;
+        public readonly TypeSymbol leftOperandType;
+        public readonly TypeSymbol rightOperandType;
+        public readonly TypeSymbol resultType;
         
-        private BoundBinaryOperator(LanguageTokenType token, BoundBinaryOperatorType binaryOp, Type leftOpType, Type rightOpType, Type resultType)
+        private BoundBinaryOperator(LanguageTokenType token, BoundBinaryOperatorType binaryOp, TypeSymbol leftOpType, TypeSymbol rightOpType, TypeSymbol resultType)
         {
             langToken = token;
             binaryOperator = binaryOp;
@@ -20,10 +21,10 @@ namespace SlangLang.Binding
             this.resultType = resultType;
         }
 
-        private BoundBinaryOperator(LanguageTokenType tokenType, BoundBinaryOperatorType binaryOp, Type type, Type resultType) : this(tokenType, binaryOp, type, type, resultType)
+        private BoundBinaryOperator(LanguageTokenType tokenType, BoundBinaryOperatorType binaryOp, TypeSymbol type, TypeSymbol resultType) : this(tokenType, binaryOp, type, type, resultType)
         {}
 
-        private BoundBinaryOperator(LanguageTokenType token, BoundBinaryOperatorType binaryOp, Type type) : this(token, binaryOp, type, type, type)
+        private BoundBinaryOperator(LanguageTokenType token, BoundBinaryOperatorType binaryOp, TypeSymbol type) : this(token, binaryOp, type, type, type)
         {}
 
         public override string ToString()
@@ -33,31 +34,31 @@ namespace SlangLang.Binding
 
         private static BoundBinaryOperator[] ops = 
         {
-            new BoundBinaryOperator(LanguageTokenType.Plus, BoundBinaryOperatorType.Addition, typeof(int)),
-            new BoundBinaryOperator(LanguageTokenType.Minus, BoundBinaryOperatorType.Subtract, typeof(int)),
-            new BoundBinaryOperator(LanguageTokenType.Star, BoundBinaryOperatorType.Multiplication, typeof(int)),
-            new BoundBinaryOperator(LanguageTokenType.ForwardSlash, BoundBinaryOperatorType.Division, typeof(int)),
-            new BoundBinaryOperator(LanguageTokenType.Pipe, BoundBinaryOperatorType.BitwiseOr, typeof(int)),
-            new BoundBinaryOperator(LanguageTokenType.And, BoundBinaryOperatorType.BitwiseAnd, typeof(int)),
-            new BoundBinaryOperator(LanguageTokenType.Circumflex, BoundBinaryOperatorType.BitwiseXor, typeof(int)),
+            new BoundBinaryOperator(LanguageTokenType.Plus, BoundBinaryOperatorType.Addition, TypeSymbol.Int),
+            new BoundBinaryOperator(LanguageTokenType.Minus, BoundBinaryOperatorType.Subtract, TypeSymbol.Int),
+            new BoundBinaryOperator(LanguageTokenType.Star, BoundBinaryOperatorType.Multiplication, TypeSymbol.Int),
+            new BoundBinaryOperator(LanguageTokenType.ForwardSlash, BoundBinaryOperatorType.Division, TypeSymbol.Int),
+            new BoundBinaryOperator(LanguageTokenType.Pipe, BoundBinaryOperatorType.BitwiseOr, TypeSymbol.Int),
+            new BoundBinaryOperator(LanguageTokenType.And, BoundBinaryOperatorType.BitwiseAnd, TypeSymbol.Int),
+            new BoundBinaryOperator(LanguageTokenType.Circumflex, BoundBinaryOperatorType.BitwiseXor, TypeSymbol.Int),
 
-            new BoundBinaryOperator(LanguageTokenType.EqualsEquals, BoundBinaryOperatorType.Equals, typeof(int), typeof(bool)),
-            new BoundBinaryOperator(LanguageTokenType.ExclamationEquals, BoundBinaryOperatorType.NotEquals, typeof(int), typeof(bool)),
-            new BoundBinaryOperator(LanguageTokenType.Less, BoundBinaryOperatorType.LessThan, typeof(int), typeof(bool)),
-            new BoundBinaryOperator(LanguageTokenType.LessOrEquals, BoundBinaryOperatorType.LessThanOrEqual, typeof(int), typeof(bool)),
-            new BoundBinaryOperator(LanguageTokenType.Greater, BoundBinaryOperatorType.GreaterThan, typeof(int), typeof(bool)),
-            new BoundBinaryOperator(LanguageTokenType.GreaterOrEquals, BoundBinaryOperatorType.GreaterThanOrEqual, typeof(int), typeof(bool)),
+            new BoundBinaryOperator(LanguageTokenType.EqualsEquals, BoundBinaryOperatorType.Equals, TypeSymbol.Int, TypeSymbol.Bool),
+            new BoundBinaryOperator(LanguageTokenType.ExclamationEquals, BoundBinaryOperatorType.NotEquals, TypeSymbol.Int, TypeSymbol.Bool),
+            new BoundBinaryOperator(LanguageTokenType.Less, BoundBinaryOperatorType.LessThan, TypeSymbol.Int, TypeSymbol.Bool),
+            new BoundBinaryOperator(LanguageTokenType.LessOrEquals, BoundBinaryOperatorType.LessThanOrEqual, TypeSymbol.Int, TypeSymbol.Bool),
+            new BoundBinaryOperator(LanguageTokenType.Greater, BoundBinaryOperatorType.GreaterThan, TypeSymbol.Int, TypeSymbol.Bool),
+            new BoundBinaryOperator(LanguageTokenType.GreaterOrEquals, BoundBinaryOperatorType.GreaterThanOrEqual, TypeSymbol.Int, TypeSymbol.Bool),
 
-            new BoundBinaryOperator(LanguageTokenType.Pipe, BoundBinaryOperatorType.BitwiseOr, typeof(bool)),
-            new BoundBinaryOperator(LanguageTokenType.PipePipe, BoundBinaryOperatorType.ConditionalOr, typeof(bool)),
-            new BoundBinaryOperator(LanguageTokenType.And, BoundBinaryOperatorType.BitwiseAnd, typeof(bool)),
-            new BoundBinaryOperator(LanguageTokenType.AndAnd, BoundBinaryOperatorType.ConditionalAnd, typeof(bool)),
-            new BoundBinaryOperator(LanguageTokenType.Circumflex, BoundBinaryOperatorType.BitwiseXor, typeof(bool)),
-            new BoundBinaryOperator(LanguageTokenType.EqualsEquals, BoundBinaryOperatorType.Equals, typeof(bool)),
-            new BoundBinaryOperator(LanguageTokenType.ExclamationEquals, BoundBinaryOperatorType.NotEquals, typeof(bool)),
+            new BoundBinaryOperator(LanguageTokenType.Pipe, BoundBinaryOperatorType.BitwiseOr, TypeSymbol.Bool),
+            new BoundBinaryOperator(LanguageTokenType.PipePipe, BoundBinaryOperatorType.ConditionalOr, TypeSymbol.Bool),
+            new BoundBinaryOperator(LanguageTokenType.And, BoundBinaryOperatorType.BitwiseAnd, TypeSymbol.Bool),
+            new BoundBinaryOperator(LanguageTokenType.AndAnd, BoundBinaryOperatorType.ConditionalAnd, TypeSymbol.Bool),
+            new BoundBinaryOperator(LanguageTokenType.Circumflex, BoundBinaryOperatorType.BitwiseXor, TypeSymbol.Bool),
+            new BoundBinaryOperator(LanguageTokenType.EqualsEquals, BoundBinaryOperatorType.Equals, TypeSymbol.Bool),
+            new BoundBinaryOperator(LanguageTokenType.ExclamationEquals, BoundBinaryOperatorType.NotEquals, TypeSymbol.Bool),
         };
 
-        public static BoundBinaryOperator Bind(LanguageTokenType langTokenType, Type leftType, Type rightType)
+        public static BoundBinaryOperator Bind(LanguageTokenType langTokenType, TypeSymbol leftType, TypeSymbol rightType)
         {
             foreach (BoundBinaryOperator op in ops)
             {
