@@ -6,6 +6,7 @@ using SlangLang.Parsing;
 using SlangLang.Binding;
 using SlangLang.Evaluation;
 using SlangLang.Lowering;
+using SlangLang.Symbols;
 
 namespace SlangLang.Drivers
 {

@@ -1,6 +1,7 @@
 using System;
 using SlangLang.Parsing;
 using SlangLang.Binding;
+using SlangLang.Symbols;
 
 namespace SlangLang.Debug
 {

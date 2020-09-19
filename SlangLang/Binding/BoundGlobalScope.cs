@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Immutable;
 using SlangLang.Debug;
+using SlangLang.Symbols;
 
 namespace SlangLang.Binding
 {

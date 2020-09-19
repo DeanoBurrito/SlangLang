@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using SlangLang.Debug;
 using SlangLang.Parsing;
+using SlangLang.Symbols;
 
 namespace SlangLang.Binding
 {

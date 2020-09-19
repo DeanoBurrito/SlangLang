@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using SlangLang.Parsing;
+using SlangLang.Symbols;
 using SlangLang.Debug;
 using SlangLang.Binding;
 

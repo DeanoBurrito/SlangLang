@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using SlangLang.Binding;
+using SlangLang.Symbols;
 using SlangLang.Drivers;
 using SlangLang.Debug;
 

@@ -1,7 +1,7 @@
 using System;
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("SlangLang.Tests")]
-namespace SlangLang.Binding
+namespace SlangLang.Symbols
 {
     public sealed class VariableSymbol
     {
