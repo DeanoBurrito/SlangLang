@@ -2,16 +2,14 @@ using System;
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("SlangLang.Tests")]
 namespace SlangLang.Symbols
-{
-    public sealed class VariableSymbol
+{    
+    public sealed class VariableSymbol : Symbol
     {
-        public readonly string name;
         public readonly Type type;
         public readonly bool isReadOnly;
 
-        internal VariableSymbol(string vName, bool isReadonly, Type vType)
+        internal VariableSymbol(string vName, bool isReadonly, Type vType) : base(SymbolType.Variable, vName)
         {
-            name = vName;
             type = vType;
             isReadOnly = isReadonly;
         }
