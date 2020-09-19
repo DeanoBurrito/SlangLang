@@ -56,6 +56,8 @@ namespace SlangLang.Binding
             new BoundBinaryOperator(LanguageTokenType.Circumflex, BoundBinaryOperatorType.BitwiseXor, TypeSymbol.Bool),
             new BoundBinaryOperator(LanguageTokenType.EqualsEquals, BoundBinaryOperatorType.Equals, TypeSymbol.Bool),
             new BoundBinaryOperator(LanguageTokenType.ExclamationEquals, BoundBinaryOperatorType.NotEquals, TypeSymbol.Bool),
+
+            new BoundBinaryOperator(LanguageTokenType.Plus, BoundBinaryOperatorType.Addition, TypeSymbol.String),
         };
 
         public static BoundBinaryOperator Bind(LanguageTokenType langTokenType, TypeSymbol leftType, TypeSymbol rightType)

@@ -196,6 +196,14 @@ namespace SlangLang.Evaluation
                         return leftBool ^ rightBool;
                 }
             }
+            else if (leftType == typeof(string) && rightType == typeof(string))
+            {
+                switch (expr.op.binaryOperator)
+                {
+                    case BoundBinaryOperatorType.Addition:
+                        return (string)leftResult + (string)rightResult;
+                }
+            }
             if (expr.op.binaryOperator == BoundBinaryOperatorType.Equals)
                 return Equals(leftResult, rightResult);
             else if (expr.op.binaryOperator == BoundBinaryOperatorType.NotEquals)
