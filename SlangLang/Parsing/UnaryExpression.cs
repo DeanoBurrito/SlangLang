@@ -9,7 +9,7 @@ namespace SlangLang.Parsing
         public readonly ExpressionNode operand;
 
         public UnaryExpression(LanguageToken opToken, ExpressionNode node) 
-            : base(opToken, ParseNodeType.Unary, new TextSpan(opToken.textLocation.start, node.textLocation.end))
+            : base(opToken, ParseNodeType.UnaryExpression, new TextSpan(opToken.textLocation.start, node.textLocation.end))
         {
             operand = node;
         }

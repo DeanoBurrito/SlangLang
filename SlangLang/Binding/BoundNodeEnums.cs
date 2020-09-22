@@ -4,6 +4,13 @@ namespace SlangLang.Binding
 {
     internal enum BoundNodeType
     {
+        ErrorExpression,
+        LiteralExpression,
+        VariableExpression,
+        AssignmentExpression,
+        UnaryExpression,
+        BinaryExpression,
+
         BlockStatement,
         ExpressionStatement,
         VariableDeclarationStatement,
@@ -13,13 +20,6 @@ namespace SlangLang.Binding
         LabelStatement,
         GotoStatement,
         ConditionalGotoStatement,
-        
-        ErrorExpression,
-        LiteralExpression,
-        VariableExpression,
-        AssignmentExpression,
-        UnaryExpression,
-        BinaryExpression,
     }
 
     internal enum BoundUnaryOperatorType

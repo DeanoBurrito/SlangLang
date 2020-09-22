@@ -25,22 +25,22 @@ namespace SlangLang.Tests
             {
                 using (AssertingExpressionTree e = new AssertingExpressionTree(expression))
                 {
-                    e.AssertNode(ParseNodeType.Binary);
-                        e.AssertNode(ParseNodeType.Binary);
-                            e.AssertNodeAndToken(ParseNodeType.Name, LanguageTokenType.Identifier, "a");
-                            e.AssertNodeAndToken(ParseNodeType.Name, LanguageTokenType.Identifier, "b");
-                        e.AssertNodeAndToken(ParseNodeType.Name, LanguageTokenType.Identifier, "c");
+                    e.AssertNode(ParseNodeType.BinaryExpression);
+                        e.AssertNode(ParseNodeType.BinaryExpression);
+                            e.AssertNodeAndToken(ParseNodeType.NameExpression, LanguageTokenType.Identifier, "a");
+                            e.AssertNodeAndToken(ParseNodeType.NameExpression, LanguageTokenType.Identifier, "b");
+                        e.AssertNodeAndToken(ParseNodeType.NameExpression, LanguageTokenType.Identifier, "c");
                 }
             }
             else
             {
                 using (AssertingExpressionTree e = new AssertingExpressionTree(expression))
                 {
-                    e.AssertNode(ParseNodeType.Binary);
-                        e.AssertNodeAndToken(ParseNodeType.Name, LanguageTokenType.Identifier, "a");
-                        e.AssertNode(ParseNodeType.Binary);
-                            e.AssertNodeAndToken(ParseNodeType.Name, LanguageTokenType.Identifier, "b");
-                            e.AssertNodeAndToken(ParseNodeType.Name, LanguageTokenType.Identifier, "c");
+                    e.AssertNode(ParseNodeType.BinaryExpression);
+                        e.AssertNodeAndToken(ParseNodeType.NameExpression, LanguageTokenType.Identifier, "a");
+                        e.AssertNode(ParseNodeType.BinaryExpression);
+                            e.AssertNodeAndToken(ParseNodeType.NameExpression, LanguageTokenType.Identifier, "b");
+                            e.AssertNodeAndToken(ParseNodeType.NameExpression, LanguageTokenType.Identifier, "c");
                 }
             }
         }
@@ -61,20 +61,20 @@ namespace SlangLang.Tests
             {
                 using (AssertingExpressionTree e = new AssertingExpressionTree(expression))
                 {
-                    e.AssertNode(ParseNodeType.Binary);
-                        e.AssertNodeAndToken(ParseNodeType.Unary, unaryOp, LanguageFacts.GetText(unaryOp));
-                            e.AssertNodeAndToken(ParseNodeType.Name, LanguageTokenType.Identifier, "a");
-                        e.AssertNodeAndToken(ParseNodeType.Name, LanguageTokenType.Identifier, "b");
+                    e.AssertNode(ParseNodeType.BinaryExpression);
+                        e.AssertNodeAndToken(ParseNodeType.UnaryExpression, unaryOp, LanguageFacts.GetText(unaryOp));
+                            e.AssertNodeAndToken(ParseNodeType.NameExpression, LanguageTokenType.Identifier, "a");
+                        e.AssertNodeAndToken(ParseNodeType.NameExpression, LanguageTokenType.Identifier, "b");
                 }
             }
             else
             {
                 using (AssertingExpressionTree e = new AssertingExpressionTree(expression))
                 {
-                    e.AssertNodeAndToken(ParseNodeType.Unary, unaryOp, LanguageFacts.GetText(unaryOp));
-                        e.AssertNode(ParseNodeType.Binary);
-                            e.AssertNodeAndToken(ParseNodeType.Name, LanguageTokenType.Identifier, "a");
-                            e.AssertNodeAndToken(ParseNodeType.Name, LanguageTokenType.Identifier, "b");
+                    e.AssertNodeAndToken(ParseNodeType.UnaryExpression, unaryOp, LanguageFacts.GetText(unaryOp));
+                        e.AssertNode(ParseNodeType.BinaryExpression);
+                            e.AssertNodeAndToken(ParseNodeType.NameExpression, LanguageTokenType.Identifier, "a");
+                            e.AssertNodeAndToken(ParseNodeType.NameExpression, LanguageTokenType.Identifier, "b");
                 }
             }
         }

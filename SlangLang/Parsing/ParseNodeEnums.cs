@@ -4,11 +4,12 @@ namespace SlangLang.Parsing
 {
     public enum ParseNodeType : int
     {
-        Unary,
-        Binary,
-        Literal,  
-        Name,
-        Assignment,
+        UnaryExpression,
+        BinaryExpression,
+        LiteralExpression,  
+        NameExpression,
+        AssignmentExpression,
+        CallExpression,
 
         CompilationUnit,
 

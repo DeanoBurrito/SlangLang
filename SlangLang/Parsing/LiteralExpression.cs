@@ -9,7 +9,7 @@ namespace SlangLang.Parsing
         public readonly object value;
 
         public LiteralExpression(object val, LanguageToken token) 
-            : base(token, ParseNodeType.Literal, token.textLocation)
+            : base(token, ParseNodeType.LiteralExpression, token.textLocation)
         {
             value = val;
         }

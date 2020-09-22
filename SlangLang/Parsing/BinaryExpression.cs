@@ -10,7 +10,7 @@ namespace SlangLang.Parsing
         public readonly ExpressionNode rightNode;
 
         public BinaryExpression(ExpressionNode left, LanguageToken opToken, ExpressionNode right) 
-            : base(opToken, ParseNodeType.Binary, new TextSpan(left.textLocation.start, right.textLocation.end))
+            : base(opToken, ParseNodeType.BinaryExpression, new TextSpan(left.textLocation.start, right.textLocation.end))
         {
             leftNode = left;
             rightNode = right;

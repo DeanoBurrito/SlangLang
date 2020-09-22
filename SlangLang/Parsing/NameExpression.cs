@@ -7,7 +7,7 @@ namespace SlangLang.Parsing
     public sealed class NameExpression : ExpressionNode
     {   
         public NameExpression(LanguageToken identifier) 
-            : base(identifier, ParseNodeType.Name, identifier.textLocation)
+            : base(identifier, ParseNodeType.NameExpression, identifier.textLocation)
         {
             
         }

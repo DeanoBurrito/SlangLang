@@ -9,7 +9,7 @@ namespace SlangLang.Parsing
         public readonly ExpressionNode expression;
         
         public AssignmentExpression(LanguageToken identifier, ExpressionNode expression) 
-            : base(identifier, ParseNodeType.Assignment, new TextSpan(identifier.textLocation.start, expression.textLocation.end))
+            : base(identifier, ParseNodeType.AssignmentExpression, new TextSpan(identifier.textLocation.start, expression.textLocation.end))
         {
             this.expression = expression;
         }
