@@ -224,14 +224,8 @@ namespace SlangLang.Parsing
                     return ParseStringLiteral();
                 case LanguageTokenType.Identifier:
                 default: 
-                    return ParseNameExpression();
+                    return ParseNameOrCallExpression();
             }
-        }
-
-        private ExpressionNode ParseNameExpression()
-        {
-            LanguageToken identifier = MatchToken(LanguageTokenType.Identifier);
-            return new NameExpression(identifier);
         }
 
         private ExpressionNode ParseParanthesizedExpression()
@@ -266,6 +260,53 @@ namespace SlangLang.Parsing
         {
             LanguageToken token = MatchToken(LanguageTokenType.String);
             return new LiteralExpression(token.text, token);
+        }
+
+        private ExpressionNode ParseNameOrCallExpression()
+        {
+            if (Peek().tokenType == LanguageTokenType.Identifier && Peek(1).tokenType == LanguageTokenType.OpenParanthesis)
+            {
+                return ParseCallExpression();
+            }
+            else
+            {
+                return ParseNameExpression();
+            }
+        }
+
+        private ExpressionNode ParseCallExpression()
+        {
+            LanguageToken identifier = MatchToken(LanguageTokenType.Identifier);
+            LanguageToken openParanthesis = MatchToken(LanguageTokenType.OpenParanthesis);
+            SeparatedNodeList<ExpressionNode> arguments = ParseArguments();
+            LanguageToken closeParanthesis = MatchToken(LanguageTokenType.CloseParanthesis);
+
+            return new CallExpression(identifier, openParanthesis, arguments, closeParanthesis);
+        }
+
+        private SeparatedNodeList<ExpressionNode> ParseArguments()
+        {
+            ImmutableArray<ParseNode>.Builder builder = ImmutableArray.CreateBuilder<ParseNode>();
+
+            while (Peek().tokenType != LanguageTokenType.CloseParanthesis && Peek().tokenType != LanguageTokenType.EndOfFile)
+            {
+                ExpressionNode expr = ParseExpression();
+                builder.Add(expr);
+
+                if (Peek().tokenType != LanguageTokenType.CloseParanthesis)
+                {
+                    LanguageToken comma = MatchToken(LanguageTokenType.Comma);
+                    builder.Add(comma);
+                }
+            }
+
+            return new SeparatedNodeList<ExpressionNode>(builder.ToImmutable());
+        }
+
+        private ExpressionNode ParseNameExpression()
+        {
+            LanguageToken identifier = MatchToken(LanguageTokenType.Identifier);
+            return new NameExpression(identifier);
         }
 
         private LanguageToken MatchToken(LanguageTokenType tokenType)

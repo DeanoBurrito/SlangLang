@@ -6,5 +6,7 @@ namespace SlangLang.Symbols
     {
         Variable,
         Type,
+        Function,
+        Parameter,
     }
 }

@@ -91,6 +91,10 @@ namespace SlangLang.Parsing
                     currChar++;
                     type = LanguageTokenType.CloseBrace;
                     break;
+                case ',':
+                    currChar++;
+                    type = LanguageTokenType.Comma;
+                    break;
                 case '^':
                     currChar++;
                     type = LanguageTokenType.Circumflex;
@@ -273,8 +277,8 @@ namespace SlangLang.Parsing
             currChar++;
             
             endLocation = sourceStore.GetLocation(currChar);
-            textLength = currChar - start;
-            text = sourceStore.GetSubstring(start, currChar - start);
+            textLength = currChar - start - 2;
+            text = sourceStore.GetSubstring(start + 1, textLength);
             type = LanguageTokenType.String;
         }
 

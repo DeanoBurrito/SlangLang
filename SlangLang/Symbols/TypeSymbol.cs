@@ -8,6 +8,7 @@ namespace SlangLang.Symbols
         public static readonly TypeSymbol Int = new TypeSymbol("Int32");
         public static readonly TypeSymbol Bool = new TypeSymbol("Bool");
         public static readonly TypeSymbol String = new TypeSymbol("String");
+        public static readonly TypeSymbol Void = new TypeSymbol("Void");
         
         internal TypeSymbol(string name) : base(SymbolType.Type, name)
         {

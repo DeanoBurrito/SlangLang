@@ -42,7 +42,7 @@ namespace SlangLang.Drivers
             if (options.printParserOutput)
             {
                 Console.ForegroundColor = ConsoleColor.Gray;
-                PrettyPrintParsedTree(compilationUnit.statement);
+                PrettyPrintParsedTree(compilationUnit);
                 Console.ResetColor();
             }
         }
@@ -58,7 +58,7 @@ namespace SlangLang.Drivers
             if (options.printParserOutput)
             {
                 Console.ForegroundColor = ConsoleColor.Gray;
-                PrettyPrintParsedTree(compilationUnit.statement);
+                PrettyPrintParsedTree(compilationUnit);
                 Console.ResetColor();
             }
         }
@@ -151,9 +151,9 @@ namespace SlangLang.Drivers
             {
                 case BoundNodeType.AssignmentExpression:
                 case BoundNodeType.VariableExpression:
-                    return ConsoleColor.Blue;
-                case BoundNodeType.VariableDeclarationStatement:
                     return ConsoleColor.DarkBlue;
+                case BoundNodeType.VariableDeclarationStatement:
+                    return ConsoleColor.Blue;
                 case BoundNodeType.LiteralExpression:
                     return ConsoleColor.Green;
                 case BoundNodeType.UnaryExpression:
@@ -163,6 +163,8 @@ namespace SlangLang.Drivers
                 case BoundNodeType.WhileStatement:
                 case BoundNodeType.ForStatement:
                     return ConsoleColor.DarkMagenta;
+                case BoundNodeType.CallExpression:
+                    return ConsoleColor.Magenta;
                 default:
                     return ConsoleColor.Gray;
             }

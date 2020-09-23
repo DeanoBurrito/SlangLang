@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 using SlangLang.Debug;
 using SlangLang.Parsing;
 using SlangLang.Symbols;
@@ -92,7 +93,7 @@ namespace SlangLang.Binding
 
         private BoundStatement BindExpressionStatement(ExpressionStatement statement)
         {
-            BoundExpression expression = BindExpression(statement.expression);
+            BoundExpression expression = BindExpression(statement.expression, true);
             return new BoundExpressionStatement(expression, statement.textLocation);
         }
 
@@ -129,6 +130,18 @@ namespace SlangLang.Binding
             return new BoundForStatement(setup, condition, post, body, statement.textLocation);
         }
 
+        private BoundExpression BindExpression(ExpressionNode node, bool canBeVoid = false)
+        {
+            BoundExpression result = BindExpressionInternal(node);
+            if (!canBeVoid && result.boundType == TypeSymbol.Void)
+            {
+                diagnostics.BinderError_ExpressionMustReturnValue(node.textLocation);
+                return new BoundErrorExpression(node.textLocation);
+            }
+            
+            return result;
+        }
+
         private BoundExpression BindExpression(ExpressionNode node, TypeSymbol targetType)
         {
             BoundExpression result = BindExpression(node);
@@ -139,7 +152,7 @@ namespace SlangLang.Binding
             return result;
         }
 
-        private BoundExpression BindExpression(ExpressionNode node)
+        private BoundExpression BindExpressionInternal(ExpressionNode node)
         {
             switch (node.nodeType)
             {
@@ -153,6 +166,8 @@ namespace SlangLang.Binding
                     return BindNameExpression((NameExpression)node);
                 case ParseNodeType.AssignmentExpression:
                     return BindAssignmentExpression((AssignmentExpression)node);
+                case ParseNodeType.CallExpression:
+                    return BindCallExpression((CallExpression)node);
             }
 
             diagnostics.BinderError_UnexpectedExpressionType(node.nodeType, node.textLocation);
@@ -252,6 +267,43 @@ namespace SlangLang.Binding
             }
 
             return new BoundAssignmentExpression(variable, boundExpr, expression.textLocation);
+        }
+
+        private BoundExpression BindCallExpression(CallExpression expression)
+        {
+            IEnumerable<FunctionSymbol> functions = BuildInFunctions.GetAll();
+            FunctionSymbol function = functions.SingleOrDefault(f => f.name == expression.token.text);
+            ImmutableArray<BoundExpression>.Builder boundArguments = ImmutableArray.CreateBuilder<BoundExpression>();
+            foreach (ExpressionNode arg in expression.arguments)
+            {
+                boundArguments.Add(BindExpression(arg));
+            }
+
+            if (function == null)
+            {
+                diagnostics.BinderError_UndefinedFunction(expression.token.text, expression.token.textLocation);
+                return new BoundErrorExpression(expression.textLocation);
+            }
+
+            if (expression.arguments.count != function.parameters.Length)
+            {
+                diagnostics.BinderError_MismatchedArgumentCount(function.name, expression.arguments.count, function.parameters.Length, expression.textLocation);
+                return new BoundErrorExpression(expression.textLocation);
+            }
+
+            for (int i = 0; i < expression.arguments.count; i++)
+            {
+                BoundExpression argument = boundArguments[i];
+                ParameterSymbol parameter = function.parameters[i];
+
+                if (argument.boundType != parameter.type)
+                {
+                    diagnostics.BinderError_ArgumentTypeMismatch(argument.boundType, parameter.type, i, expression.arguments[i].textLocation);
+                    return new BoundErrorExpression(expression.arguments[i].textLocation);
+                }
+            }
+
+            return new BoundCallExpression(function, boundArguments.ToImmutable(), expression.textLocation);
         }
 
         private VariableSymbol BindVariable(string identifier, bool isReadOnly, TypeSymbol type, TextSpan where)

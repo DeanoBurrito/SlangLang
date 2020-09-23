@@ -41,6 +41,7 @@ namespace SlangLang.Parsing
         CloseParanthesis,
         OpenBrace,
         CloseBrace,
+        Comma,
 
         //basic keywords
         KeywordFalse,

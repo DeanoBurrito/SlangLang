@@ -12,6 +12,7 @@ namespace SlangLang.Parsing
         CallExpression,
 
         CompilationUnit,
+        LanguageToken,
 
         BlockStatement,
         ExpressionStatement,

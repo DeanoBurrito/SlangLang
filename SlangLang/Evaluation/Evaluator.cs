@@ -93,6 +93,8 @@ namespace SlangLang.Evaluation
                     return EvaluateUnaryExpression((BoundUnaryExpression)node);
                 case BoundNodeType.BinaryExpression:
                     return EvaluateBinaryExpression((BoundBinaryExpression)node);
+                case BoundNodeType.CallExpression:
+                    return EvaluateCallExpression((BoundCallExpression)node);
             }
 
             throw new Exception("Unexpected node in evaluator.");
@@ -211,6 +213,24 @@ namespace SlangLang.Evaluation
             
             diagnostics.EvaluatorError_UnxpectedBinaryOperator(expr.op, expr.textLocation);
             throw new Exception("Unexpected binary operator in evaluator!");
+        }
+
+        private object EvaluateCallExpression(BoundCallExpression expr)
+        {
+            if (expr.function == BuildInFunctions.Print)
+            {
+                string message = (string)EvaluateExpression(expr.arguments[0]);
+                Console.WriteLine(message);
+                return null;
+            }
+            else if (expr.function == BuildInFunctions.Input)
+            {
+                return Console.ReadLine();
+            }
+            else
+            {
+                throw new Exception("Unexpected function in evaluator!");
+            }
         }
     }
 }

@@ -123,6 +123,8 @@ namespace SlangLang.Parsing
                     return "{";
                 case LanguageTokenType.CloseBrace:
                     return "}";
+                case LanguageTokenType.Comma:
+                    return ",";
                 
                 case LanguageTokenType.Exclamation:
                     return "!";

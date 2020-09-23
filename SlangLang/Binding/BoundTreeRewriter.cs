@@ -157,6 +157,8 @@ namespace SlangLang.Binding
                     return RewriteUnaryExpression((BoundUnaryExpression)node);
                 case BoundNodeType.BinaryExpression:
                     return RewriteBinaryExpression((BoundBinaryExpression)node);
+                case BoundNodeType.CallExpression:
+                    return RewriteCallExpression((BoundCallExpression)node);
                 case BoundNodeType.ErrorExpression:
                     return node;
                 default:
@@ -200,6 +202,38 @@ namespace SlangLang.Binding
                 return node;
 
             return new BoundBinaryExpression(left, node.op, right, node.textLocation);
+        }
+
+        protected virtual BoundExpression RewriteCallExpression(BoundCallExpression node)
+        {
+            ImmutableArray<BoundExpression>.Builder builder = null;
+
+            for (int i = 0; i < node.arguments.Length; i++)
+            {
+                BoundExpression prevExpression = node.arguments[i];
+                BoundExpression currExpression = RewriteExpression(prevExpression);
+                if (prevExpression != currExpression)
+                {
+                    if (builder == null)
+                    {
+                        builder = ImmutableArray.CreateBuilder<BoundExpression>(node.arguments.Length);
+                        for (int j = 0; j < i; j++)
+                        {
+                            builder.Add(node.arguments[j]);
+                        }
+                    }
+                }
+
+                if (builder != null)
+                {
+                    builder.Add(currExpression);
+                }
+            }
+
+            if (builder == null)
+                return node;
+            
+            return new BoundCallExpression(node.function, builder.MoveToImmutable(), node.textLocation);
         }
     }
 }

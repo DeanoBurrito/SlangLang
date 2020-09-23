@@ -10,6 +10,7 @@ namespace SlangLang.Binding
         AssignmentExpression,
         UnaryExpression,
         BinaryExpression,
+        CallExpression,
 
         BlockStatement,
         ExpressionStatement,

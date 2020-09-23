@@ -77,6 +77,26 @@ namespace SlangLang.Debug
             diagnostics.AddFailure("Binder", "Could not convert expression result from " + actual + " to " + target, where, DateTime.Now);
         }
 
+        internal static void BinderError_UndefinedFunction(this Diagnostics diagnostics, string identifier, TextSpan where)
+        {
+            diagnostics.AddFailure("Binder", "Function '" + identifier + "' is undefined in current scope.", where, DateTime.Now);
+        }
+
+        internal static void BinderError_MismatchedArgumentCount(this Diagnostics diagnostics, string identifier, int actual, int expected, TextSpan where)
+        {
+            diagnostics.AddFailure("Binder", "Function argument count mismatch for '" + identifier + "'. Expected " + expected + ", got " + actual, where, DateTime.Now);
+        }
+
+        internal static void BinderError_ArgumentTypeMismatch(this Diagnostics diagnostics, TypeSymbol actual, TypeSymbol expected, int index, TextSpan where)
+        {
+            diagnostics.AddFailure("Binder", "Argument " + index + " was expected to be " + expected + ", got " + actual, where, DateTime.Now);
+        }
+
+        internal static void BinderError_ExpressionMustReturnValue(this Diagnostics diagnostics, TextSpan where)
+        {
+            diagnostics.AddFailure("Binder", "Expression must return a value (not void).", where, DateTime.Now);
+        }
+
         internal static void EvaluatorError_UnexpectedUnaryOperator(this Diagnostics diagnostics, BoundUnaryOperator op, TextSpan where)
         {
             diagnostics.AddFailure("Evaluator", "Unexpected unary operator in tree " + op, where, DateTime.Now);

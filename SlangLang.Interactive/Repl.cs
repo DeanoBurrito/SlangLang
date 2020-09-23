@@ -127,7 +127,10 @@ namespace SlangLang.Interactive
                 }
                 else
                 {
-                    Console.WriteLine("Evaluation result: " + result.value.ToString());
+                    if (result.value == null)
+                        Console.WriteLine("Evaluation result: <null>");
+                    else
+                        Console.WriteLine("Evaluation result: " + result.value.ToString());
                     previousCompilation = currentCompilation;
                 }
             }
