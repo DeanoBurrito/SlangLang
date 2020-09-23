@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using SlangLang.Debug;
 using SlangLang.Parsing;
 using SlangLang.Binding;
@@ -38,6 +39,13 @@ namespace SlangLang.Drivers
             diags = new Diagnostics(DateTime.Now);
 
             Parser parser = new Parser(diags, source);
+            if (options.printLexerOutput)
+            {
+                Console.ForegroundColor = ConsoleColor.Gray;
+                PrettyPrintTokenStream(parser.tokens);
+                Console.ResetColor();
+            }
+
             compilationUnit = parser.ParseCompilationUnit();
             if (options.printParserOutput)
             {
@@ -94,21 +102,11 @@ namespace SlangLang.Drivers
             return Lowerer.Lower(result);
         }
 
-        private static void PrettyPrintTokenStream(LanguageToken[] tokens)
+        private static void PrettyPrintTokenStream(ImmutableArray<LanguageToken> tokens)
         {
-            int currLineLength = 0;
-            int terminalWidth = Console.WindowWidth;
             foreach (LanguageToken token in tokens)
             {
-                string tokenStr = token.ToString() + " ";
-                currLineLength += tokenStr.Length;
-                if (currLineLength >= terminalWidth)
-                {
-                    Console.WriteLine();
-                    currLineLength = tokenStr.Length;
-                }
-                
-                Console.Write(tokenStr);
+                Console.WriteLine(token.ToString());
             }
         }
 
