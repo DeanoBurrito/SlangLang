@@ -227,6 +227,10 @@ namespace SlangLang.Evaluation
             {
                 return Console.ReadLine();
             }
+            else if (expr.function == BuildInFunctions.Random)
+            {
+                return new Random().Next((int)EvaluateExpression(expr.arguments[0]));
+            }
             else
             {
                 throw new Exception("Unexpected function in evaluator!");
