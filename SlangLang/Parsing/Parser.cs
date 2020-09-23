@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using SlangLang.Debug;
 
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("SlangLang.SlangLang.Interactive")]
 namespace SlangLang.Parsing
 {   
     public sealed class Parser
     {
-        readonly ImmutableArray<LanguageToken> tokens;
+        internal readonly ImmutableArray<LanguageToken> tokens;
         readonly Diagnostics diagnostics;
         int pos;
         

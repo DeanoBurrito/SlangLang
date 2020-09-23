@@ -13,8 +13,8 @@ namespace SlangLang.Parsing
         int start;
         TextLocation startLocation;
         TextLocation endLocation;
-        string text;
-        string sourceText;
+        string tokenText;
+        string tokenValue;
         int textLength;
         LanguageTokenType type;
 
@@ -46,8 +46,8 @@ namespace SlangLang.Parsing
             start = currChar;
             startLocation = sourceStore.GetLocation(start);
             endLocation = sourceStore.GetLocation(start + 1); //default ending is only 1 char
-            text = null;
-            sourceText = null;
+            tokenText = null;
+            tokenValue = null;
             textLength = 1;
             type = LanguageTokenType.BadToken;
 
@@ -206,14 +206,14 @@ namespace SlangLang.Parsing
                 }
             }
 
-            if (text == null)
-                text = LanguageFacts.GetText(type);
-            if (text == null && type != LanguageTokenType.BadToken && type != LanguageTokenType.EndOfFile)
+            if (tokenText == null)
+                tokenText = LanguageFacts.GetText(type);
+            if (tokenText == null && type != LanguageTokenType.BadToken && type != LanguageTokenType.EndOfFile)
                 throw new Exception("Unexpected null text, text did not trigger bad token, but was not lexable as any known token.");
 
-            if (sourceText == null)
-                sourceText = text;
-            return new LanguageToken(type, text, sourceText, new TextSpan(startLocation, endLocation, textLength));
+            if (tokenValue == null)
+                tokenValue = tokenText;
+            return new LanguageToken(type, tokenValue, tokenText, new TextSpan(startLocation, endLocation, textLength));
         }
 
         private void ExtendTokenEnd()
@@ -232,7 +232,7 @@ namespace SlangLang.Parsing
 
             endLocation = sourceStore.GetLocation(currChar);
             textLength = currChar - start;
-            text = sourceStore.GetSubstring(start, currChar - start);
+            tokenText = sourceStore.GetSubstring(start, currChar - start);
             type = LanguageTokenType.IntegerNumber;
         }
 
@@ -245,7 +245,7 @@ namespace SlangLang.Parsing
 
             endLocation = sourceStore.GetLocation(currChar);
             textLength = currChar - start;
-            text = sourceStore.GetSubstring(start, currChar - start);
+            tokenText = sourceStore.GetSubstring(start, currChar - start);
             type = LanguageTokenType.Whitespace;
         }
 
@@ -258,8 +258,8 @@ namespace SlangLang.Parsing
 
             endLocation = sourceStore.GetLocation(currChar);
             textLength = currChar - start;
-            text = sourceStore.GetSubstring(start, currChar - start);
-            type = LanguageFacts.GetKeyword(text);
+            tokenText = sourceStore.GetSubstring(start, currChar - start);
+            type = LanguageFacts.GetKeyword(tokenText);
         }
 
         private void ReadStringToken()
@@ -274,7 +274,7 @@ namespace SlangLang.Parsing
 
                     endLocation = TextLocation.NoLocation;
                     textLength = 0;
-                    text = sourceStore.GetSubstring(start, currChar - start);
+                    tokenText = sourceStore.GetSubstring(start, currChar - start);
                     type = LanguageTokenType.EndOfFile;
                 }
             }
@@ -282,8 +282,8 @@ namespace SlangLang.Parsing
             
             endLocation = sourceStore.GetLocation(currChar);
             textLength = currChar - start;
-            text = sourceStore.GetSubstring(start, textLength);
-            sourceText = text.Substring(1, textLength - 2);
+            tokenText = sourceStore.GetSubstring(start, textLength);
+            tokenValue = tokenText.Substring(1, textLength - 2);
             type = LanguageTokenType.String;
         }
 
