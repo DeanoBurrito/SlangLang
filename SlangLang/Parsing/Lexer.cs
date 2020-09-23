@@ -14,6 +14,7 @@ namespace SlangLang.Parsing
         TextLocation startLocation;
         TextLocation endLocation;
         string text;
+        string sourceText;
         int textLength;
         LanguageTokenType type;
 
@@ -46,6 +47,7 @@ namespace SlangLang.Parsing
             startLocation = sourceStore.GetLocation(start);
             endLocation = sourceStore.GetLocation(start + 1); //default ending is only 1 char
             text = null;
+            sourceText = null;
             textLength = 1;
             type = LanguageTokenType.BadToken;
 
@@ -209,7 +211,9 @@ namespace SlangLang.Parsing
             if (text == null && type != LanguageTokenType.BadToken && type != LanguageTokenType.EndOfFile)
                 throw new Exception("Unexpected null text, text did not trigger bad token, but was not lexable as any known token.");
 
-            return new LanguageToken(type, text, new TextSpan(startLocation, endLocation, textLength));
+            if (sourceText == null)
+                sourceText = text;
+            return new LanguageToken(type, text, sourceText, new TextSpan(startLocation, endLocation, textLength));
         }
 
         private void ExtendTokenEnd()
@@ -277,8 +281,9 @@ namespace SlangLang.Parsing
             currChar++;
             
             endLocation = sourceStore.GetLocation(currChar);
-            textLength = currChar - start - 2;
-            text = sourceStore.GetSubstring(start + 1, textLength);
+            textLength = currChar - start;
+            text = sourceStore.GetSubstring(start, textLength);
+            sourceText = text.Substring(1, textLength - 2);
             type = LanguageTokenType.String;
         }
 

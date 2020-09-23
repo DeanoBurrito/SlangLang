@@ -19,7 +19,7 @@ namespace SlangLang.Parsing
 
         public override string ToString() 
         {
-            return "[Name] " + base.token.text;
+            return "[Name] " + base.token.value;
         }
     }
 }

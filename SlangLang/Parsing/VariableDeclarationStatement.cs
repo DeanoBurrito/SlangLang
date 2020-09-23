@@ -32,7 +32,7 @@ namespace SlangLang.Parsing
 
         public override string ToString()
         {
-            return "[VariableDeclaration]" + keyword.text + " " + identifier.text;
+            return "[VariableDeclaration]" + keyword.value + " " + identifier.value;
         }
     }
 }

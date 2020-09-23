@@ -13,8 +13,8 @@ namespace SlangLang.Tests
         [MemberData(nameof(GetBinaryOperatorPairsData))]
         public void BinaryExpressionHonoursPrecedence(LanguageTokenType op1, LanguageTokenType op2)
         {
-            int op1Precedence = LanguageFacts.GetBinaryOperatorPrecedence(new LanguageToken(op1, "", null));
-            int op2Precedence = LanguageFacts.GetBinaryOperatorPrecedence(new LanguageToken(op2, "", null));
+            int op1Precedence = LanguageFacts.GetBinaryOperatorPrecedence(new LanguageToken(op1, "", "", null));
+            int op2Precedence = LanguageFacts.GetBinaryOperatorPrecedence(new LanguageToken(op2, "", "", null));
             string text = $"a {LanguageFacts.GetText(op1)} b {LanguageFacts.GetText(op2)} c;";
 
             Debug.Diagnostics diagnostics = new Debug.Diagnostics(DateTime.Now);
@@ -49,8 +49,8 @@ namespace SlangLang.Tests
         [MemberData(nameof(GetUnaryOperatorPairsData))]
         public void UnaryExpressionHonoursPrecedence(LanguageTokenType unaryOp, LanguageTokenType BinaryOp)
         {
-            int unaryPrecedence = LanguageFacts.GetUnaryOperatorPrecedence(new LanguageToken(unaryOp, "", null));
-            int binaryPrecedence = LanguageFacts.GetUnaryOperatorPrecedence(new LanguageToken(BinaryOp, "", null));
+            int unaryPrecedence = LanguageFacts.GetUnaryOperatorPrecedence(new LanguageToken(unaryOp,"", "", null));
+            int binaryPrecedence = LanguageFacts.GetUnaryOperatorPrecedence(new LanguageToken(BinaryOp, "", "", null));
             string text = $"{LanguageFacts.GetText(unaryOp)} a {LanguageFacts.GetText(BinaryOp)} b;";
             
             Debug.Diagnostics diagnostics = new Debug.Diagnostics(DateTime.Now);

@@ -22,7 +22,7 @@ namespace SlangLang.Tests
 
             LanguageToken token = Assert.Single(tokens);
             Assert.Equal(token.tokenType, tokenType);
-            Assert.Equal(token.text, text);
+            Assert.Equal(token.value, text);
         }
 
         public static IEnumerable<object[]> GetRoundtripData()

@@ -29,12 +29,12 @@ namespace SlangLang.Tests
             Lexer lexer = new Lexer(Diagnostics.DummyInstance, new TextStore("Tests", new string[] { text }));
             LanguageToken[] tokens = lexer.LexAll();
             
-            Assert.Equal(tokens.Last().tokenType, LanguageTokenType.EndOfFile);
+            Assert.Equal(LanguageTokenType.EndOfFile, tokens.Last().tokenType);
             Array.Resize(ref tokens, tokens.Length - 1);
 
             LanguageToken token = Assert.Single(tokens);
             Assert.Equal(tokenType, token.tokenType);
-            Assert.Equal(token.text, text);
+            Assert.Equal(text, token.text);
         }
 
         [Theory]
@@ -46,14 +46,14 @@ namespace SlangLang.Tests
             Lexer lexer = new Lexer(Diagnostics.DummyInstance, new TextStore("Tests", new string[] { text1 + text2 }));
             LanguageToken[] tokens = lexer.LexAll();
 
-            Assert.Equal(tokens.Last().tokenType, LanguageTokenType.EndOfFile);
+            Assert.Equal(LanguageTokenType.EndOfFile, tokens.Last().tokenType);
             Array.Resize(ref tokens, tokens.Length - 1);
 
-            Assert.Equal(tokens.Length, 2);
-            Assert.Equal(tokens[0].tokenType, type1);
-            Assert.Equal(tokens[0].text, text1);
-            Assert.Equal(tokens[1].tokenType, type2);
-            Assert.Equal(tokens[1].text, text2);
+            Assert.Equal(2, tokens.Length);
+            Assert.Equal(type1, tokens[0].tokenType);
+            Assert.Equal(text1, tokens[0].text);
+            Assert.Equal(type2, tokens[1].tokenType);
+            Assert.Equal(text2, tokens[1].text);
 
             Assert.Equal(text1, textStore.GetSubstring(tokens[0].textLocation));
             Assert.Equal(text2, textStore.GetSubstring(tokens[1].textLocation));
@@ -69,13 +69,13 @@ namespace SlangLang.Tests
             Assert.Equal(tokens.Last().tokenType, LanguageTokenType.EndOfFile);
             Array.Resize(ref tokens, tokens.Length - 1);
 
-            Assert.Equal(tokens.Length, 3);
-            Assert.Equal(tokens[0].tokenType, l1);
-            Assert.Equal(tokens[0].text, t1);
-            Assert.Equal(tokens[1].tokenType, ls);
-            Assert.Equal(tokens[1].text, ts);
-            Assert.Equal(tokens[2].tokenType, l2);
-            Assert.Equal(tokens[2].text, t2);
+            Assert.Equal(3, tokens.Length);
+            Assert.Equal(l1, tokens[0].tokenType);
+            Assert.Equal(t1, tokens[0].value);
+            Assert.Equal(ls, tokens[1].tokenType);
+            Assert.Equal(ts, tokens[1].value);
+            Assert.Equal(l2, tokens[2].tokenType);
+            Assert.Equal(t2, tokens[2].value);
         }
 
         public static IEnumerable<object[]> GetTokensData()

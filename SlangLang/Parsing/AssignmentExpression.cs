@@ -21,7 +21,7 @@ namespace SlangLang.Parsing
 
         public override string ToString() 
         {
-            return "[Assignment] => " + base.token.text;
+            return "[Assignment] => " + base.token.value;
         }
     }
 }

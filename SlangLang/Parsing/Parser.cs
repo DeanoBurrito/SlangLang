@@ -250,7 +250,7 @@ namespace SlangLang.Parsing
             LanguageToken current = Peek();
             LanguageToken token = MatchToken(LanguageTokenType.IntegerNumber);
 
-            if (!int.TryParse(token.text, out int val)) 
+            if (!int.TryParse(token.value, out int val)) 
                 diagnostics.ParserError_CouldNotParseInt(current.textLocation);
 
             return new LiteralExpression(val, token);
@@ -259,7 +259,7 @@ namespace SlangLang.Parsing
         private ExpressionNode ParseStringLiteral()
         {
             LanguageToken token = MatchToken(LanguageTokenType.String);
-            return new LiteralExpression(token.text, token);
+            return new LiteralExpression(token.value, token);
         }
 
         private ExpressionNode ParseNameOrCallExpression()
@@ -315,7 +315,7 @@ namespace SlangLang.Parsing
                 return NextToken();
             
             diagnostics.ParserError_TokenMatchFailed(tokenType, Peek().tokenType, Peek().textLocation);
-            return new LanguageToken(tokenType, "", TextSpan.NoText);
+            return new LanguageToken(tokenType, "", "", TextSpan.NoText);
         }
 
         private LanguageToken NextToken()

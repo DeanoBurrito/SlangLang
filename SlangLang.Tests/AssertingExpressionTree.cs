@@ -42,7 +42,7 @@ namespace SlangLang.Tests
             ExpressionNode node = Assert.IsAssignableFrom<ExpressionNode>(enumerator.Current);
             LanguageToken token = Assert.IsType<LanguageToken>(node.token);
             Assert.Equal(type, token.tokenType);
-            Assert.Equal(text, token.text);
+            Assert.Equal(text, token.value);
         }
 
         public void AssertNode(ParseNodeType type)

@@ -110,7 +110,7 @@ namespace SlangLang.Binding
         private BoundStatement BindVariableDeclaration(VariableDeclarationStatement statement)
         {
             BoundExpression initializer = BindExpression(statement.initializer);
-            VariableSymbol variable = BindVariable(statement.identifier?.text, statement.isReadOnly, initializer.boundType, 
+            VariableSymbol variable = BindVariable(statement.identifier?.value, statement.isReadOnly, initializer.boundType, 
                 new TextSpan(statement.keyword.textLocation.start, statement.identifier.textLocation.end));
 
             return new BoundVariableDeclaration(variable, initializer, statement.textLocation);
@@ -242,7 +242,7 @@ namespace SlangLang.Binding
 
         private BoundExpression BindNameExpression(NameExpression expression)
         {
-            string name = expression.token.text;
+            string name = expression.token.value;
             if (string.IsNullOrEmpty(name)) //inserted by parser, error has already been reported.
                 return new BoundErrorExpression(expression.textLocation);
             
@@ -259,9 +259,9 @@ namespace SlangLang.Binding
         {
             BoundExpression boundExpr = BindExpression(expression.expression);
 
-            if (!scope.TryLookupVariable(expression.token.text, out VariableSymbol variable))
+            if (!scope.TryLookupVariable(expression.token.value, out VariableSymbol variable))
             {
-                diagnostics.BinderError_VariableUndeclared(expression.token.text, expression.token.textLocation);
+                diagnostics.BinderError_VariableUndeclared(expression.token.value, expression.token.textLocation);
                 return boundExpr;
             }
 
@@ -287,9 +287,9 @@ namespace SlangLang.Binding
                 boundArguments.Add(BindExpression(arg));
             }
 
-            if (!scope.TryLookupFunction(expression.token.text, out FunctionSymbol function))
+            if (!scope.TryLookupFunction(expression.token.value, out FunctionSymbol function))
             {
-                diagnostics.BinderError_UndefinedFunction(expression.token.text, expression.token.textLocation);
+                diagnostics.BinderError_UndefinedFunction(expression.token.value, expression.token.textLocation);
                 return new BoundErrorExpression(expression.textLocation);
             }
 

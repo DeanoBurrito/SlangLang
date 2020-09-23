@@ -7,12 +7,14 @@ namespace SlangLang.Parsing
     public sealed class LanguageToken : ParseNode
     {
         public LanguageTokenType tokenType;
+        public string value;
         public string text;
 
-        public LanguageToken(LanguageTokenType type, string txt, TextSpan location) : base(ParseNodeType.LanguageToken, location)
+        public LanguageToken(LanguageTokenType type, string value, string srcText, TextSpan location) : base(ParseNodeType.LanguageToken, location)
         {
             tokenType = type;
-            text = txt;
+            this.value = value;
+            text = srcText;
         }
 
         public override List<ParseNode> GetChildren()
@@ -22,7 +24,7 @@ namespace SlangLang.Parsing
 
         public override string ToString()
         {
-            return "[LanguageToken: " + tokenType.ToString() + " \"" + text + "\"]";
+            return "[LanguageToken] type=" + tokenType + ", val=" + value + ", text=" + text;
         }
     }
 }

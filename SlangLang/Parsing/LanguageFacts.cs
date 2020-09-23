@@ -83,7 +83,7 @@ namespace SlangLang.Parsing
             LanguageTokenType[] allTypes = (LanguageTokenType[])Enum.GetValues(typeof(LanguageTokenType));
             foreach (LanguageTokenType type in allTypes)
             {
-                if (GetUnaryOperatorPrecedence(new LanguageToken(type, "", null)) > 0)
+                if (GetUnaryOperatorPrecedence(new LanguageToken(type, "", "", null)) > 0)
                     yield return type;
             }
         }
@@ -93,7 +93,7 @@ namespace SlangLang.Parsing
             LanguageTokenType[] allTypes = (LanguageTokenType[])Enum.GetValues(typeof(LanguageTokenType));
             foreach (LanguageTokenType type in allTypes)
             {
-                if (GetBinaryOperatorPrecedence(new LanguageToken(type, "", null)) > 0)
+                if (GetBinaryOperatorPrecedence(new LanguageToken(type, "", "", null)) > 0)
                     yield return type;
             }
         }
