@@ -35,18 +35,28 @@ namespace SlangLang.Binding
                 previous = previous.previous;
             }
 
-            BoundScope parent = null;
+            BoundScope parent = CreateRootScope();
             while (stack.Count > 0)
             {
                 previous = stack.Pop();
                 BoundScope scope = new BoundScope(parent);
                 foreach (VariableSymbol var in previous.variables)
                 {
-                    scope.TryDeclare(var);
+                    scope.TryDeclareVariable(var);
                 }
                 parent = scope;
             }
             return parent;
+        }
+
+        private static BoundScope CreateRootScope()
+        {
+            BoundScope result = new BoundScope(null);
+            foreach (FunctionSymbol f in BuildInFunctions.GetAll())
+            {
+                result.TryDeclareFunction(f);
+            }
+            return result;
         }
 
         public Binder(Diagnostics diag, BoundScope parentScope)
@@ -236,7 +246,7 @@ namespace SlangLang.Binding
             if (string.IsNullOrEmpty(name)) //inserted by parser, error has already been reported.
                 return new BoundErrorExpression(expression.textLocation);
             
-            if (!scope.TryLookup(name, out VariableSymbol variable))
+            if (!scope.TryLookupVariable(name, out VariableSymbol variable))
             {
                 diagnostics.BinderError_VariableDoesNotExist(name, expression.textLocation);
                 return new BoundErrorExpression(expression.textLocation);
@@ -249,7 +259,7 @@ namespace SlangLang.Binding
         {
             BoundExpression boundExpr = BindExpression(expression.expression);
 
-            if (!scope.TryLookup(expression.token.text, out VariableSymbol variable))
+            if (!scope.TryLookupVariable(expression.token.text, out VariableSymbol variable))
             {
                 diagnostics.BinderError_VariableUndeclared(expression.token.text, expression.token.textLocation);
                 return boundExpr;
@@ -271,15 +281,13 @@ namespace SlangLang.Binding
 
         private BoundExpression BindCallExpression(CallExpression expression)
         {
-            IEnumerable<FunctionSymbol> functions = BuildInFunctions.GetAll();
-            FunctionSymbol function = functions.SingleOrDefault(f => f.name == expression.token.text);
             ImmutableArray<BoundExpression>.Builder boundArguments = ImmutableArray.CreateBuilder<BoundExpression>();
             foreach (ExpressionNode arg in expression.arguments)
             {
                 boundArguments.Add(BindExpression(arg));
             }
 
-            if (function == null)
+            if (!scope.TryLookupFunction(expression.token.text, out FunctionSymbol function))
             {
                 diagnostics.BinderError_UndefinedFunction(expression.token.text, expression.token.textLocation);
                 return new BoundErrorExpression(expression.textLocation);
@@ -311,7 +319,7 @@ namespace SlangLang.Binding
             string name = identifier ?? "?";
 
             VariableSymbol variable = new VariableSymbol(name, isReadOnly, type);
-            if (!scope.TryDeclare(variable))
+            if (!scope.TryDeclareVariable(variable))
                 diagnostics.BinderError_VariableAlreadyDeclared(variable, where);
             return variable;
         }
