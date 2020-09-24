@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Text;
 using SlangLang.Debug;
 using SlangLang.Symbols;
 
@@ -25,12 +26,16 @@ namespace SlangLang.Binding
 
         public override string ToString()
         {
-            string argList = "";
-            foreach (ParameterSymbol p in function.parameters)
+            StringBuilder sb = new StringBuilder(" (");
+            for (int i = 0; i < function.parameters.Length; i++)
             {
-                argList += ", " + p.ToString();
+                if (i > 0)
+                    sb.Append(", ");
+                sb.Append(function.parameters[i]);
             }
-            return "[Call] " + function.ToString() + argList;
+            sb.Append(")");
+
+            return "[CallExpression] " + function.ToString() + sb.ToString() + ", rtnType=" + function.returnType;
         }
     }
 }

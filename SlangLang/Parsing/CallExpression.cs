@@ -1,6 +1,5 @@
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using SlangLang.Debug;
 
 namespace SlangLang.Parsing
 {   
@@ -28,7 +27,7 @@ namespace SlangLang.Parsing
 
         public override string ToString()
         {
-            return "[CallExpr] " + base.ToString();
+            return "[CallExpression] " + base.ToString();
         }
     }
 }

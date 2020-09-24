@@ -9,5 +9,10 @@ namespace SlangLang.Symbols
         {
             
         }
+
+        public override string ToString()
+        {
+            return this.type + " " + this.name + (isReadOnly ? " ReadOnly" : "");
+        }
     }
 }
