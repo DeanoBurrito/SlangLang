@@ -95,6 +95,8 @@ namespace SlangLang.Evaluation
                     return EvaluateBinaryExpression((BoundBinaryExpression)node);
                 case BoundNodeType.CallExpression:
                     return EvaluateCallExpression((BoundCallExpression)node);
+                case BoundNodeType.ConversionExpression:
+                    return EvaluateConversionExpression((BoundConversionExpression)node);
             }
 
             throw new Exception("Unexpected node in evaluator.");
@@ -235,6 +237,20 @@ namespace SlangLang.Evaluation
             {
                 throw new Exception("Unexpected function in evaluator!");
             }
+        }
+
+        private object EvaluateConversionExpression(BoundConversionExpression expr)
+        {
+            object value = EvaluateExpression(expr.expression);
+
+            if (expr.boundType == TypeSymbol.Bool)
+                return Convert.ToBoolean(value);
+            else if (expr.boundType == TypeSymbol.Int)
+                return Convert.ToInt32(value);
+            else if (expr.boundType == TypeSymbol.String)
+                return Convert.ToString(value);
+            else
+                throw new Exception("Unexpected conversion destination type in evaluator!");
         }
     }
 }

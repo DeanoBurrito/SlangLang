@@ -159,6 +159,8 @@ namespace SlangLang.Binding
                     return RewriteBinaryExpression((BoundBinaryExpression)node);
                 case BoundNodeType.CallExpression:
                     return RewriteCallExpression((BoundCallExpression)node);
+                case BoundNodeType.ConversionExpression:
+                    return RewriteConversionExpression((BoundConversionExpression)node);
                 case BoundNodeType.ErrorExpression:
                     return node;
                 default:
@@ -234,6 +236,15 @@ namespace SlangLang.Binding
                 return node;
             
             return new BoundCallExpression(node.function, builder.MoveToImmutable(), node.textLocation);
+        }
+
+        protected virtual BoundExpression RewriteConversionExpression(BoundConversionExpression node)
+        {
+            BoundExpression expr = RewriteExpression(node.expression);
+            if (expr == node.expression)
+                return node;
+            
+            return new BoundConversionExpression(node.boundType, expr, node.textLocation);
         }
     }
 }

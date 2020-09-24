@@ -281,6 +281,11 @@ namespace SlangLang.Binding
 
         private BoundExpression BindCallExpression(CallExpression expression)
         {
+            if (expression.arguments.count == 1 && LookupType(expression.token.value) is TypeSymbol type)
+            {
+                return BindConversion(type, expression.arguments[0]);
+            }
+            
             ImmutableArray<BoundExpression>.Builder boundArguments = ImmutableArray.CreateBuilder<BoundExpression>();
             foreach (ExpressionNode arg in expression.arguments)
             {
@@ -314,6 +319,19 @@ namespace SlangLang.Binding
             return new BoundCallExpression(function, boundArguments.ToImmutable(), expression.textLocation);
         }
 
+        private BoundExpression BindConversion(TypeSymbol type, ExpressionNode expression)
+        {
+            BoundExpression boundExpression = BindExpression(expression);
+            Conversion conversion = Conversion.Classify(boundExpression.boundType, type);
+            if (!conversion.exists)
+            {
+                diagnostics.BinderError_CannotConvertExpressionType(type, boundExpression.boundType, boundExpression.textLocation);
+                return new BoundErrorExpression(TextSpan.NoText);
+            }
+
+            return new BoundConversionExpression(type, boundExpression, expression.textLocation);
+        }
+
         private VariableSymbol BindVariable(string identifier, bool isReadOnly, TypeSymbol type, TextSpan where)
         {
             string name = identifier ?? "?";
@@ -322,6 +340,21 @@ namespace SlangLang.Binding
             if (!scope.TryDeclareVariable(variable))
                 diagnostics.BinderError_VariableAlreadyDeclared(variable, where);
             return variable;
+        }
+
+        private TypeSymbol LookupType(string name)
+        {
+            switch (name)
+            {
+                case "bool":
+                    return TypeSymbol.Bool;
+                case "int":
+                    return TypeSymbol.Int;
+                case "string":
+                    return TypeSymbol.String;
+                default:
+                    return null;
+            }
         }
     }
 }
