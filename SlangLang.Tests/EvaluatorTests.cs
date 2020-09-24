@@ -198,7 +198,7 @@ namespace SlangLang.Tests
             }
             ";
             string error = @"
-            Variable z (Int32) has already been declared in this scope.
+            Symbol [Variable] z (Int32) has already been declared in this scope.
             ";
             AssertDiagnostics(src, error);
         }

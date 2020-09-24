@@ -52,9 +52,9 @@ namespace SlangLang.Debug
             diagnostics.AddFailure("Binder", "No variable declared with name " + varName + ".", where, DateTime.Now);
         }
 
-        internal static void BinderError_VariableAlreadyDeclared(this Diagnostics diagnostics, VariableSymbol var, TextSpan where)
+        internal static void BinderError_SymbolAlreadyDeclared(this Diagnostics diagnostics, Symbol symbol, TextSpan where)
         {
-            diagnostics.AddFailure("Binder", "Variable " + var.name + " (" + var.type + ") has already been declared in this scope.", where, DateTime.Now);
+            diagnostics.AddFailure("Binder", "Symbol " + symbol + " has already been declared in this scope.", where, DateTime.Now);
         }
 
         internal static void BinderError_CannotCastVariable(this Diagnostics diagnostics, VariableSymbol symbol, TypeSymbol type, TextSpan where)

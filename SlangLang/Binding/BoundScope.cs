@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 using SlangLang.Symbols;
 
 namespace SlangLang.Binding
 {
     public sealed class BoundScope
     {
-        private Dictionary<string, VariableSymbol> variables;
-        private Dictionary<string, FunctionSymbol> functions;
+        private Dictionary<string, Symbol> symbols;
         public BoundScope parent;
 
         public BoundScope(BoundScope parentScope)
@@ -16,64 +16,65 @@ namespace SlangLang.Binding
             parent = parentScope;
         }
 
-        public bool TryLookupVariable(string name, out VariableSymbol variable)
-        {
-            variable = null;
-            if (variables != null && variables.TryGetValue(name, out variable))
-                return true;
-            if (parent == null)
-                return false;
-            return parent.TryLookupVariable(name, out variable);
-        }
+        public bool TryLookupVariable(string name, out VariableSymbol symbol)
+            => TryLookupSymbol(name, out symbol);
 
-        public bool TryDeclareVariable(VariableSymbol variable)
-        {
-            if (variables == null)
-                variables = new Dictionary<string, VariableSymbol>();
-            
-            if (parent != null && parent.TryLookupVariable(variable.name, out _))
-                return false;
-            if (variables.ContainsKey(variable.name))
-                return false;
-            variables.Add(variable.name, variable);
-            return true;
-        }
+        public bool TryDeclareVariable(VariableSymbol symbol)
+            => TryDeclareSymbol(symbol);
 
-        public bool TryLookupFunction(string name, out FunctionSymbol function)
-        {
-            function = null;
-            if (functions != null && functions.TryGetValue(name, out function))
-                return true;
-            if (parent == null)
-                return false;
-            return parent.TryLookupFunction(name, out function);
-        }
+        public bool TryLookupFunction(string name, out FunctionSymbol symbol)
+            => TryLookupSymbol(name, out symbol);
 
-        public bool TryDeclareFunction(FunctionSymbol function)
-        {
-            if (functions == null)
-                functions = new Dictionary<string, FunctionSymbol>();
-            
-            if (parent != null && parent.TryLookupVariable(function.name, out _))
-                return false;
-            if (functions.ContainsKey(function.name))
-                return false;
-            functions.Add(function.name, function);
-            return true;
-        }
+        public bool TryDeclareFunction(FunctionSymbol symbol)
+            => TryDeclareSymbol(symbol);
 
         public ImmutableArray<VariableSymbol> GetDeclaredVariables()
+            => GetDeclaredSymbols<VariableSymbol>();
+        
+        public ImmutableArray<FunctionSymbol> GetDeclaredFunctions()
+            => GetDeclaredSymbols<FunctionSymbol>();
+
+        private bool TryLookupSymbol<T>(string name, out T symbol)
+            where T : Symbol
         {
-            if (variables == null)
-                return ImmutableArray<VariableSymbol>.Empty;
-            return variables.Values.ToImmutableArray();
+            symbol = null;
+            if (symbols != null && symbols.TryGetValue(name, out Symbol declared))
+            {
+                if (declared is T matchingSymbol)
+                {
+                    symbol = matchingSymbol;
+                    return true;
+                }
+                return false;
+            }
+
+            if (parent == null)
+                return false;
+
+            return parent.TryLookupSymbol<T>(name, out symbol);
         }
 
-        public ImmutableArray<FunctionSymbol> GetDeclaredFunctions()
+        private bool TryDeclareSymbol<T>(T symbol)
+            where T : Symbol
         {
-            if (functions == null)
-                return ImmutableArray<FunctionSymbol>.Empty;
-            return functions.Values.ToImmutableArray();
+            if (symbols == null)
+                symbols = new Dictionary<string, Symbol>();
+
+            if (parent != null && parent.TryLookupSymbol<T>(symbol.name, out _))
+                return false; //prevent shadowing (reassigning of symbols in narrower scopes)
+            if (symbols.ContainsKey(symbol.name))
+                return false;
+
+            symbols.Add(symbol.name, symbol);
+            return true;
+        }
+
+        private ImmutableArray<T> GetDeclaredSymbols<T>()
+            where T : Symbol
+        {
+            if (symbols == null)
+                return ImmutableArray<T>.Empty;
+            return symbols.Values.OfType<T>().ToImmutableArray();
         }
     }
 }

@@ -338,7 +338,7 @@ namespace SlangLang.Binding
 
             VariableSymbol variable = new VariableSymbol(name, isReadOnly, type);
             if (!scope.TryDeclareVariable(variable))
-                diagnostics.BinderError_VariableAlreadyDeclared(variable, where);
+                diagnostics.BinderError_SymbolAlreadyDeclared(variable, where);
             return variable;
         }
 

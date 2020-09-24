@@ -17,7 +17,7 @@ namespace SlangLang.Symbols
 
         public override string ToString()
         {
-            return base.ToString() + " (" + type + ") " + (isReadOnly ? "ReadOnly" : "");
+            return base.ToString() + " (" + type + ")" + (isReadOnly ? " ReadOnly" : "");
         }
     }
 }
